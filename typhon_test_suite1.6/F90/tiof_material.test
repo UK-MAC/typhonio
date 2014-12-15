@@ -1,0 +1,681 @@
+#-*-Mode: F90;-*-  emacs mode specifier
+# vim: filetype=fortran
+
+# tunit: def TIO_CHECK( expr ): return "ierr = %s;\n    ASSERT(TIO_SUCCESS_F, ierr)" % expr
+# tunit: def TIO_CHECK_FALSE( expr ): return "ierr = %s;\n    ASSERT_NOT_EQUAL(TIO_SUCCESS_F, ierr)" % expr
+
+SUITE( 'Material', 'typhonio' )
+
+#=======================================================================================================================
+
+TEST ( 'TIO_List_Mat_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_material.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  character(len=TIO_STRLEN_F) :: name
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "QuadMesh", mesh_id) )
+
+  TIO_CHECK( TIO_List_Mat_f(file_id, mesh_id, name) )
+
+  ASSERT( "Material", name )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Create_Mat_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "tio_create_mat.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: material_id
+  
+  TIO_CHECK( TIO_Create_f(file_name, file_id, TIO_ACC_REPLACE_F, "TestCode", "V0.0", "01-01-2000", "Test Title") )
+  TIO_CHECK( TIO_Create_State_f( file_id, "State1", state_id, 1, 0.0_TIO_TIMEK, "seconds" ) )
+       
+  TIO_CHECK( TIO_Create_Mesh_f( file_id, state_id, "QuadMesh", mesh_id,                                     &
+       &                        TIO_MESH_QUAD_COLINEAR_F, TIO_COORD_CARTESIAN_F, .false., "Group4", 1,  &
+       &                        TIO_INTEGER4_F, TIO_REAL8_F, TIO_3D_F, 10, 10, 10, 0, 1,                &
+       &                        "mm", "mm", "mm", "x", "y", "z" ) )
+  
+  TIO_CHECK( TIO_Create_Mat_f(file_id, mesh_id, "Material", material_id, &
+       &                      TIO_INTEGER4_F, 3, 0, .true.,              &
+       &                      TIO_INTEGER4_F, TIO_INTEGER4_F, TIO_REAL8_F) )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Open_Mat_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_material.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: material_id
+  integer(kind=TIO_IPK) :: datatype
+  integer(kind=TIO_SIZEK) :: nmat, nghosts
+  logical(kind=TIO_LPK) :: ismixed
+  integer(kind=TIO_IPK) :: ncomp_datatype
+  integer(kind=TIO_IPK) :: ptr_datatype
+  integer(kind=TIO_IPK) :: vf_datatype
+  
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "QuadMesh", mesh_id) )
+  
+  TIO_CHECK( TIO_Open_Mat_f(file_id, mesh_id, "Material", material_id, &
+       &                    datatype, nmat, nghosts, ismixed,          &
+       &                    ncomp_datatype, ptr_datatype, vf_datatype) )
+
+  ASSERT( TIO_INTEGER4_F, datatype )
+  ASSERT( 3, nmat )
+  ASSERT( 0, nghosts )
+  ASSERT( .true., ismixed )
+  ASSERT( TIO_INTEGER4_F, ncomp_datatype )
+  ASSERT( TIO_INTEGER4_F, ptr_datatype )
+  ASSERT( TIO_REAL8_F, vf_datatype )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Get_Mat_Info_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_material.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: material_id
+  character(len=TIO_STRLEN_F) :: material_name
+  integer(kind=TIO_IPK) :: datatype
+  integer(kind=TIO_SIZEK) :: nmat, nghosts
+  logical(kind=TIO_LPK) :: ismixed
+  integer(kind=TIO_IPK) :: ncomp_datatype
+  integer(kind=TIO_IPK) :: ptr_datatype
+  integer(kind=TIO_IPK) :: vf_datatype
+  
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "QuadMesh", mesh_id) )
+  
+  TIO_CHECK( TIO_Open_Mat_f(file_id, mesh_id, "Material", material_id) )
+       
+  TIO_CHECK( TIO_Get_Mat_Info_f( file_id, material_id, material_name, &
+       &                         datatype, nmat, nghosts, ismixed,         &
+       &                         ncomp_datatype, ptr_datatype, vf_datatype ) )
+
+  ASSERT( "Material", material_name )
+  ASSERT( TIO_INTEGER4_F, datatype )
+  ASSERT( 3, nmat )
+  ASSERT( 0, nghosts )
+  ASSERT( .true., ismixed )
+  ASSERT( TIO_INTEGER4_F, ncomp_datatype )
+  ASSERT( TIO_INTEGER4_F, ptr_datatype )
+  ASSERT( TIO_REAL8_F, vf_datatype )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Set_Mat_Range_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "tio_set_mat_range.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: material_id
+  
+  TIO_CHECK( TIO_Create_f(file_name, file_id, TIO_ACC_REPLACE_F, "TestCode", "V0.0", "01-01-2000", "Test Title") )
+  TIO_CHECK( TIO_Create_State_f( file_id, "State1", state_id, 1, 0.0_TIO_TIMEK, "seconds" ) )
+       
+  TIO_CHECK( TIO_Create_Mesh_f( file_id, state_id, "QuadMesh", mesh_id,                                     &
+       &                        TIO_MESH_QUAD_COLINEAR_F, TIO_COORD_CARTESIAN_F, .false., "Group4", 1,  &
+       &                        TIO_INTEGER4_F, TIO_REAL8_F, TIO_3D_F, 10, 10, 10, 0, 1,                &
+       &                        "mm", "mm", "mm", "x", "y", "z" ) )
+  
+  TIO_CHECK( TIO_Create_Mat_f(file_id, mesh_id, "Material", material_id, &
+       &                      TIO_INTEGER4_F, 3, 0, .true.,                 &
+       &                      TIO_INTEGER4_F, TIO_INTEGER4_F, TIO_REAL8_F) )
+       
+  TIO_CHECK( TIO_Set_Mat_Range_f( file_id, material_id, TIO_INTEGER4_F, &
+       &                          3, (/ 1, 2, 3 /), (/ "Mat1", "Mat2", "Mat3" /) ) )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Get_Mat_Range_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_material.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: material_id
+  integer(kind=TIO_SIZEK) :: nmat
+  integer(kind=4), dimension(3) :: matnums
+  character(len=TIO_STRLEN_F), dimension(3) :: matnames
+  
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "QuadMesh", mesh_id) )
+  
+  TIO_CHECK( TIO_Open_Mat_f(file_id, mesh_id, "Material", material_id) )
+  
+  TIO_CHECK( TIO_Get_Mat_Range_f(file_id, material_id, TIO_INTEGER4_F, &
+       &                         nmat, matnums) )
+       
+  ASSERT(3, nmat)
+  ASSERT((/ 1, 2, 3 /), matnums)
+  
+  TIO_CHECK( TIO_Get_Mat_Range_f(file_id, material_id, TIO_INTEGER4_F, &
+       &                         nmat, matnums, matnames) )
+       
+  ASSERT((/ "Mat1", "Mat2", "Mat3" /), matnames)
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Close_Mat_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "tio_close_mat.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: material_id
+  
+  TIO_CHECK( TIO_Create_f(file_name, file_id, TIO_ACC_REPLACE_F, "TestCode", "V0.0", "01-01-2000", "Test Title") )
+  TIO_CHECK( TIO_Create_State_f( file_id, "State1", state_id, 1, 0.0_TIO_TIMEK, "seconds" ) )
+       
+  TIO_CHECK( TIO_Create_Mesh_f( file_id, state_id, "QuadMesh", mesh_id,                                     &
+       &                        TIO_MESH_QUAD_COLINEAR_F, TIO_COORD_CARTESIAN_F, .false., "Group4", 1,  &
+       &                        TIO_INTEGER4_F, TIO_REAL8_F, TIO_3D_F, 10, 10, 10, 0, 1,                &
+       &                        "mm", "mm", "mm", "x", "y", "z" ) )
+  
+  TIO_CHECK( TIO_Create_Mat_f(file_id, mesh_id, "Material", material_id, &
+       &                      TIO_INTEGER4_F, 3, 0, .true.,              &
+       &                      TIO_INTEGER4_F, TIO_INTEGER4_F, TIO_REAL8_F) )
+  
+  TIO_CHECK( TIO_Close_Mat_f(file_id, material_id) )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Write_QuadMat_Chunk_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "tio_write_quadmat_chunk.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: material_id
+  integer(kind=4), dimension(9,9) :: mat
+  integer(kind=4), dimension(1) :: ncomp
+  integer(kind=4), dimension(1) :: ptr
+  integer(kind=4), dimension(2) :: mixmat
+  real(kind=8), dimension(2)    :: vf
+  
+  TIO_CHECK( TIO_Create_f(file_name, file_id, TIO_ACC_REPLACE_F, "TestCode", "V0.0", "01-01-2000", "Test Title") )
+  TIO_CHECK( TIO_Create_State_f( file_id, "State1", state_id, 1, 0.0_TIO_TIMEK, "seconds" ) )
+       
+  TIO_CHECK( TIO_Create_Mesh_f( file_id, state_id, "QuadMesh", mesh_id,                                     &
+       &                        TIO_MESH_QUAD_COLINEAR_F, TIO_COORD_CARTESIAN_F, .false., "Group4", 1,  &
+       &                        TIO_INTEGER4_F, TIO_REAL8_F, TIO_2D_F, 10, 10, 10, 0, 1,                &
+       &                        "mm", "mm", "mm", "x", "y", "z" ) )
+  
+  TIO_CHECK( TIO_Set_Quad_Chunk_f(file_id, mesh_id, 1, TIO_2D_F, 1, 10, 1, 10, 0, 0, 1, 1) )
+
+  TIO_CHECK( TIO_Create_Mat_f(file_id, mesh_id, "Material", material_id, &
+       &                      TIO_INTEGER4_F, 3, 0, .true.,              &
+       &                      TIO_INTEGER4_F, TIO_INTEGER4_F, TIO_REAL8_F) )
+
+  mat(1:3,:) = 1; mat(4:6,:) = 2; mat(7,:) = -1; mat(8:9,:) = 3
+  ncomp  = (/ 2 /)
+  ptr    = (/ 1 /)
+  mixmat = (/ 2, 3 /)
+  vf     = (/ 0.4, 0.6 /)
+  
+  TIO_CHECK( TIO_Write_QuadMat_Chunk_f(file_id, material_id, 1, TIO_XFER_COLLECTIVE_F, &
+       &                               TIO_INTEGER4_F, mat, TIO_INTEGER4_F,            &
+       &                               TIO_INTEGER4_F, TIO_REAL8_F, ncomp, ptr, mixmat, vf) )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Read_QuadMat_Chunk_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_material.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: material_id
+  integer(kind=TIO_IPK) :: ndims
+  integer(kind=TIO_SIZEK) :: ni, nj, nk
+  integer(kind=TIO_SIZEK) :: nmixcell, nmixcomp
+  integer(kind=4), dimension(9,9) :: mat, exp_mat
+  integer(kind=4), dimension(1) :: ncomp
+  integer(kind=4), dimension(1) :: ptr
+  integer(kind=4), dimension(2) :: mixmat
+  real(kind=8), dimension(2)    :: vf
+  
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "QuadMesh", mesh_id) )
+  
+  TIO_CHECK( TIO_Open_Mat_f(file_id, mesh_id, "Material", material_id) )
+  
+  TIO_CHECK( TIO_Read_QuadMat_Chunk_f(file_id, material_id, 1, TIO_XFER_COLLECTIVE_F, &
+       &                              TIO_INTEGER4_F, 0, ndims, ni, nj, nk, mat,      &
+       &                              TIO_INTEGER4_F, TIO_INTEGER4_F, TIO_REAL8_F,    &
+       &                              nmixcell, nmixcomp, ncomp, ptr, mixmat, vf) )
+       
+  exp_mat(1:3,:) = 1; exp_mat(4:6,:) = 2; exp_mat(7,:) = -1; exp_mat(8:9,:) = 3
+  
+  ASSERT( TIO_2D_F, ndims )
+  ASSERT( 9, ni )
+  ASSERT( 9, nj )
+  ASSERT( 0, nk )
+  ASSERT( 1, nmixcell )
+  ASSERT( 2, nmixcomp )
+  ASSERT( reshape(exp_mat, (/ 4 /)), reshape(mat, (/ 4 /)) )
+  ASSERT( (/ 2 /), ncomp )
+  ASSERT( (/ 1 /), ptr )
+  ASSERT( (/ 2, 3 /), mixmat )
+  ASSERT_CLOSE( (/ 0.4_8, 0.6_8 /), vf, 1.E-6 )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Read_QuadMat_All_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_material.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: material_id
+  integer(kind=TIO_IPK) :: ndims
+  integer(kind=TIO_SIZEK) :: ni, nj, nk
+  integer(kind=TIO_SIZEK) :: nmixcell, nmixcomp
+  integer(kind=4), dimension(9,9) :: mat, exp_mat
+  integer(kind=4), dimension(1) :: ncomp
+  integer(kind=4), dimension(1) :: ptr
+  integer(kind=4), dimension(2) :: mixmat
+  real(kind=8), dimension(2)    :: vf
+  
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "QuadMesh", mesh_id) )
+  
+  TIO_CHECK( TIO_Open_Mat_f(file_id, mesh_id, "Material", material_id) )
+  
+  TIO_CHECK( TIO_Read_QuadMat_All_f(file_id, material_id,                        &
+       &                            TIO_INTEGER4_F, ndims, ni, nj, nk, mat,      &
+       &                            TIO_INTEGER4_F, TIO_INTEGER4_F, TIO_REAL8_F, &
+       &                            nmixcell, nmixcomp, ncomp, ptr, mixmat, vf) )
+       
+  exp_mat(1:3,:) = 1; exp_mat(4:6,:) = 2; exp_mat(7,:) = -1; exp_mat(8:9,:) = 3
+  
+  ASSERT( TIO_2D_F, ndims )
+  ASSERT( 9, ni )
+  ASSERT( 9, nj )
+  ASSERT( 0, nk )
+  ASSERT( 1, nmixcell )
+  ASSERT( 2, nmixcomp )
+  ASSERT( reshape(exp_mat, (/ 4 /)), reshape(mat, (/ 4 /)) )
+  ASSERT( (/ 2 /), ncomp )
+  ASSERT( (/ 1 /), ptr )
+  ASSERT( (/ 2, 3 /), mixmat )
+  ASSERT_CLOSE( (/ 0.4_8, 0.6_8 /), vf, 1.E-6 )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Read_QuadMat_Section_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_material.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: material_id
+  integer(kind=TIO_OBJK) :: section_id
+  integer(kind=TIO_IPK) :: ndims
+  integer(kind=TIO_SIZEK) :: ni, nj, nk
+  integer(kind=TIO_SIZEK) :: nmixcell, nmixcomp
+  integer(kind=4), dimension(9,9) :: mat, exp_mat
+  integer(kind=4), dimension(1) :: ncomp
+  integer(kind=4), dimension(1) :: ptr
+  integer(kind=4), dimension(2) :: mixmat
+  real(kind=8), dimension(2)    :: vf
+  
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "QuadMesh", mesh_id) )
+  
+  TIO_CHECK( TIO_Open_Mat_f(file_id, mesh_id, "Material", material_id) )
+  
+  TIO_CHECK( TIO_Set_Quad_Section_f(file_id, mesh_id, section_id, TIO_2D_F, 1, 10, 1, 10, 0, 0) )
+  
+  TIO_CHECK( TIO_Read_QuadMat_Section_f(file_id, material_id, section_id, TIO_XFER_COLLECTIVE_F, &
+       &                                TIO_INTEGER4_F, ndims, ni, nj, nk, mat,         &
+       &                                TIO_INTEGER4_F, TIO_INTEGER4_F, TIO_REAL8_F,    &
+       &                                nmixcell, nmixcomp, ncomp, ptr, mixmat, vf) )
+       
+  exp_mat(1:3,:) = 1; exp_mat(4:6,:) = 2; exp_mat(7,:) = -1; exp_mat(8:9,:) = 3
+  
+  ASSERT( TIO_2D_F, ndims )
+  ASSERT( 9, ni )
+  ASSERT( 9, nj )
+  ASSERT( 0, nk )
+  ASSERT( 1, nmixcell )
+  ASSERT( 2, nmixcomp )
+  ASSERT( reshape(exp_mat, (/ 4 /)), reshape(mat, (/ 4 /)) )
+  ASSERT( (/ 2 /), ncomp )
+  ASSERT( (/ 1 /), ptr )
+  ASSERT( (/ 2, 3 /), mixmat )
+  ASSERT_CLOSE( (/ 0.4_8, 0.6_8 /), vf, 1.E-6 )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Write_UnstrMat_Chunk_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "tio_write_unstrmat_chunk.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: material_id
+  integer(kind=4), dimension(4) :: mat
+  integer(kind=4), dimension(1) :: ncomp
+  integer(kind=4), dimension(1) :: ptr
+  integer(kind=4), dimension(2) :: mixmat
+  real(kind=8), dimension(2)    :: vf
+  
+  TIO_CHECK( TIO_Create_f(file_name, file_id, TIO_ACC_REPLACE_F, "TestCode", "V0.0", "01-01-2000", "Test Title") )
+  TIO_CHECK( TIO_Create_State_f( file_id, "State1", state_id, 1, 0.0_TIO_TIMEK, "seconds" ) )
+       
+  TIO_CHECK( TIO_Create_Mesh_f( file_id, state_id, "UnstrMesh", mesh_id,                           &
+       &                        TIO_MESH_UNSTRUCT_F, TIO_COORD_CARTESIAN_F, .false., "Group4", 1,  &
+       &                        TIO_INTEGER4_F, TIO_REAL8_F, TIO_2D_F, 9, 4, 1, 16, 1,             &
+       &                        "mm", "mm", "mm", "x", "y", "z" ) )
+  
+  
+  TIO_CHECK( TIO_Set_Unstr_Chunk_f(file_id, mesh_id, 1, TIO_2D_F, 9, 4, 1, 16, 0, 0, 0, 0, 1, 2) )
+  
+  TIO_CHECK( TIO_Create_Mat_f(file_id, mesh_id, "Material", material_id, &
+       &                      TIO_INTEGER4_F, 3, 0, .true.,              &
+       &                      TIO_INTEGER4_F, TIO_INTEGER4_F, TIO_REAL8_F) )
+
+  mat    = (/ 1, 2, -1, 3 /)
+  ncomp  = (/ 2 /)
+  ptr    = (/ 1 /)
+  mixmat = (/ 2, 3 /)
+  vf     = (/ 0.4, 0.6 /)
+  
+  TIO_CHECK( TIO_Write_UnstrMat_Chunk_f(file_id, material_id, 1, TIO_XFER_COLLECTIVE_F, &
+       &                               TIO_INTEGER4_F, mat, TIO_INTEGER4_F,            &
+       &                               TIO_INTEGER4_F, TIO_REAL8_F, ncomp, ptr, mixmat, vf) )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Read_UnstrMat_Chunk_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_material.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: material_id
+  integer(kind=TIO_SIZEK) :: ncells, nmixcell, nmixcomp
+  integer(kind=4), dimension(4) :: mat
+  integer(kind=4), dimension(1) :: ncomp
+  integer(kind=4), dimension(1) :: ptr
+  integer(kind=4), dimension(2) :: mixmat
+  real(kind=8), dimension(2)    :: vf
+  
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "UnstrMesh", mesh_id) )
+  
+  TIO_CHECK( TIO_Open_Mat_f(file_id, mesh_id, "Material", material_id) )
+  
+  TIO_CHECK( TIO_Read_UnstrMat_Chunk_f(file_id, material_id, 1, TIO_XFER_COLLECTIVE_F, &
+       &                                TIO_INTEGER4_F, 0, ncells, mat,         &
+       &                                TIO_INTEGER4_F, TIO_INTEGER4_F, TIO_REAL8_F,    &
+       &                                nmixcell, nmixcomp, ncomp, ptr, mixmat, vf) )
+       
+  ASSERT( 4, ncells )
+  ASSERT( 1, nmixcell )
+  ASSERT( 2, nmixcomp )
+  ASSERT( (/ (/ 1, 2, -1, 3 /) /), reshape(mat, (/ 4 /)) )
+  ASSERT( (/ 2 /), ncomp )
+  ASSERT( (/ 1 /), ptr )
+  ASSERT( (/ 2, 3 /), mixmat )
+  ASSERT_CLOSE( (/ 0.4_8, 0.6_8 /), vf, 1.E-6 )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Read_UnstrMat_All_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_material.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: material_id
+  integer(kind=TIO_SIZEK) :: ncells, nmixcell, nmixcomp
+  integer(kind=4), dimension(4) :: mat
+  integer(kind=4), dimension(1) :: ncomp
+  integer(kind=4), dimension(1) :: ptr
+  integer(kind=4), dimension(2) :: mixmat
+  real(kind=8), dimension(2)    :: vf
+  
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "UnstrMesh", mesh_id) )
+  
+  TIO_CHECK( TIO_Open_Mat_f(file_id, mesh_id, "Material", material_id) )
+  
+  TIO_CHECK( TIO_Read_UnstrMat_All_f(file_id, material_id, TIO_INTEGER4_F, ncells, mat,         &
+       &                                TIO_INTEGER4_F, TIO_INTEGER4_F, TIO_REAL8_F,    &
+       &                                nmixcell, nmixcomp, ncomp, ptr, mixmat, vf) )
+       
+  ASSERT( 4, ncells )
+  ASSERT( 1, nmixcell )
+  ASSERT( 2, nmixcomp )
+  ASSERT( (/ (/ 1, 2, -1, 3 /) /), reshape(mat, (/ 4 /)) )
+  ASSERT( (/ 2 /), ncomp )
+  ASSERT( (/ 1 /), ptr )
+  ASSERT( (/ 2, 3 /), mixmat )
+  ASSERT_CLOSE( (/ 0.4_8, 0.6_8 /), vf, 1.E-6 )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Read_UnstrMat_Section_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_material.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: section_id
+  integer(kind=TIO_OBJK) :: material_id
+  integer(kind=TIO_SIZEK) :: ncells, nmixcell, nmixcomp
+  integer(kind=4), dimension(4) :: mat
+  integer(kind=4), dimension(1) :: ncomp
+  integer(kind=4), dimension(1) :: ptr
+  integer(kind=4), dimension(2) :: mixmat
+  real(kind=8), dimension(2)    :: vf
+  
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "UnstrMesh", mesh_id) )
+  
+  TIO_CHECK( TIO_Open_Mat_f(file_id, mesh_id, "Material", material_id) )
+  
+  TIO_CHECK( TIO_Set_Unstr_Section_f(file_id, mesh_id, section_id, TIO_CENTRE_CELL_F, 4, (/ 1, 2, 3, 4 /)) )
+  
+  TIO_CHECK( TIO_Read_UnstrMat_Section_f(file_id, material_id, section_id, TIO_XFER_COLLECTIVE_F, &
+       &                                 TIO_INTEGER4_F, ncells, mat,                    &
+       &                                 TIO_INTEGER4_F, TIO_INTEGER4_F, TIO_REAL8_F,    &
+       &                                 nmixcell, nmixcomp, ncomp, ptr, mixmat, vf) )
+       
+  ASSERT( 4, ncells )
+  ASSERT( 1, nmixcell )
+  ASSERT( 2, nmixcomp )
+  ASSERT( (/ (/ 1, 2, -1, 3 /) /), reshape(mat, (/ 4 /)) )
+  ASSERT( (/ 2 /), ncomp )
+  ASSERT( (/ 1 /), ptr )
+  ASSERT( (/ 2, 3 /), mixmat )
+  ASSERT_CLOSE( (/ 0.4_8, 0.6_8 /), vf, 1.E-6 )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Write_PointMat_Chunk_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "tio_write_pointmat_chunk.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: material_id
+  integer(kind=4), dimension(5) :: mat
+  
+  TIO_CHECK( TIO_Create_f(file_name, file_id, TIO_ACC_REPLACE_F, "TestCode", "V0.0", "01-01-2000", "Test Title") )
+  TIO_CHECK( TIO_Create_State_f( file_id, "State1", state_id, 1, 0.0_TIO_TIMEK, "seconds" ) )
+       
+  TIO_CHECK( TIO_Create_Mesh_f( file_id, state_id, "PointMesh", mesh_id,                           &
+       &                        TIO_MESH_POINT_F, TIO_COORD_CARTESIAN_F, .false., "Group4", 1,  &
+       &                        TIO_INTEGER4_F, TIO_REAL8_F, TIO_3D_F, 5, 0, 0, 0, 1,             &
+       &                        "mm", "mm", "mm", "x", "y", "z" ) )
+  
+  TIO_CHECK( TIO_Set_Point_Chunk_f(file_id, mesh_id, 1, TIO_3D_F, 1, 5, 0) )
+  
+  TIO_CHECK( TIO_Create_Mat_f(file_id, mesh_id, "Material", material_id, &
+       &                      TIO_INTEGER4_F, 3, 0, .false.) )
+
+  mat = (/ 1, 2, 2, 3, 3 /)
+
+  TIO_CHECK( TIO_Write_PointMat_Chunk_f(file_id, material_id, 1, TIO_XFER_COLLECTIVE_F, &
+       &                               TIO_INTEGER4_F, mat) )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Read_PointMat_Chunk_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_material.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: material_id
+  integer(kind=TIO_SIZEK) :: nnodes
+  integer(kind=4), dimension(5) :: mat
+  
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "PointMesh", mesh_id) )
+  
+  TIO_CHECK( TIO_Open_Mat_f(file_id, mesh_id, "Material", material_id) )
+  
+  TIO_CHECK( TIO_Read_PointMat_Chunk_f(file_id, material_id, 1, TIO_XFER_COLLECTIVE_F, &
+       &                                TIO_INTEGER4_F, 0, nnodes, mat) )
+       
+  ASSERT( 5, nnodes )
+  ASSERT( (/ 1, 2, 2, 3, 3 /), mat )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Read_PointMat_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_material.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: material_id
+  integer(kind=TIO_SIZEK) :: nnodes
+  integer(kind=4), dimension(5) :: mat
+  
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "PointMesh", mesh_id) )
+  
+  TIO_CHECK( TIO_Open_Mat_f(file_id, mesh_id, "Material", material_id) )
+  
+  TIO_CHECK( TIO_Read_PointMat_f(file_id, material_id, TIO_INTEGER4_F, nnodes, mat) )
+       
+  ASSERT( 5, nnodes )
+  ASSERT( (/ 1, 2, 2, 3, 3 /), mat )
+)
+
+#=======================================================================================================================

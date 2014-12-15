@@ -1,0 +1,212 @@
+#-*-Mode: F90;-*-  emacs mode specifier
+# vim: filetype=fortran
+
+# tunit: def TIO_CHECK( expr ): return "ierr = %s;\n    ASSERT(TIO_SUCCESS_F, ierr)" % expr
+# tunit: def TIO_CHECK_FALSE( expr ): return "ierr = %s;\n    ASSERT_NOT_EQUAL(TIO_SUCCESS_F, ierr)" % expr
+
+SUITE( 'Access', 'typhonio' )
+
+#=======================================================================================================================
+
+TEST( 'TIO_Get_LibVersion_f' )
+(
+  integer :: ierr
+  integer :: maj, min, rel
+
+  TIO_CHECK( TIO_Get_LibVersion_f(maj, min, rel) )
+
+  ASSERT(1, maj)
+  ASSERT(5, min)
+  ASSERT(0, rel)
+)
+
+#=======================================================================================================================
+
+TEST( 'TIO_Get_FileVersion_f' )
+(
+  integer :: ierr
+  integer :: maj, min, rel
+  character(len=*), parameter :: file_name = "./tio_files/tio_access.h5"
+
+  TIO_CHECK( TIO_Get_FileVersion_f(file_name, maj, min, rel) )
+
+  ASSERT(1, maj)
+  ASSERT(5, min)
+  ASSERT(0, rel)
+)
+
+#=======================================================================================================================
+
+TEST( 'TIO_CheckFile_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_access.h5"
+
+  TIO_CHECK( TIO_CheckFile_f(file_name) )
+)
+
+#=======================================================================================================================
+
+TEST( 'TIO_Open_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_access.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title, &
+       &                comm=info%fcomm, info=info%finfo, rank=info%rank) )
+)
+
+#=======================================================================================================================
+
+TEST( 'TIO_CheckObject_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_access.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_OBJK) :: state_id
+  character(len=TIO_STRLEN_F) :: state_name
+  integer(kind=TIO_OBJK) :: mesh_id
+  character(len=TIO_STRLEN_F) :: mesh_name
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title, &
+       &                comm=info%fcomm, info=info%finfo, rank=info%rank) )
+  TIO_CHECK( TIO_Open_State_idx_f(file_id, 1, state_name, state_id) )
+  TIO_CHECK( TIO_Open_Mesh_idx_f(file_id, state_id, 1, mesh_name, mesh_id) )
+
+  TIO_CHECK( TIO_CheckObject_f(file_id, state_id, mesh_name) )
+)
+
+#=======================================================================================================================
+
+TEST( 'TIO_IsFileOpen_f' )
+(
+  integer :: ierr
+
+  character(len=*), parameter :: file_name = "./tio_files/tio_access.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_OBJK) :: state_id
+  character(len=TIO_STRLEN_F) :: state_name
+  integer(kind=TIO_OBJK) :: mesh_id
+  character(len=TIO_STRLEN_F) :: mesh_name
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title, &
+       &                comm=info%fcomm, info=info%finfo, rank=info%rank) )
+
+  TIO_CHECK( TIO_IsFileOpen_f(file_name) )
+)
+
+#=======================================================================================================================
+
+TEST( 'TIO_IsObjectOpen_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_access.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_OBJK) :: state_id
+  character(len=TIO_STRLEN_F) :: state_name
+  integer(kind=TIO_OBJK) :: mesh_id
+  character(len=TIO_STRLEN_F) :: mesh_name
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title, &
+       &                comm=info%fcomm, info=info%finfo, rank=info%rank) )
+  TIO_CHECK( TIO_Open_State_idx_f(file_id, 1, state_name, state_id) )
+  TIO_CHECK( TIO_Open_Mesh_idx_f(file_id, state_id, 1, mesh_name, mesh_id) )
+
+  TIO_CHECK( TIO_IsObjectOpen_f(file_id, TIO_NULL_F, state_name) )
+  TIO_CHECK( TIO_IsObjectOpen_f(file_id, state_id, mesh_name) )
+)
+
+#=======================================================================================================================
+
+TEST( 'TIO_Create_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "tio_create.h5"
+  integer(kind=TIO_FILEK) :: file_id
+
+  TIO_CHECK( TIO_Create_f(file_name, file_id, TIO_ACC_REPLACE_F, "TestCode", "V0.0", "01-01-2000", "Test Title", &
+       &                comm=info%fcomm, info=info%finfo, rank=info%rank) )
+)
+
+#=======================================================================================================================
+
+TEST( 'TIO_Close_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "tio_close.h5"
+  integer(kind=TIO_FILEK) :: file_id
+
+  TIO_CHECK( TIO_Create_f(file_name, file_id, TIO_ACC_REPLACE_F, "TestCode", "V0.0", "01-01-2000", "Test Title", &
+       &                comm=info%fcomm, info=info%finfo, rank=info%rank) )
+
+  TIO_CHECK( TIO_IsFileOpen_f(file_name) )
+
+  TIO_CHECK( TIO_Close_f(file_id) )
+
+  TIO_CHECK_FALSE( TIO_IsFileOpen_f(file_name) )
+)
+
+#=======================================================================================================================
+
+TEST( 'TIO_Flush_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "tio_flush.h5"
+  integer(kind=TIO_FILEK) :: file_id
+
+  character(len=TIO_STRLEN_F), parameter :: code_name = "TestCode"
+  character(len=TIO_STRLEN_F), parameter :: version = "V0.0"
+  character(len=TIO_STRLEN_F), parameter :: date = "01-01-2000"
+  character(len=TIO_STRLEN_F), parameter :: title = "Test Title"
+
+  TIO_CHECK( TIO_Create_f(file_name, file_id, TIO_ACC_REPLACE_F, code_name, version, date, title, &
+       &                comm=info%fcomm, info=info%finfo, rank=info%rank) )
+
+  TIO_CHECK( TIO_IsFileOpen_f(file_name) )
+
+  TIO_CHECK( TIO_Flush_f(file_id) )
+)
+
+#=======================================================================================================================
+
+TEST( 'TIO_Get_File_Info_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_access.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  character(len=TIO_STRLEN_F) :: file_name2
+  character(len=TIO_STRLEN_F) :: code_name, code_name2
+  character(len=TIO_STRLEN_F) :: version, version2
+  character(len=TIO_STRLEN_F) :: date, date2
+  character(len=TIO_STRLEN_F) :: title, title2
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title, &
+       &                comm=info%fcomm, info=info%finfo, rank=info%rank) )
+
+  TIO_CHECK( TIO_Get_File_Info_f(file_id, file_name2, code_name2, version2, date2, title2) )
+
+  ASSERT(file_name, file_name2)
+  ASSERT(code_name, code_name2)
+  ASSERT(version,   version2)
+  ASSERT(date,      date2)
+  ASSERT(title,     title2)
+)
+
+#=======================================================================================================================

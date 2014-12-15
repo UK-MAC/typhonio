@@ -1,0 +1,34 @@
+#-*-Mode: F90;-*-  emacs mode specifier
+# vim: filetype=fortran
+
+# tunit: def TIO_CHECK( expr ): return "ierr = %s;\n    ASSERT(TIO_SUCCESS_F, ierr)" % expr
+# tunit: def TIO_CHECK_FALSE( expr ): return "ierr = %s;\n    ASSERT_NOT_EQUAL(TIO_SUCCESS_F, ierr)" % expr
+
+SUITE( 'Global', 'typhonio' )
+
+#=======================================================================================================================
+
+TEST ( 'TIO_SizeOf_f' )
+(
+  ASSERT( 4, TIO_SizeOf_f(TIO_REAL4_F) )
+  ASSERT( 8, TIO_SizeOf_f(TIO_REAL8_F) )
+  
+  ASSERT( 4, TIO_SizeOf_f(TIO_INTEGER4_F) )
+  ASSERT( 8, TIO_SizeOf_f(TIO_INTEGER8_F) )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Get_TypeClass_f' )
+(
+  integer :: ierr
+  integer :: typeclass
+  
+  TIO_CHECK( TIO_Get_TypeClass_f(TIO_INTEGER4_F, typeclass) )
+  ASSERT( TIO_TYPECLASS_INTEGER_F, typeclass )
+  
+  TIO_CHECK( TIO_Get_TypeClass_f(TIO_INTEGER8_F, typeclass) )
+  ASSERT( TIO_TYPECLASS_INTEGER_F, typeclass )
+)
+
+#=======================================================================================================================

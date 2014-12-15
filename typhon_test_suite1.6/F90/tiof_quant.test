@@ -1,0 +1,696 @@
+#-*-Mode: F90;-*-  emacs mode specifier
+# vim: filetype=fortran
+
+# tunit: def TIO_CHECK( expr ): return "ierr = %s;\n    ASSERT(TIO_SUCCESS_F, ierr)" % expr
+# tunit: def TIO_CHECK_FALSE( expr ): return "ierr = %s;\n    ASSERT_NOT_EQUAL(TIO_SUCCESS_F, ierr)" % expr
+
+SUITE( 'Quant', 'typhonio' )
+
+#=======================================================================================================================
+
+TEST ( 'TIO_List_Quants_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_quant.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_SIZEK) :: nobj
+  character(len=TIO_STRLEN_F), dimension(3) :: names
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "QuadMesh", mesh_id) )
+
+  TIO_CHECK( TIO_List_Quants_f(file_id, mesh_id, nobj=nobj) )
+
+  ASSERT( 3, nobj )
+
+  TIO_CHECK( TIO_List_Quants_f(file_id, mesh_id, names=names) )
+
+  ASSERT( (/ "Quant1", "Quant2", "Quant3" /), names )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Create_Quant_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "tio_create_quant.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: quant_id
+  real(kind=8), dimension(2,2,2) :: qdat
+
+  TIO_CHECK( TIO_Create_f(file_name, file_id, TIO_ACC_REPLACE_F, "TestCode", "V0.0", "01-01-2000", "Test Title") )
+  TIO_CHECK( TIO_Create_State_f( file_id, "State1", state_id, 1, 0.0_TIO_TIMEK, "seconds" ) )
+  
+  TIO_CHECK( TIO_Create_Mesh_f( file_id, state_id, "QuadMesh", mesh_id,                          &
+       &                        TIO_MESH_QUAD_COLINEAR_F, TIO_COORD_CARTESIAN_F, .false., "Group1", 1, &
+       &                        TIO_REAL8_F, TIO_REAL8_F, TIO_3D_F, 2, 2, 2, 0, 1,                &
+       &                        "mm", "mm", "mm", "x", "y", "z" ) )
+
+  TIO_CHECK( TIO_Create_Quant_f(file_id, mesh_id, "Quant", quant_id, TIO_REAL8_F, &
+                  TIO_CENTRE_CELL_F, 0, .false., "node") )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Open_Quant_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_quant.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: quant_id
+  integer(kind=TIO_IPK) :: datatype
+  integer(kind=TIO_IPK) :: centring
+  integer(kind=TIO_SIZEK) :: nghosts
+  logical(kind=TIO_LPK) :: ismixed
+  character(len=TIO_STRLEN_F) :: units
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "QuadMesh", mesh_id) )
+
+  TIO_CHECK( TIO_Open_Quant_f(file_id, mesh_id, "Quant1", quant_id, datatype, centring, nghosts, ismixed, units) )
+  
+  ASSERT( TIO_REAL8_F, datatype )
+  ASSERT( TIO_CENTRE_NODE_F, centring )
+  ASSERT( 0, nghosts )
+  ASSERT( .false., ismixed )
+  ASSERT( "node", units )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Open_Quant_idx_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_quant.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: quant_id
+  character(len=TIO_STRLEN_F) :: quant_name
+  integer(kind=TIO_IPK) :: datatype
+  integer(kind=TIO_IPK) :: centring
+  integer(kind=TIO_SIZEK) :: nghosts
+  logical(kind=TIO_LPK) :: ismixed
+  character(len=TIO_STRLEN_F) :: units
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "QuadMesh", mesh_id) )
+
+  TIO_CHECK( TIO_Open_Quant_idx_f(file_id, mesh_id, 1, quant_name, quant_id, datatype, centring, nghosts, ismixed, units) )
+  
+  ASSERT( "Quant1", quant_name )
+  ASSERT( TIO_REAL8_F, datatype )
+  ASSERT( TIO_CENTRE_NODE_F, centring )
+  ASSERT( 0, nghosts )
+  ASSERT( .false., ismixed )
+  ASSERT( "node", units )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Get_Quant_Info_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_quant.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  character(len=TIO_STRLEN_F) :: quant_name
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: quant_id
+  integer(kind=TIO_IPK) :: datatype
+  integer(kind=TIO_IPK) :: centring
+  integer(kind=TIO_SIZEK) :: nghosts
+  logical(kind=TIO_LPK) :: ismixed
+  character(len=TIO_STRLEN_F) :: units
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "QuadMesh", mesh_id) )
+
+  TIO_CHECK( TIO_Open_Quant_f(file_id, mesh_id, "Quant1", quant_id) )
+  
+  TIO_CHECK( TIO_Get_Quant_Info_f(file_id, quant_id, quant_name, datatype, centring, nghosts, ismixed, units) )
+  
+  ASSERT( "Quant1",          quant_name )
+  ASSERT( TIO_REAL8_F,       datatype )
+  ASSERT( TIO_CENTRE_NODE_F, centring )
+  ASSERT( 0,                 nghosts )
+  ASSERT( .false.,           ismixed )
+  ASSERT( "node",            units )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Set_Quant_Range_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "tio_set_quant_range.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: quant_id1, quant_id2, quant_id3, quant_id4
+  real(kind=8), dimension(2,2,2) :: qdat
+
+  TIO_CHECK( TIO_Create_f(file_name, file_id, TIO_ACC_REPLACE_F, "TestCode", "V0.0", "01-01-2000", "Test Title") )
+  TIO_CHECK( TIO_Create_State_f( file_id, "State1", state_id, 1, 0.0_TIO_TIMEK, "seconds" ) )
+  
+  TIO_CHECK( TIO_Create_Mesh_f( file_id, state_id, "QuadMesh", mesh_id,                          &
+       &                        TIO_MESH_QUAD_COLINEAR_F, TIO_COORD_CARTESIAN_F, .false., "Group1", 1, &
+       &                        TIO_REAL8_F, TIO_REAL8_F, TIO_3D_F, 2, 2, 2, 0, 1,                &
+       &                        "mm", "mm", "mm", "x", "y", "z" ) )
+
+  TIO_CHECK( TIO_Create_Quant_f(file_id, mesh_id, "Quant1", quant_id1, TIO_REAL8_F, &
+                  TIO_CENTRE_CELL_F, 0, .false., "node") )
+
+  TIO_CHECK( TIO_Create_Quant_f(file_id, mesh_id, "Quant2", quant_id2, TIO_REAL4_F, &
+                  TIO_CENTRE_CELL_F, 0, .false., "node") )
+
+  TIO_CHECK( TIO_Create_Quant_f(file_id, mesh_id, "Quant3", quant_id3, TIO_INTEGER4_F, &
+                  TIO_CENTRE_CELL_F, 0, .false., "node") )
+
+  TIO_CHECK( TIO_Set_Quant_Range_f(file_id, quant_id1, TIO_REAL8_F, 0._8, 1._8) )
+  TIO_CHECK( TIO_Set_Quant_Range_f(file_id, quant_id2, TIO_REAL4_F, -1._4, 1._4) )
+  TIO_CHECK( TIO_Set_Quant_Range_f(file_id, quant_id3, TIO_INTEGER4_F, 0_4, 100_4) )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Get_Quant_Range_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_quant.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  character(len=TIO_STRLEN_F) :: arrayq_name
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: quant_id1, quant_id2, quant_id3
+  real(kind=8) :: qmin_1, qmax_1
+  real(kind=4) :: qmin_2, qmax_2
+  integer(kind=4) :: qmin_3, qmax_3
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "QuadMesh", mesh_id) )
+
+  TIO_CHECK( TIO_Open_Quant_f(file_id, mesh_id, "Quant1", quant_id1) )
+  TIO_CHECK( TIO_Open_Quant_f(file_id, mesh_id, "Quant2", quant_id2) )
+  TIO_CHECK( TIO_Open_Quant_f(file_id, mesh_id, "Quant3", quant_id3) )
+  
+  TIO_CHECK( TIO_Get_Quant_Range_f(file_id, quant_id1, TIO_REAL8_F, qmin_1, qmax_1) )
+  TIO_CHECK( TIO_Get_Quant_Range_f(file_id, quant_id2, TIO_REAL4_F, qmin_2, qmax_2) )
+  TIO_CHECK( TIO_Get_Quant_Range_f(file_id, quant_id3, TIO_INTEGER4_F, qmin_3, qmax_3) )
+  
+  ASSERT( 1._8, qmin_1 )
+  ASSERT( 1000._8, qmax_1 )
+  
+  ASSERT( -1._4, qmin_2 )
+  ASSERT( 1._4, qmax_2 )
+  
+  ASSERT( 0_4, qmin_3 )
+  ASSERT( 100_4, qmax_3 )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Close_Quant_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "tio_close_quant.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: quant_id
+
+  TIO_CHECK( TIO_Create_f(file_name, file_id, TIO_ACC_REPLACE_F, "TestCode", "V0.0", "01-01-2000", "Test Title") )
+  TIO_CHECK( TIO_Create_State_f( file_id, "State1", state_id, 1, 0.0_TIO_TIMEK, "seconds" ) )
+  
+  TIO_CHECK( TIO_Create_Mesh_f( file_id, state_id, "QuadMesh", mesh_id,                          &
+       &                        TIO_MESH_QUAD_COLINEAR_F, TIO_COORD_CARTESIAN_F, .false., "Group1", 1, &
+       &                        TIO_REAL8_F, TIO_REAL8_F, TIO_3D_F, 2, 2, 2, 0, 1,                &
+       &                        "mm", "mm", "mm", "x", "y", "z" ) )
+
+  TIO_CHECK( TIO_Create_Quant_f(file_id, mesh_id, "Quant", quant_id, TIO_REAL8_F, &
+                  TIO_CENTRE_NODE_F, 0, .false., "node") )
+  
+  TIO_CHECK( TIO_Close_Quant_f(file_id, quant_id) )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Write_QuadQuant_Chunk_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "tio_write_quadquant_chunk.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: quant_id
+  real(kind=8), dimension(10,10,10) :: qdat
+  integer :: i
+
+  TIO_CHECK( TIO_Create_f(file_name, file_id, TIO_ACC_REPLACE_F, "TestCode", "V0.0", "01-01-2000", "Test Title") )
+  TIO_CHECK( TIO_Create_State_f( file_id, "State1", state_id, 1, 0.0_TIO_TIMEK, "seconds" ) )
+  
+  TIO_CHECK( TIO_Create_Mesh_f( file_id, state_id, "QuadMesh", mesh_id,                          &
+       &                        TIO_MESH_QUAD_COLINEAR_F, TIO_COORD_CARTESIAN_F, .false., "Group1", 1, &
+       &                        TIO_REAL8_F, TIO_REAL8_F, TIO_3D_F, 10, 10, 10, 0, 1,                &
+       &                        "mm", "mm", "mm", "x", "y", "z" ) )
+
+  TIO_CHECK( TIO_Set_Quad_Chunk_f(file_id, mesh_id, 1, TIO_3D_F, 1, 10, 1, 10, 1, 10, 0, 0) )
+  
+  TIO_CHECK( TIO_Create_Quant_f(file_id, mesh_id, "Quant1", quant_id, TIO_REAL8_F, &
+                  TIO_CENTRE_NODE_F, 0, .false., "node") )
+
+  qdat(:,:,:) = reshape( (/ (i,i=1,1000) /), (/ 10, 10, 10 /) )
+  
+  TIO_CHECK( TIO_Write_QuadQuant_Chunk_f( file_id, quant_id, 1, TIO_XFER_COLLECTIVE_F, TIO_REAL8_F, qdat ) )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Read_QuadQuant_Chunk_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_quant.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: quant_id
+  integer(kind=TIO_IPK) :: ndims
+  integer(kind=TIO_SIZEK) :: ni, nj, nk
+  real(kind=8), dimension(10,10,10) :: qdat
+  real(kind=8), dimension(1000) :: exp_qdat
+  integer(kind=TIO_SIZEK) :: nmixcomp
+  real(kind=8), dimension(4) :: qmix
+  integer :: i
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "QuadMesh", mesh_id) )
+
+  TIO_CHECK( TIO_Open_Quant_f(file_id, mesh_id, "Quant1", quant_id) )
+  
+  TIO_CHECK( TIO_Read_QuadQuant_Chunk_f( file_id, quant_id, 1, TIO_XFER_COLLECTIVE_F, &
+         &                               TIO_REAL8_F, 0, ndims, ni, nj, nk, qdat, nmixcomp, qmix ) )
+  
+  exp_qdat = (/ (i,i=1,1000) /)
+  
+  ASSERT( TIO_3D_F, ndims )
+  ASSERT( 10, ni )
+  ASSERT( 10, nj )
+  ASSERT( 10, nj )
+  ASSERT( exp_qdat, reshape( qdat, (/ 1000 /) ) )
+  ASSERT( 0, nmixcomp )
+  ASSERT( (/ 0._8, 0._8, 0._8, 0._8 /), qmix )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Read_QuadQuant_All_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_quant.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: quant_id
+  integer(kind=TIO_IPK) :: ndims
+  integer(kind=TIO_SIZEK) :: ni, nj, nk
+  real(kind=8), dimension(10,10,10) :: qdat
+  real(kind=8), dimension(1000) :: exp_qdat
+  integer(kind=TIO_SIZEK) :: nmixcomp
+  real(kind=8), dimension(4) :: qmix
+  integer :: i
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "QuadMesh", mesh_id) )
+
+  TIO_CHECK( TIO_Open_Quant_f(file_id, mesh_id, "Quant1", quant_id) )
+  
+  TIO_CHECK( TIO_Read_QuadQuant_All_f( file_id, quant_id, TIO_REAL8_F, ndims, ni, nj, nk, qdat, nmixcomp, qmix ) )
+  
+  exp_qdat = (/ (i,i=1,1000) /)
+  
+  ASSERT( TIO_3D_F, ndims )
+  ASSERT( 10, ni )
+  ASSERT( 10, nj )
+  ASSERT( 10, nj )
+  ASSERT( exp_qdat, reshape( qdat, (/ 1000 /) ) )
+  ASSERT( 0, nmixcomp )
+  ASSERT( (/ 0._8, 0._8, 0._8, 0._8 /), qmix )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Read_QuadQuant_Section_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_quant.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: section_id
+  integer(kind=TIO_OBJK) :: quant_id
+  integer(kind=TIO_IPK) :: ndims
+  integer(kind=TIO_SIZEK) :: ni, nj, nk
+  real(kind=8), dimension(10,10,10) :: qdat
+  real(kind=8), dimension(1000) :: exp_qdat
+  integer(kind=TIO_SIZEK) :: nmixcomp
+  real(kind=8), dimension(4) :: qmix
+  integer :: i
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "QuadMesh", mesh_id) )
+  
+  TIO_CHECK( TIO_Set_Quad_Section_f(file_id, mesh_id, section_id, TIO_3D_F, 1, 10, 1, 10, 1, 10) )
+
+  TIO_CHECK( TIO_Open_Quant_f(file_id, mesh_id, "Quant1", quant_id) )
+  
+  TIO_CHECK( TIO_Read_QuadQuant_Section_f( file_id, quant_id, section_id, TIO_XFER_COLLECTIVE_F, &
+         &                               TIO_REAL8_F, ndims, ni, nj, nk, qdat, nmixcomp, qmix ) )
+  
+  exp_qdat = (/ (i,i=1,1000) /)
+  
+  ASSERT( TIO_3D_F, ndims )
+  ASSERT( 10, ni )
+  ASSERT( 10, nj )
+  ASSERT( 10, nj )
+  ASSERT( exp_qdat, reshape( qdat, (/ 1000 /) ) )
+  ASSERT( 0, nmixcomp )
+  ASSERT( (/ 0._8, 0._8, 0._8, 0._8 /), qmix )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Write_UnstrQuant_Chunk_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "tio_write_unstrquant_chunk.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: quant_id
+  real(kind=8), dimension(9) :: qdat
+
+  TIO_CHECK( TIO_Create_f(file_name, file_id, TIO_ACC_REPLACE_F, "TestCode", "V0.0", "01-01-2000", "Test Title") )
+  TIO_CHECK( TIO_Create_State_f( file_id, "State1", state_id, 1, 0.0_TIO_TIMEK, "seconds" ) )
+  
+  TIO_CHECK( TIO_Create_Mesh_f( file_id, state_id, "UnstrMesh", mesh_id,                          &
+       &                        TIO_MESH_UNSTRUCT_F, TIO_COORD_CARTESIAN_F, .false., "Group1", 1, &
+       &                        TIO_INTEGER4_F, TIO_REAL8_F, TIO_2D_F, 9, 4, 1, 16, 1,                &
+       &                        "mm", "mm", "mm", "x", "y", "z" ) )
+
+  TIO_CHECK( TIO_Set_Unstr_Chunk_f(file_id, mesh_id, 1, TIO_2D_F, 9, 4, 1, 16, 0, 0, 0, 0, 0, 0) )
+
+  TIO_CHECK( TIO_Create_Quant_f(file_id, mesh_id, "Quant1", quant_id, TIO_REAL8_F, &
+                  TIO_CENTRE_CELL_F, 0, .false., "node") )
+
+  qdat(:) = (/ 0., 1., 2., 3., 4., 5., 6., 7., 8. /)
+  
+  TIO_CHECK( TIO_Write_UnstrQuant_Chunk_f( file_id, quant_id, 1, TIO_XFER_COLLECTIVE_F, TIO_REAL8_F, qdat ) )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Read_UnstrQuant_Chunk_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_quant.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: quant_id
+  integer(kind=TIO_SIZEK) :: nn
+  real(kind=8), dimension(9) :: qdat
+  integer(kind=TIO_SIZEK) :: nmixcomp
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "UnstrMesh", mesh_id) )
+
+  TIO_CHECK( TIO_Open_Quant_f(file_id, mesh_id, "Quant1", quant_id) )
+  
+  TIO_CHECK( TIO_Read_UnstrQuant_Chunk_f( file_id, quant_id, 1, TIO_XFER_COLLECTIVE_F, &
+         &                               TIO_REAL8_F, 0, nn, qdat, nmixcomp ) )
+  
+  ASSERT( 9, nn )
+  ASSERT( (/ 0._8, 1._8, 2._8, 3._8, 4._8, 5._8, 6._8, 7._8, 8._8 /), qdat )
+  ASSERT( 0, 0 )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Read_UnstrQuant_All_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_quant.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: quant_id
+  integer(kind=TIO_SIZEK) :: nn
+  real(kind=8), dimension(9) :: qdat
+  integer(kind=TIO_SIZEK) :: nmixcomp
+  real(kind=8), dimension(5) :: qmix
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "UnstrMesh", mesh_id) )
+
+  TIO_CHECK( TIO_Open_Quant_f(file_id, mesh_id, "Quant1", quant_id) )
+  
+  TIO_CHECK( TIO_Read_UnstrQuant_All_f( file_id, quant_id, TIO_REAL8_F, nn, qdat, nmixcomp ) )
+  
+  ASSERT( 9, nn )
+  ASSERT( (/ 0._8, 1._8, 2._8, 3._8, 4._8, 5._8, 6._8, 7._8, 8._8 /), qdat )
+  ASSERT( 0, 0 )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Read_UnstrQuant_Section_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_quant.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: section_id
+  integer(kind=TIO_OBJK) :: quant_id
+  integer(kind=TIO_SIZEK) :: nn
+  real(kind=8), dimension(9) :: qdat
+  integer(kind=TIO_SIZEK) :: nmixcomp
+  real(kind=8), dimension(5) :: qmix
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "UnstrMesh", mesh_id) )
+
+  TIO_CHECK( TIO_Open_Quant_f(file_id, mesh_id, "Quant1", quant_id) )
+  
+  TIO_CHECK( TIO_Set_Unstr_Section_f(file_id, mesh_id, section_id, TIO_CENTRE_NODE_F, 9, &
+       &                           (/ 1, 2, 3, 4, 5, 6, 7, 8, 9 /)) )
+
+  TIO_CHECK( TIO_Read_UnstrQuant_Section_f( file_id, quant_id, section_id, TIO_XFER_COLLECTIVE_F, &
+         &                               TIO_REAL8_F, nn, qdat, nmixcomp ) )
+  
+  ASSERT( 9, nn )
+  ASSERT( (/ 0._8, 1._8, 2._8, 3._8, 4._8, 5._8, 6._8, 7._8, 8._8 /), qdat )
+  ASSERT( 0, 0 )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Write_PointQuant_Chunk_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "tio_write_pointquant_chunk.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: quant_id
+  real(kind=8), dimension(100) :: qdat
+  integer :: i
+
+  TIO_CHECK( TIO_Create_f(file_name, file_id, TIO_ACC_REPLACE_F, "TestCode", "V0.0", "01-01-2000", "Test Title") )
+  TIO_CHECK( TIO_Create_State_f( file_id, "State1", state_id, 1, 0.0_TIO_TIMEK, "seconds" ) )
+  
+  TIO_CHECK( TIO_Create_Mesh_f( file_id, state_id, "PointMesh", mesh_id,                          &
+       &                        TIO_MESH_POINT_F, TIO_COORD_CARTESIAN_F, .false., "Group1", 1, &
+       &                        TIO_INTEGER4_F, TIO_REAL8_F, TIO_3D_F, 100, 0, 0, 0, 1,                &
+       &                        "mm", "mm", "mm", "x", "y", "z" ) )
+
+  TIO_CHECK( TIO_Set_Point_Chunk_f(file_id, mesh_id, 1, TIO_3D_F, 1, 100, 0) )
+  
+  TIO_CHECK( TIO_Create_Quant_f(file_id, mesh_id, "Quant1", quant_id, TIO_REAL8_F, &
+                  TIO_CENTRE_NODE_F, 0, .false., "node") )
+
+  qdat(:) = (/ (i,i=1,100 ) /)
+  
+  TIO_CHECK( TIO_Write_PointQuant_Chunk_f( file_id, quant_id, 1, TIO_XFER_COLLECTIVE_F, TIO_REAL8_F, qdat ) )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Read_PointQuant_Chunk_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_quant.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: quant_id
+  integer(kind=TIO_SIZEK) :: nnodes
+  real(kind=8), dimension(100) :: qdat, exp_qdat
+  integer :: i
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "PointMesh", mesh_id) )
+
+  TIO_CHECK( TIO_Open_Quant_f(file_id, mesh_id, "Quant1", quant_id) )
+  
+  TIO_CHECK( TIO_Read_PointQuant_Chunk_f( file_id, quant_id, 1, TIO_XFER_COLLECTIVE_F, &
+         &                               TIO_REAL8_F, 0, nnodes, qdat) )
+  
+  exp_qdat(:) = (/ (i,i=1,100 ) /)
+  
+  ASSERT( 100, nnodes )
+  ASSERT( exp_qdat, qdat )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Read_PointQuant_All_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_quant.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: quant_id
+  integer(kind=TIO_SIZEK) :: nnodes
+  real(kind=8), dimension(100) :: qdat, exp_qdat
+  integer :: i
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "PointMesh", mesh_id) )
+
+  TIO_CHECK( TIO_Open_Quant_f(file_id, mesh_id, "Quant1", quant_id) )
+  
+  TIO_CHECK( TIO_Read_PointQuant_All_f( file_id, quant_id, TIO_REAL8_F, nnodes, qdat) )
+  
+  exp_qdat(:) = (/ (i,i=1,100 ) /)
+  
+  ASSERT( 100, nnodes )
+  ASSERT( exp_qdat, qdat )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Read_PointQuant_Section_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_quant.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: section_id
+  integer(kind=TIO_OBJK) :: quant_id
+  integer(kind=TIO_SIZEK) :: nnodes
+  real(kind=8), dimension(100) :: qdat, exp_qdat
+  integer(kind=4), dimension(100) :: secIDs
+  integer :: i
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "PointMesh", mesh_id) )
+
+  TIO_CHECK( TIO_Open_Quant_f(file_id, mesh_id, "Quant1", quant_id) )
+  
+  secIDs(:) = (/ (i,i=1,100) /)
+  
+  TIO_CHECK( TIO_Set_Point_Section_f(file_id, mesh_id, section_id, 100, secIDs) )
+  
+  TIO_CHECK( TIO_Read_PointQuant_Section_f( file_id, quant_id, section_id, TIO_XFER_COLLECTIVE_F, &
+         &                               TIO_REAL8_F, nnodes, qdat) )
+  
+  exp_qdat(:) = (/ (i,i=1,100 ) /)
+  
+  ASSERT( 100, nnodes )
+  ASSERT( exp_qdat, qdat )
+)
+
+#=======================================================================================================================

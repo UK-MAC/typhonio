@@ -1,0 +1,251 @@
+<!--
+ Crown Copyright 2014 AWE.
+
+ This file is part of TyphonIO. 
+ Released under the BSD 3-clause license. 
+ For more details see license.txt
+-->
+
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+
+<html>
+
+<head>
+  <title>TyphonIO - Introduction</title>
+</head>
+
+<body>
+
+<br>
+<h1>TyphonIO</h1>
+
+
+<h2>Introduction</h2>
+<hr noshade size="1">
+
+<blockquote>
+
+<p>TyphonIO is an in-house library of routines that perform input/output (I/O) of scientific data within application codes.  The library is available on HPC platforms and provides C/C++ and Fortran90 APIs to write and read TyphonIO-format files.  The TyphonIO files can be dumps for restart or visualization purposes and are completely portable across HPC platforms, that is, a file written on one platform can be read on any other.</p>
+
+<p>TyphonIO is based upon HDF5, a free open-source library from The HDF Group, which provides the portable data infrastructure.  The way TyphonIO has been designed means that it would be possible to replace the underlying HDF5 with a successor or alternative, if the need arises, with minimal or no effect on application codes that use it.</p>
+
+
+<h3>Hierarchical Structure</h3>
+
+<p>The TyphonIO file format is a hierarchical structure of different objects as shown in figure 1.  Each object within the hierarchy corresponds to a simulation or model feature, like those found in scientific or engineering applications.  Each object is designed to hold the data and associated metadata for each feature and some of these objects are <i>chunked</i> - the meaning of all objects and the chunking is covered later.  Due to the way TyphonIO is designed, it is straightforward to add more objects in future and expand the format to cover more models.</p>
+
+<p><img src="gfx/hierarchy.png" border="0"><br><i>Figure 1.  TyphonIO object hierarchy</i></p>
+
+<p>Descriptions of what each object holds are given in the TyphonIO Objects section below.</p>
+
+
+<h3>Chunked Objects</h3>
+
+<p>Some of the objects within TyphonIO are <i>chunked</i>.  This simply means that the data is represented and stored as discrete parts, chunks, that correspond to an area of the mesh.  For example, the common uses of chunks are to store decomposed data from different processes, or hold individual AMR patches.</p>
+<p>The number of chunks is set when creating a mesh and then limits of the chunks are then set in turn.  The limits of each chunk depend on the type of mesh and each chunk is addressed by a unique index.  Once all chunks are set it is possible to create child Material and Quant objects within the Mesh, which then inherit the chunks of that parent Mesh.</p>
+
+
+<h3>Programming Model</h3>
+<p>The programming model for TyphonIO is straightforward and is based around treating the objects as separate, but related, entities.  For each object in the parent-child hierachy there are 3 steps required to perform input/output: <i>Access</i>; <i>Action</i>; <i>Close</i>.</p>
+
+<p><b><u>Access:</u></b><br>
+<ul style="list-style: none;">
+<li>The access step simply involves creating or opening an existing file or object.
+<li>When creating objects, all child objects within a parent must be given unique names.
+<li>An object can be opened by name, or by index, where a given index <i>n</i> opens the <i>n</i>th object within the parent.  It is possible to open objects speculatively and check the routine return code to find whether an object exists.
+<li>It is only possible to access child objects via their parents, i.e. parents must be accessed first.  It is also invalid to access an object more than once.
+</ul>
+</p>
+
+
+<p><b><u>Action:</u></b><br>
+<ul style="list-style: none;">
+<li>This step is when writing or reading of data occurs. During this step, the ranges, chunks and sections of objects can be set and this is also where the child objects are created / opened and so on.
+</ul>
+</p>
+
+<p><b><u>Close:</u></b><br>
+<ul style="list-style: none;">
+<li>The close step finalizes and closes the object or file.  All child objects should be closed before closing the parent.
+</ul>
+</p>
+
+
+<p>Additionaly there are a number of routines which do not fit into the above categories. These routines are optional but provide useful functionality when working with TyphonIO objects.
+
+<p><b><u>List:</u></b><br>
+<ul style="list-style: none;">
+<li>The list routines list all of a given type of TyphonIO object contained in a parent object, i.e. TIO_List_Meshes list all of the Mesh objects contained in a State.
+<li>These routines may need to be called twice, once to return nobj (the number of objects to return) and again to return the names of said objects. This allows for a list to be created which is large enough to hold the returned names.
+</ul>
+</p>
+
+<p><b><u>Get Dims/Info/Range/nghosts:</u></b><br>
+<ul style="list-style: none;">
+<li>These routines return various properties of a TyphonIO object.
+<li>The object being passed to the routine must be open.
+<li>The TIO_Get_*_Info routines return all the properties used when creating the object.
+<li>The TIO_Get_*_Range routines return the display ranges stored in the given object (if they have been set).
+<li>The TIO_Get_*_nghosts routines return the number of ghosts stored in the given object.
+</ul>
+</p>
+
+
+<h3>Parallel TyphonIO</h3>
+
+<p>TyphonIO also has parallel capabilities, meaning it can provide true parallel I/O from massively parallel application codes, which can provide potential speed-ups compared to traditional I/O methods.  TyphonIO's efficient parallel I/O is achieved using the underlying HDF5, which in turn uses MPI-IO.  To enable parallel I/O the file access routines need to be passed valid MPI communicator, info and process rank handles.</p>
+
+<p>The parallelism in TyphonIO is achieved by allowing different processes to write or read different chunks of the chunked objects.  In order to do this there are two classes of TyphonIO routines: <i>collective</i> and <i>independent</i>.  A collective routine must be called by all processes in the given communicator, whereas independent routines can be called at by any number of processes.  All access and close routines are collective, as are the routines that define the chunks, but the writing and reading actions on the chunks can be independent or collective. Note that for the routines that set chunk sizes each chunk needs to know the size of every chunk involved.  Where possible, I/O should be done collectively, as it allows many optimisations to be made that improve performance.</p>
+
+<p>In practise there is not a great deal of difference between using TyphonIO in parallel to in serial. A process calls its local data to a chunk in the same regardles of whether it is a serial or parallel call. Apart from the global values required in collective operations, TyphonIO has been designed to keep data as local as possible, <stong>the only time this is not the case is for mesh connectivity</strong>.</p>
+
+<p> The four conventions of parallel TyphonIO can be summarised as:</p>
+<ul style="list-style: none;">
+<li>1) Create/open/Close X calls are collective across the processors in the MPI communicator that the file was opened with.
+<li>2) Set routines (TIO_Set_Mesh_Range, etc) need to be called for every chunk on every chunk. i.e. each chunk needs to know the sizes of all the other chunks. A loop across all processors should be used to perform these calls.
+<li>3) Write calls are independent.
+<li>4) Variables are not strictly parallel. Only one processor should write the data as race conditions apply, but see rule #1 for the create/open/close.
+</ul>
+
+<h3>Return codes</h3>
+
+<p>All TyphonIO routines are functions that return an exit code. The value of the return code can be used to check that the routine performed correctly, or if any errors occured.</p>
+
+</blockquote>
+
+<h2>TyphonIO Objects</h2>
+<hr noshade size="1">
+<blockquote>
+
+<h3>File</h3>
+<p>The file object is the root of all other objects and contains some metadata regarding the file's creation and purpose. An application can create State, Vargroup and Variable objects within the root File.</p>
+
+<h3>State</h3>
+<p>State objects are merely containers that holds all the associated data for the simulation at a particular state, ie. at a particular time or step. All meshes and mesh-based data for the State are stored below it and metadata variables specific to the State can also be added.</p>
+
+<h3>Mesh</h3>
+<p>Mesh object represent a mesh.  Multiple meshes can be created within a single State.  Data within the mesh and it's Material and Quant objects are centred - cell-centred, nodal-centred, edge (2/3D) or face (3D).</p>
+<table>
+<tr>
+  <td><b>Colinear Mesh</b><p>Rectangular and assumed connectivity.  Just contains axis coordinates.</p></td>
+  <td><img src="gfx/colinear.png" border="0" height="120" width="120"></td>
+</tr>
+<tr>
+  <td><b>Non-Colinear Mesh</b><p>Logicaly rectangular, but each node has i, j, k coordinates.  Still assumed connectivity.</td>
+  <td><img src="gfx/noncolinear.png" border="0" height="120" width="120"></td>
+</tr>
+<tr>
+  <td><b>Unstructured Mesh</b><p>Explicit connectivity and shapes defined.</p></td>
+  <td><img src="gfx/unstructured.png" border="0" height="120" width="120"><br><img src="gfx/connect.png" border="0" height="200" width="250"></td>
+</tr>
+<tr>
+  <td><b>Point Mesh</b><p>No connectivity graph.</p></td>
+  <td><img src="gfx/point.png" border="0" height="120" width="120"></td>
+</tr>
+</table>
+<p>Co-ordinate systems can be Cartesian, Spherical polar, cylindrical polar or axisymmetric (2D)</p>
+
+<h3>Material</h3>
+<p>This holds the mesh-wide Material values.  Also acts as an index to mixed data for all quantities.</p>
+<p><b>Mixed materials</b><img src="gfx/material.png" border="0" height="208" width="434" /></p>
+
+<h3>Quant</h3>
+<p>Any mesh-wide data that isn't the material can be stored as a Quant.</p>
+
+<h3>Variable</h3>
+<p>Variables are for holding any additional data that doesn't come under the remit of other objects or their metadata.  They can be created within any other TyphonIO object, but Variables cannot be created within other Variables.</p>
+<p>The value of an existing variable can be updated by simply opening the variable and re-writing it - it is not possible to change the datatype or dimensions of it though.</p>
+
+<h3>Vargroup</h3>
+<p>Vargroups (variable groups) are simple container objects that hold any number of Variables, or further Vargroup objects.  Variables do not necessarily have to be contained within Vargroups, but Vargroups are provided so the user can organise larger collections of Variables.  Vargroups can be can be created in any of the following objects: File, Vargroup, State, Mesh, Material, Quant.</p>
+
+<h3>Using Chunks and Sections</h3>
+<p>Chunks are indexed 0 to nchunks-1 for C and 1 to nchunks for Fortran90.</p>
+
+</blockquote>
+
+<h2>Using TyphonIO</h2>
+<hr noshade size="1">
+<blockquote>
+
+<h3>TyphonIO API</h3>
+<blockquote>
+<p>To use TyphonIO in C/C++ use the following:<pre>
+  #include "typhonIO.h"
+</pre></p>
+<p>and in Fortran use:<pre>
+  use typhonIO
+</pre></p>
+<p>Fortan and C/C++ APIs are kept as identical as possible, with the exception of "_f" being appended to F90 API routines .</p>
+<p>C indices start at 0, F90 at 1</p>
+</blockquote>
+
+
+<h3>TyphonIO Datatypes and parameters</h3>
+<p>
+TyphonIO does not allocate passed array types, the user must enusre passed arrays are allocated and large enough to hold the required data. When using list calls this may require the routine to be called twice, once to get nobj, and then again to get the names array once it has been allocated to hold nobj names.</p>
+<p><code>TIO_Open_*</code> routines can be use to perform speculative opens, i.e. attempting to open an object that may or may not exist and then checking the return code to check for success.
+</p>
+
+<h3>TyphonIO semantics</h3>
+<p></p>
+<table>
+<tr>
+  <td>Collective routines</td><td>&nbsp;&nbsp;&nbsp;</td><td>independent routines</td>
+</tr>
+<tr><td colspan="3"><hr noshade size="1"></td></tr>
+
+<tr valign="top">
+  <td><code>
+TIO_Create_*<br>
+TIO_Open_*<br>
+TIO_Close_*<br>
+TIO_Set_*_Chunk<br>
+TIO_Set_*_Range<br>
+TIO_Flush<br>
+  </code></td>
+
+  <td></td>
+
+  <td><code>
+TIO_CheckFile<br>
+TIO_IsFileOpen<br>
+TIO_Get_LibVersion<br>
+TIO_Get_FileVersion<br>
+TIO_SizeOf<br>
+TIO_Get_TypeClass<br>
+TIO_Get_*_Info<br>
+TIO_List_*<br>
+TIO_Get_*_Range<br>
+TIO_Get_nchunks<br>
+TIO_Get_*_Chunk<br>
+TIO_Set_Section<br>
+  </code></td>
+</tr>
+</table>
+</blockquote>
+
+
+<h2>Compiling and Linking</h2>
+<hr noshade size="1">
+<blockquote>
+<p>When compiling you simply need include the path of the TyphonIO include directory.</p>
+<p>When linking you will need to link to the TyphonIO library: typhonio for C and typhonio_f &amp; typhonio for F90. You will also need to link in the HDF5 library and any other that may be required (e.g. <code>-lz -lgpfs -lm</code>).</p>
+<p>Example compile and link lines are given below:</p>
+<p><pre>
+  TIODIR = /typhonIO/parallel
+  H5DIR  = /global/hdf5/parallel
+  
+  ftn -I$(TIODIR)/include myprog.f90 -c -o myprog.o
+  ftn myprog.o -L$(TIODIR)/lib -Ltyphonio_f typhonio -L$(H5DIR)/lib -lhdf5 -o myprog.x
+</pre>
+</p>
+</blockquote>
+
+
+
+<hr noshade size="1">
+
+
+</body>
+</html>

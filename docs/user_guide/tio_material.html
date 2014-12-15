@@ -1,0 +1,2785 @@
+<!--
+ Crown Copyright 2014 AWE.
+
+ This file is part of TyphonIO. 
+ Released under the BSD 3-clause license. 
+ For more details see license.txt
+-->
+
+<!-*-Mode: HTML;-*->
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+
+<html>
+
+<head>
+  <title>TyphonIO - Material routines</title>
+</head>
+
+<body>
+
+<h2>TyphonIO: Material Routines</h2>
+
+<p>   <!-- Explain mixed format here -->
+</p>
+
+<table width="99%" border="0" cellspacing="0">
+<tr><td width="10%"></td><td><table><tr valign="top">
+  <td>
+      <a href="#TIO_List_Material">TIO_List_Material</a><br>
+      <a href="#TIO_Create_Material">TIO_Create_Material</a><br>
+      <a href="#TIO_Open_Material">TIO_Open_Material</a><br>
+      <a href="#TIO_Get_Material_Info">TIO_Get_Material_Info</a><br>
+      <a href="#TIO_Close_Material">TIO_Close_Material</a><br>
+      <a href="#TIO_Set_Material_Range">TIO_Set_Material_Range</a><br>
+      <a href="#TIO_Get_Material_Range">TIO_Get_Material_Range</a><br>
+  </td>
+  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+  <td>
+      <a href="#TIO_Write_QuadMaterial_Chunk">TIO_Write_QuadMaterial_Chunk</a><br>
+      <a href="#TIO_Read_QuadMaterial_Chunk">TIO_Read_QuadMaterial_Chunk</a><br>
+      <a href="#TIO_Read_QuadMaterial_All">TIO_Read_QuadMaterial_All</a><br>
+      <a href="#TIO_Read_QuadMaterial_Section">TIO_Read_QuadMaterial_Section</a><br>
+  </td>
+  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+  <td>
+      <a href="#TIO_Write_UnstrMaterial_Chunk">TIO_Write_UnstrMaterial_Chunk</a><br>
+      <a href="#TIO_Read_UnstrMaterial_Chunk">TIO_Read_UnstrMaterial_Chunk</a><br>
+      <a href="#TIO_Read_UnstrMaterial_All">TIO_Read_UnstrMaterial_All</a><br>
+      <a href="#TIO_Read_UnstrMaterial_Section">TIO_Read_UnstrMaterial_Section</a><br>
+  </td>
+  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+  <td>
+      <a href="#TIO_Write_PointMaterial_Chunk">TIO_Write_PointMaterial_Chunk</a><br>
+      <a href="#TIO_Read_PointMaterial_Chunk">TIO_Read_PointMaterial_Chunk</a><br>
+      <a href="#TIO_Read_PointMaterial_All">TIO_Read_PointMaterial_All</a><br>
+      <a href="#TIO_Read_PointMaterial_Section">TIO_Read_PointMaterial_Section</a><br>
+  </td>
+
+</tr></table></td></tr>
+</table>
+
+<table width="99%" border="0" cellspacing="0">
+
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_List_Material">
+  <h2><br><code>TIO_List_Material</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Returns the materials object asociated with the mesh</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_List_Material( const TIO_File_t   fileID,
+                          const TIO_Object_t meshID,
+                          char               name[TIO_STRLEN] );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_List_Mat_f( fileID, meshID, name )
+
+   integer(kind=TIO_FILEK), intent(in)  :: fileID
+   integer(kind=TIO_OBJK),  intent(in)  :: meshID
+   character(len=*),        intent(out) :: name
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> meshID </code></td>
+  <td class="content"> TyphonIO Mesh ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> name   </code></td>
+  <td class="content"> The name of the TyphonIO Material</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Create_Material">
+  <h2><br><code>TIO_Create_Material</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Create a new material</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Create_Material( const TIO_File_t   fileID,
+                            const TIO_Object_t meshID,
+                            const char         name[],
+                            TIO_Object_t       *materialID,
+                            const TIO_Data_t   datatype,
+                            const TIO_Size_t   nmat,
+                            const TIO_Size_t   nghosts,
+                            const TIO_Bool_t   ismixed,
+                            const TIO_Data_t   ncomp_datatype,
+                            const TIO_Data_t   ptr_datatype,
+                            const TIO_Data_t   vf_datatype );
+ ncomp_datatype and ptr_datatype must be set to TIO_TYPECLASS_SIGNED_INT, vf_datatype must be set to TIO_TYPECLASS_FLOAT.
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Create_Mat_f( fileID, meshID, name, materialID,
+                                                   datatype, nmat, nghosts, ismixed,
+                                                   ncomp_datatype, ptr_datatype, vf_datatype )
+
+   integer(kind=TIO_FILEK), intent(in)           :: fileID
+   integer(kind=TIO_OBJK),  intent(in)           :: meshID
+   character(len=*),        intent(in)           :: name
+   integer(kind=TIO_OBJK),  intent(out)          :: materialID
+   integer(kind=TIO_IPK),   intent(in)           :: datatype
+   integer(kind=TIO_SIZEK), intent(in)           :: nmat, nghosts
+   logical(kind=TIO_LPK),   intent(in)           :: ismixed
+   integer(kind=TIO_IPK),   intent(in), optional :: ncomp_datatype, ptr_datatype, vf_datatype
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID         </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> meshID         </code></td>
+  <td class="content"> TyphonIO Mesh ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> name           </code></td>
+  <td class="content"> The material name</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> materialID     </code></td>
+  <td class="content"> The material id</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> datatype       </code></td>
+  <td class="content"> TyphonIO data type</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> nmat           </code></td>
+  <td class="content"> Number of materials</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> nghosts        </code></td>
+  <td class="content"> Number of ghosts</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> ismixed        </code></td>
+  <td class="content"> Whether the material can handle mixed data</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> ncomp_datatype </code></td>
+  <td class="content"> Datatype of num-component array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> ptr_datatype   </code></td>
+  <td class="content"> Datatype of mat-pointer array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> vf_datatype    </code></td>
+  <td class="content"> Datatype of volume-fraction array</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Open_Material">
+  <h2><br><code>TIO_Open_Material</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Open a mesh material</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Open_Material( const TIO_File_t   fileID,
+                          const TIO_Object_t meshID,
+                          const char         name[],
+                          TIO_Object_t       *materialID,
+                          TIO_Data_t         *datatype,
+                          TIO_Size_t         *nmat,
+                          TIO_Size_t         *nghosts,
+                          TIO_Bool_t         *ismixed,
+                          TIO_Data_t         *ncomp_datatype,
+                          TIO_Data_t         *ptr_datatype,
+                          TIO_Data_t         *vf_datatype );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Open_Mat_f( fileID, meshID, name, materialID,
+                                                 datatype, nmat, nghosts, ismixed,
+                                                 ncomp_datatype, ptr_datatype, vf_datatype )
+
+   integer(kind=TIO_FILEK),  intent(in)            :: fileID
+   integer(kind=TIO_OBJK),   intent(in)            :: meshID
+   character(len=*),         intent(in)            :: name
+   integer(kind=TIO_OBJK),   intent(out)           :: materialID
+   integer(kind=TIO_IPK),    intent(out), optional :: datatype
+   integer(kind=TIO_SIZEK),  intent(out), optional :: nmat, nghosts
+   logical(kind=TIO_LPK),    intent(out), optional :: ismixed
+   integer(kind=TIO_IPK),    intent(out), optional :: ncomp_datatype
+   integer(kind=TIO_IPK),    intent(out), optional :: ptr_datatype
+   integer(kind=TIO_IPK),    intent(out), optional :: vf_datatype
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID         </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> meshID         </code></td>
+  <td class="content"> TyphonIO Mesh ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> name           </code></td>
+  <td class="content"> The material name</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> materialID     </code></td>
+  <td class="content"> The material ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> datatype       </code></td>
+  <td class="content"> TyphonIO data type</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nmat           </code></td>
+  <td class="content"> Number of materials</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nghosts        </code></td>
+  <td class="content"> Number of ghosts</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ismixed        </code></td>
+  <td class="content"> Whether the material can handle mixed data</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ncomp_datatype </code></td>
+  <td class="content"> Datatype of num-component array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ptr_datatype   </code></td>
+  <td class="content"> Datatype of mat-pointer array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> vf_datatype    </code></td>
+  <td class="content"> Datatype of volume-fraction array</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Get_Material_Info">
+  <h2><br><code>TIO_Get_Material_Info</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Get material info for an open material.</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Get_Material_Info( const TIO_File_t   fileID,
+                              const TIO_Object_t materialID,
+                              char               name[],
+                              TIO_Data_t         *datatype,
+                              TIO_Size_t         *nmat,
+                              TIO_Size_t         *nghosts,
+                              TIO_Bool_t         *ismixed,
+                              TIO_Data_t         *ncomp_datatype,
+                              TIO_Data_t         *ptr_datatype,
+                              TIO_Data_t         *vf_datatype );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Get_Mat_Info_f( fileID, materialID, name,
+                                                     datatype, nmat, nghosts, ismixed,
+                                                     ncomp_datatype, ptr_datatype, vf_datatype )
+
+   integer(kind=TIO_FILEK), intent(in)            :: fileID
+   integer(kind=TIO_OBJK),  intent(in)            :: materialID
+   character(len=*),        intent(out), optional :: name
+   integer(kind=TIO_IPK),   intent(out), optional :: datatype
+   integer(kind=TIO_SIZEK), intent(out), optional :: nmat, nghosts
+   logical(kind=TIO_LPK),   intent(out), optional :: ismixed
+   integer(kind=TIO_IPK),   intent(out), optional :: ncomp_datatype
+   integer(kind=TIO_IPK),   intent(out), optional :: ptr_datatype
+   integer(kind=TIO_IPK),   intent(out), optional :: vf_datatype
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID         </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> materialID     </code></td>
+  <td class="content"> TyphonIO material ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> name           </code></td>
+  <td class="content"> The material name</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> datatype       </code></td>
+  <td class="content"> TyphonIO data type</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nmat           </code></td>
+  <td class="content"> Number of materials</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nghosts        </code></td>
+  <td class="content"> Number of ghosts</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ismixed        </code></td>
+  <td class="content"> Whether the material can handle mixed data</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ncomp_datatype </code></td>
+  <td class="content"> Datatype of num-component array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ptr_datatype   </code></td>
+  <td class="content"> Datatype of mat-pointer array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> vf_datatype    </code></td>
+  <td class="content"> Datatype of volume-fraction array</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Close_Material">
+  <h2><br><code>TIO_Close_Material</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Close the mesh material.</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Close_Material( const TIO_File_t   fileID,
+                           const TIO_Object_t materialID );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Close_Mat_f(fileID, materialID)
+
+   integer(kind=TIO_FILEK), intent(in) :: fileID
+   integer(kind=TIO_OBJK),  intent(in) :: materialID
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID     </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> materialID </code></td>
+  <td class="content"> TyphonIO material ID</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Set_Material_Range">
+  <h2><br><code>TIO_Set_Material_Range</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Sets the numerical and textual labels for the materials.</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Set_Material_Range( const TIO_File_t   fileID,
+                               const TIO_Object_t materialID,
+                               const TIO_Data_t   datatype,
+                               const TIO_Size_t   nmat,
+                               const void         *matnums,
+                               char               matnames[][TIO_STRLEN] );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Set_Mat_Range_f( fileID, materialID, datatype,
+                                                      nmat, matnums, matnames )
+
+   integer(kind=TIO_FILEK),        intent(in)           :: fileID
+   integer(kind=TIO_OBJK),         intent(in)           :: materialID
+   integer(kind=TIO_IPK),          intent(in)           :: datatype
+   integer(kind=TIO_SIZEK),        intent(in)           :: nmat
+   [INTEGER CHOICE], dimension(:), intent(in)           :: matnums
+   character(len=*), dimension(:), intent(in), optional :: matnames
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID     </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> materialID </code></td>
+  <td class="content"> TyphonIO material ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> datatype   </code></td>
+  <td class="content"> TyphonIO data type</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> nmat       </code></td>
+  <td class="content"> Number of materials (must match that used in TIO_Create_Material)</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> matnums    </code></td>
+  <td class="content"> The array of material numerical labels</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> matnames   </code></td>
+  <td class="content"> The array of material names</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Get_Material_Range">
+  <h2><br><code>TIO_Get_Material_Range</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Returns the numerical and textual labels for the materials.</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Get_Material_Range( const TIO_File_t   fileID,
+                               const TIO_Object_t materialID,
+                               const TIO_Data_t   datatype,
+                               TIO_Size_t         *nmat,
+                               void               *matnums,
+                               char               matnames[][TIO_STRLEN] );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Get_Mat_Range_f( fileID, materialID, datatype,
+                                                      nmat, matnums, matnames )
+
+   integer(kind=TIO_FILEK),        intent(in)            :: fileID
+   integer(kind=TIO_OBJK),         intent(in)            :: materialID
+   integer(kind=TIO_IPK),          intent(in)            :: datatype
+   integer(kind=TIO_SIZEK),        intent(out)           :: nmat
+   [INTEGER CHOICE], dimension(:), intent(out)           :: matnums
+   character(len=*), dimension(:), intent(out), optional :: matnames
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID     </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> materialID </code></td>
+  <td class="content"> TyphonIO material ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> datatype   </code></td>
+  <td class="content"> TyphonIO data type</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nmat       </code></td>
+  <td class="content"> Number of materials</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> matnums    </code></td>
+  <td class="content"> The array of material numerical labels</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> matnames   </code></td>
+  <td class="content"> The array of material names</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+  </td>
+</tr>
+
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Write_QuadMaterial_Chunk">
+  <h2><br><code>TIO_Write_QuadMaterial_Chunk</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Write to file the material data for a structured mesh chunk.</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Write_QuadMaterial_Chunk( const TIO_File_t   fileID,
+                                     const TIO_Object_t materialID,
+                                     const TIO_Size_t   idx,
+                                     const TIO_Xfer_t   xfer,
+                                     const TIO_Data_t   datatype,
+                                     const void         *mat,
+                                     const TIO_Data_t   ncomp_datatype,
+                                     const TIO_Data_t   ptr_datatype,
+                                     const TIO_Data_t   vf_datatype,
+                                     const void         *ncomp,
+                                     const void         *ptr,
+                                     const void         *mixmat,
+                                     const void         *vf );
+ ncomp_datatype and ptr_datatype must be set to TIO_TYPECLASS_SIGNED_INT, vf_datatype must be set to TIO_TYPECLASS_FLOAT.
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Write_QuadMat_Chunk_f( fileID, materialID, idx, xfer,
+                                                datatype, mat,
+                                                ncomp_datatype, ptr_datatype, vf_datatype,
+                                                ncomp, ptr, mixmat, vf  )
+
+   integer(kind=TIO_FILEK),        intent(in)           :: fileID
+   integer(kind=TIO_OBJK),         intent(in)           :: materialID
+   integer(kind=TIO_SIZEK),        intent(in)           :: idx
+   integer(kind=TIO_IPK),          intent(in)           :: xfer, datatype
+   [INTEGER CHOICE], [DIMENSION],  intent(in)           :: mat
+   integer(kind=TIO_IPK),          intent(in), optional :: ncomp_datatype, ptr_datatype, vf_datatype
+   [INTEGER CHOICE], dimension(:), intent(in), optional :: ncomp, ptr, mixmat
+   [REAL CHOICE],    dimension(:), intent(in), optional :: vf
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID         </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> materialID     </code></td>
+  <td class="content"> TyphonIO material ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> idx            </code></td>
+  <td class="content"> Chunk index</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> xfer           </code></td>
+  <td class="content"> Data transfer method</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> datatype       </code></td>
+  <td class="content"> TyphonIO data type</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> mat            </code></td>
+  <td class="content"> Mesh material data array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> ncomp_datatype </code></td>
+  <td class="content"> Datatype of num-component array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> ptr_datatype   </code></td>
+  <td class="content"> Datatype of mat-pointer array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> vf_datatype    </code></td>
+  <td class="content"> Datatype of volume-fraction array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> ncomp          </code></td>
+  <td class="content"> The mixed material num-component array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> ptr            </code></td>
+  <td class="content"> The mixed material mat-pointer array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> mixmat         </code></td>
+  <td class="content"> The mixed material mat-number array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> vf             </code></td>
+  <td class="content"> The mixed material volumn fraction array</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+    <p><b>Fortran90 Notes:</b><br>[INTEGER CHOICE] must be the same for mat and mixmat, but others can differ.</p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Read_QuadMaterial_Chunk">
+  <h2><br><code>TIO_Read_QuadMaterial_Chunk</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Read the material data for a structured mesh chunk.</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Read_QuadMaterial_Chunk( const TIO_File_t   fileID,
+                                    const TIO_Object_t materialID,
+                                    const TIO_Size_t   idx,
+                                    const TIO_Xfer_t   xfer,
+                                    const TIO_Data_t   datatype,
+                                    const TIO_Size_t   nghosts,
+                                    TIO_Dims_t         *ndims,
+                                    TIO_Size_t         *ni,
+                                    TIO_Size_t         *nj,
+                                    TIO_Size_t         *nk,
+                                    void               *mat,
+                                    const TIO_Data_t   ncomp_datatype,
+                                    const TIO_Data_t   ptr_datatype,
+                                    const TIO_Data_t   vf_datatype,
+                                    TIO_Size_t         *nmixcell,
+                                    TIO_Size_t         *nmixcomp,
+                                    void               *ncomp,
+                                    void               *ptr,
+                                    void               *mixmat,
+                                    void               *vf );
+ ncomp_datatype and ptr_datatype must be set to TIO_TYPECLASS_SIGNED_INT, vf_datatype must be set to TIO_TYPECLASS_FLOAT.
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Read_QuadMat_Chunk_f( fileID, materialID, idx, xfer,
+                             datatype, nghosts, ndims, ni, nj, nk, mat,
+                             ncomp_datatype, ptr_datatype, vf_datatype,
+                             nmixcell, nmixcomp,
+                             ncomp, ptr, mixmat, vf  )
+
+   integer(kind=TIO_FILEK),        intent(in)            :: fileID
+   integer(kind=TIO_OBJK),         intent(in)            :: materialID
+   integer(kind=TIO_SIZEK),        intent(in)            :: idx
+   integer(kind=TIO_IPK),          intent(in)            :: xfer, datatype
+   integer(kind=TIO_SIZEK),        intent(in)            :: nghosts
+   integer(kind=TIO_IPK),          intent(out)           :: ndims
+   integer(kind=TIO_SIZEK),        intent(out)           :: ni, nj, nk
+   [INTEGER CHOICE], [DIMENSION],  intent(out), optional :: mat
+   integer(kind=TIO_IPK),          intent(in),  optional :: ncomp_datatype
+   integer(kind=TIO_IPK),          intent(in),  optional :: ptr_datatype
+   integer(kind=TIO_IPK),          intent(in),  optional :: vf_datatype
+   integer(kind=TIO_SIZEK),        intent(out), optional :: nmixcell, nmixcomp
+   [INTEGER CHOICE], dimension(:), intent(out), optional :: ncomp, ptr
+   [INTEGER CHOICE], dimension(:), intent(out), optional :: mixmat
+   [REAL CHOICE],    dimension(:), intent(out), optional :: vf
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID         </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> materialID     </code></td>
+  <td class="content"> TyphonIO material ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> idx            </code></td>
+  <td class="content"> Chunk index</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> xfer           </code></td>
+  <td class="content"> Data transfer method</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> datatype       </code></td>
+  <td class="content"> TyphonIO data type</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> nghosts        </code></td>
+  <td class="content"> Number of ghosts</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ndims          </code></td>
+  <td class="content"> Number of dimensions</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ni             </code></td>
+  <td class="content"> Size of the mesh chunk in the 1st dimension</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nj             </code></td>
+  <td class="content"> Size of the mesh chunk in the 2nd dimension</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nk             </code></td>
+  <td class="content"> Size of the mesh chunk in the 3rd dimension</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> mat            </code></td>
+  <td class="content"> The material data array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> ncomp_datatype </code></td>
+  <td class="content"> Datatype of num-component array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> ptr_datatype   </code></td>
+  <td class="content"> Datatype of mat-pointer array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> vf_datatype    </code></td>
+  <td class="content"> Datatype of volume-fraction array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nmixcell       </code></td>
+  <td class="content"> Number of mixed cells</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nmixcomp       </code></td>
+  <td class="content"> Number of mixed components</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ncomp          </code></td>
+  <td class="content"> The mixed material num-component array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ptr            </code></td>
+  <td class="content"> The mixed material mat-pointer array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> mixmat         </code></td>
+  <td class="content"> The mixed material mat-number array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> vf             </code></td>
+  <td class="content"> The mixed material volumn fraction array</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Read_QuadMaterial_All">
+  <h2><br><code>TIO_Read_QuadMaterial_All</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Read the material data for a structured mesh.</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Read_QuadMaterial_All( const TIO_File_t   fileID,
+                                  const TIO_Object_t materialID,
+                                  const TIO_Data_t   datatype,
+                                  TIO_Dims_t         *ndims,
+                                  TIO_Size_t         *ni,
+                                  TIO_Size_t         *nj,
+                                  TIO_Size_t         *nk,
+                                  void               *mat,
+                                  const TIO_Data_t   ncomp_datatype,
+                                  const TIO_Data_t   ptr_datatype,
+                                  const TIO_Data_t   vf_datatype,
+                                  TIO_Size_t         *nmixcell,
+                                  TIO_Size_t         *nmixcomp,
+                                  void               *ncomp,
+                                  void               *ptr,
+                                  void               *mixmat,
+                                  void               *vf );
+ ncomp_datatype and ptr_datatype must be set to TIO_TYPECLASS_SIGNED_INT, vf_datatype must be set to TIO_TYPECLASS_FLOAT.
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Read_QuadMat_All_f( fileID, materialID, datatype,
+                             ndims, ni, nj, nk, mat,
+                             ncomp_datatype, ptr_datatype, vf_datatype,
+                             nmixcell, nmixcomp,
+                             ncomp, ptr, mixmat, vf )
+
+   integer(kind=TIO_FILEK),        intent(in)            :: fileID
+   integer(kind=TIO_OBJK),         intent(in)            :: materialID
+   integer(kind=TIO_IPK),          intent(in)            :: datatype
+   integer(kind=TIO_IPK),          intent(out)           :: ndims
+   integer(kind=TIO_SIZEK),        intent(out)           :: ni, nj, nk
+   [INTEGER CHOICE], [DIMENSION],  intent(out), optional :: mat
+   integer(kind=TIO_IPK),          intent(in),  optional :: ncomp_datatype
+   integer(kind=TIO_IPK),          intent(in),  optional :: ptr_datatype
+   integer(kind=TIO_IPK),          intent(in),  optional :: vf_datatype
+   integer(kind=TIO_SIZEK),        intent(out), optional :: nmixcell, nmixcomp
+   [INTEGER CHOICE], dimension(:), intent(out), optional :: ncomp, ptr
+   [INTEGER CHOICE], dimension(:), intent(out), optional :: mixmat
+   [REAL CHOICE],    dimension(:), intent(out), optional :: vf
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID         </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> materialID     </code></td>
+  <td class="content"> TyphonIO mesh ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> datatype       </code></td>
+  <td class="content"> TyphonIO data type</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ndims          </code></td>
+  <td class="content"> Number of dimensions</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ni             </code></td>
+  <td class="content"> Size of the mesh chunk in the 1st dimension</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nj             </code></td>
+  <td class="content"> Size of the mesh chunk in the 2nd dimension</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nk             </code></td>
+  <td class="content"> Size of the mesh chunk in the 3rd dimension</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> mat            </code></td>
+  <td class="content"> The material data array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> ncomp_datatype </code></td>
+  <td class="content"> Datatype of num-component array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> ptr_datatype   </code></td>
+  <td class="content"> Datatype of mat-pointer array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> vf_datatype    </code></td>
+  <td class="content"> Datatype of volume-fraction array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nmixcell       </code></td>
+  <td class="content"> Number of mixed cells</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nmixcomp       </code></td>
+  <td class="content"> Number of mixed components</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ncomp          </code></td>
+  <td class="content"> The mixed material num-component array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ptr            </code></td>
+  <td class="content"> The mixed material mat-pointer array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> mixmat         </code></td>
+  <td class="content"> The mixed material mat-number array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> vf             </code></td>
+  <td class="content"> The mixed material volumn fraction array</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Read_QuadMaterial_Section">
+  <h2><br><code>TIO_Read_QuadMaterial_Section</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Read the material data for a structured mesh section.</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Read_QuadMaterial_Section( const TIO_File_t   fileID,
+                                      const TIO_Object_t materialID,
+                                      const TIO_Object_t sectionID,
+                                      const TIO_Xfer_t   xfer,
+                                      const TIO_Data_t   datatype,
+                                      TIO_Dims_t         *ndims,
+                                      TIO_Size_t         *ni,
+                                      TIO_Size_t         *nj,
+                                      TIO_Size_t         *nk,
+                                      void               *mat,
+                                      const TIO_Data_t   ncomp_datatype,
+                                      const TIO_Data_t   ptr_datatype,
+                                      const TIO_Data_t   vf_datatype,
+                                      TIO_Size_t         *nmixcell,
+                                      TIO_Size_t         *nmixcomp,
+                                      void               *ncomp,
+                                      void               *ptr,
+                                      void               *mixmat,
+                                      void               *vf );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Read_QuadMat_Section_f( fileID, materialID, sectionID,
+                             xfer, datatype, ndims, ni, nj, nk, mat,
+                             ncomp_datatype, ptr_datatype, vf_datatype,
+                             nmixcell, nmixcomp, ncomp, ptr, mixmat, vf )
+
+   integer(kind=TIO_FILEK),        intent(in)            :: fileID
+   integer(kind=TIO_OBJK),         intent(in)            :: materialID, sectionID
+   integer(kind=TIO_IPK),          intent(in)            :: xfer, datatype
+   integer(kind=TIO_IPK),          intent(out)           :: ndims
+   integer(kind=TIO_SIZEK),        intent(out)           :: ni, nj, nk
+   [INTEGER CHOICE], [DIMENSION],  intent(out), optional :: mat
+   integer(kind=TIO_IPK),          intent(in),  optional :: ncomp_datatype
+   integer(kind=TIO_IPK),          intent(in),  optional :: ptr_datatype
+   integer(kind=TIO_IPK),          intent(in),  optional :: vf_datatype
+   integer(kind=TIO_SIZEK),        intent(out), optional :: nmixcell, nmixcomp
+   [INTEGER CHOICE], dimension(:), intent(out), optional :: ncomp, ptr
+   [INTEGER CHOICE], dimension(:), intent(out), optional :: mixmat
+   [REAL CHOICE],    dimension(:), intent(out), optional :: vf
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID         </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> materialID     </code></td>
+  <td class="content"> TyphonIO material ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> sectionID      </code></td>
+  <td class="content"> TyphonIO section ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> xfer           </code></td>
+  <td class="content"> Data transfer method</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> datatype       </code></td>
+  <td class="content"> TyphonIO data type</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ndims          </code></td>
+  <td class="content"> Number of dimensions</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ni             </code></td>
+  <td class="content"> Size of the mesh chunk in the 1st dimension</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nj             </code></td>
+  <td class="content"> Size of the mesh chunk in the 2nd dimension</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nk             </code></td>
+  <td class="content"> Size of the mesh chunk in the 3rd dimension</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> mat            </code></td>
+  <td class="content"> The material data array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> ncomp_datatype </code></td>
+  <td class="content"> Datatype of num-component array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> ptr_datatype   </code></td>
+  <td class="content"> Datatype of mat-pointer array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> vf_datatype    </code></td>
+  <td class="content"> Datatype of volume-fraction array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nmixcell       </code></td>
+  <td class="content"> Number of mixed cells</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nmixcomp       </code></td>
+  <td class="content"> Number of mixed components</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ncomp          </code></td>
+  <td class="content"> The mixed material num-component array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ptr            </code></td>
+  <td class="content"> The mixed material mat-pointer array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> mixmat         </code></td>
+  <td class="content"> The mixed material mat-number array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> vf             </code></td>
+  <td class="content"> The mixed material volumn fraction array</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+  </td>
+</tr>
+
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Write_UnstrMaterial_Chunk">
+  <h2><br><code>TIO_Write_UnstrMaterial_Chunk</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Write an unstructured mesh chunk's material data.</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Write_UnstrMaterial_Chunk( const TIO_File_t   fileID,
+                                      const TIO_Object_t materialID,
+                                      const TIO_Size_t   idx,
+                                      const TIO_Xfer_t   xfer,
+                                      const TIO_Data_t   datatype,
+                                      const void         *mat,
+                                      const TIO_Data_t   ncomp_datatype,
+                                      const TIO_Data_t   ptr_datatype,
+                                      const TIO_Data_t   vf_datatype,
+                                      const void         *ncomp,
+                                      const void         *ptr,
+                                      const void         *mixmat,
+                                      const void         *vf );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Write_UnstrMat_Chunk_f( fileID, materialID, idx, xfer,
+                             datatype, mat,
+                             ncomp_datatype, ptr_datatype, vf_datatype,
+                             ncomp, ptr, mixmat, vf )
+
+   integer(kind=TIO_FILEK),        intent(in)           :: fileID
+   integer(kind=TIO_OBJK),         intent(in)           :: materialID
+   integer(kind=TIO_SIZEK),        intent(in)           :: idx
+   integer(kind=TIO_IPK),          intent(in)           :: xfer, datatype
+   [INTEGER CHOICE], dimension(:), intent(in)           :: mat
+   integer(kind=TIO_IPK),          intent(in), optional :: ncomp_datatype
+   integer(kind=TIO_IPK),          intent(in), optional :: ptr_datatype
+   integer(kind=TIO_IPK),          intent(in), optional :: vf_datatype
+   [INTEGER CHOICE], dimension(:), intent(in), optional :: ncomp, ptr, mixmat
+   [REAL CHOICE],    dimension(:), intent(in), optional :: vf
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID         </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> materialID     </code></td>
+  <td class="content"> TyphonIO material ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> idx            </code></td>
+  <td class="content"> Chunk index</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> xfer           </code></td>
+  <td class="content"> Data transfer method</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> datatype       </code></td>
+  <td class="content"> TyphonIO data type</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> mat            </code></td>
+  <td class="content"> Material data array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> ncomp_datatype </code></td>
+  <td class="content"> Datatype of num-component array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> ptr_datatype   </code></td>
+  <td class="content"> Datatype of mat-pointer array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> vf_datatype    </code></td>
+  <td class="content"> Datatype of volume-fraction array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> ncomp          </code></td>
+  <td class="content"> The mixed material num-component array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> ptr            </code></td>
+  <td class="content"> The mixed material mat-pointer array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> mixmat         </code></td>
+  <td class="content"> The mixed material mat-number array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> vf             </code></td>
+  <td class="content"> The mixed material volumn fraction array</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Read_UnstrMaterial_Chunk">
+  <h2><br><code>TIO_Read_UnstrMaterial_Chunk</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Read an unstructured mesh chunk's material data.</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Read_UnstrMaterial_Chunk( const TIO_File_t   fileID,
+                                     const TIO_Object_t materialID,
+                                     const TIO_Size_t   idx,
+                                     const TIO_Xfer_t   xfer,
+                                     const TIO_Data_t   datatype,
+                                     const TIO_Size_t   nghosts,
+                                     TIO_Size_t         *ncells,
+                                     void               *mat,
+                                     const TIO_Data_t   ncomp_datatype,
+                                     const TIO_Data_t   ptr_datatype,
+                                     const TIO_Data_t   vf_datatype,
+                                     TIO_Size_t         *nmixcell,
+                                     TIO_Size_t         *nmixcomp,
+                                     void               *ncomp,
+                                     void               *ptr,
+                                     void               *mixmat,
+                                     void               *vf );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Read_UnstrMat_Chunk_f( fileID, materialID, idx, xfer,
+                             datatype, nghosts, ncells, mat,
+                             ncomp_datatype, ptr_datatype, vf_datatype,
+                             nmixcell, nmixcomp, ncomp, ptr, mixmat, vf )
+
+   integer(kind=TIO_FILEK),        intent(in)            :: fileID
+   integer(kind=TIO_OBJK),         intent(in)            :: materialID
+   integer(kind=TIO_SIZEK),        intent(in)            :: idx
+   integer(kind=TIO_IPK),          intent(in)            :: xfer, datatype
+   integer(kind=TIO_SIZEK),        intent(in)            :: nghosts
+   integer(kind=TIO_SIZEK),        intent(out)           :: ncells
+   [INTEGER CHOICE], dimension(:), intent(out)           :: mat
+   integer(kind=TIO_IPK),          intent(in),  optional :: ncomp_datatype, ptr_datatype, vf_datatype
+   integer(kind=TIO_SIZEK),        intent(out), optional :: nmixcell, nmixcomp
+   [INTEGER CHOICE], dimension(:), intent(out), optional :: ncomp, ptr
+   [INTEGER CHOICE], dimension(:), intent(out), optional :: mixmat
+   [REAL CHOICE],    dimension(:), intent(out), optional :: vf
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID         </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> materialID     </code></td>
+  <td class="content"> TyohonIO material ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> idx            </code></td>
+  <td class="content"> Chunk index</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> xfer           </code></td>
+  <td class="content"> Data transfer method</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> datatype       </code></td>
+  <td class="content"> TyphonIO data type</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> nghosts        </code></td>
+  <td class="content"> Number of ghosts</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ncells         </code></td>
+  <td class="content"> Number of cells</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> mat            </code></td>
+  <td class="content"> Material data array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> ncomp_datatype </code></td>
+  <td class="content"> Datatype of num-component array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> ptr_datatype   </code></td>
+  <td class="content"> Datatype of mat-pointer array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> vf_datatype    </code></td>
+  <td class="content"> Datatype of volume-fraction array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nmixcell       </code></td>
+  <td class="content"> Number of mixed cells</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nmixcomp       </code></td>
+  <td class="content"> Number of mixed components</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ncomp          </code></td>
+  <td class="content"> The mixed material num-component array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ptr            </code></td>
+  <td class="content"> The mixed material mat-pointer array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> mixmat         </code></td>
+  <td class="content"> The mixed material mat-number array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> vf             </code></td>
+  <td class="content"> The mixed material volumn fraction array</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Read_UnstrMaterial_All">
+  <h2><br><code>TIO_Read_UnstrMaterial_All</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Read all the material data for an unstructured mesh.</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Read_UnstrMaterial_All( const TIO_File_t   fileID,
+                                   const TIO_Object_t materialID,
+                                   const TIO_Data_t   datatype,
+                                   TIO_Size_t         *ncells,
+                                   void               *mat,
+                                   const TIO_Data_t   ncomp_datatype,
+                                   const TIO_Data_t   ptr_datatype,
+                                   const TIO_Data_t   vf_datatype,
+                                   TIO_Size_t         *nmixcell,
+                                   TIO_Size_t         *nmixcomp,
+                                   void               *ncomp,
+                                  void               *ptr,
+                                   void               *mixmat,
+                                   void               *vf );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Read_UnstrMat_All_f( fileID, materialID, datatype,
+                             ncells, mat,
+                             ncomp_datatype, ptr_datatype, vf_datatype,
+                             nmixcell, nmixcomp, ncomp, ptr, mixmat, vf )
+
+   integer(kind=TIO_FILEK),        intent(in)            :: fileID
+   integer(kind=TIO_OBJK),         intent(in)            :: materialID
+   integer(kind=TIO_IPK),          intent(in)            :: datatype
+   integer(kind=TIO_SIZEK),        intent(out)           :: ncells
+   [INTEGER CHOICE], dimension(:), intent(out)           :: mat
+   integer(kind=TIO_IPK),          intent(in),  optional :: ncomp_datatype, ptr_datatype, vf_datatype
+   integer(kind=TIO_SIZEK),        intent(out), optional :: nmixcell, nmixcomp
+   [INTEGER CHOICE], dimension(:), intent(out), optional :: ncomp, ptr
+   [INTEGER CHOICE], dimension(:), intent(out), optional :: mixmat
+   [REAL CHOICE],    dimension(:), intent(out), optional :: vf
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID         </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> materialID     </code></td>
+  <td class="content"> TyphonIO material ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> datatype       </code></td>
+  <td class="content"> TyphonIO data type</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ncells         </code></td>
+  <td class="content"> Number of cells</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> mat            </code></td>
+  <td class="content"> Material data array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> ncomp_datatype </code></td>
+  <td class="content"> Datatype of num-component array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> ptr_datatype   </code></td>
+  <td class="content"> Datatype of mat-pointer array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> vf_datatype    </code></td>
+  <td class="content"> Datatype of volume-fraction array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nmixcell       </code></td>
+  <td class="content"> Number of mixed cells</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nmixcomp       </code></td>
+  <td class="content"> Number of mixed components</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ncomp          </code></td>
+  <td class="content"> The mixed material num-component array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ptr            </code></td>
+  <td class="content"> The mixed material mat-pointer array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> mixmat         </code></td>
+  <td class="content"> The mixed material mat-number array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> vf             </code></td>
+  <td class="content"> The mixed material volumn fraction array</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Read_UnstrMaterial_Section">
+  <h2><br><code>TIO_Read_UnstrMaterial_Section</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Read a unstructured mesh section's material data.</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Read_UnstrMaterial_Section( const TIO_File_t   fileID,
+                                       const TIO_Object_t materialID,
+                                       const TIO_Object_t sectionID,
+                                       const TIO_Xfer_t   xfer,
+                                       const TIO_Data_t   datatype,
+                                       TIO_Size_t         *ncells,
+                                       void               *mat,
+                                       const TIO_Data_t   ncomp_datatype,
+                                       const TIO_Data_t   ptr_datatype,
+                                       const TIO_Data_t   vf_datatype,
+                                       TIO_Size_t         *nmixcell,
+                                       TIO_Size_t         *nmixcomp,
+                                       void               *ncomp,
+                                       void               *ptr,
+                                       void               *mixmat,
+                                       void               *vf );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Read_UnstrMat_Section_f( fileID, materialID, sectionID,
+                             xfer, datatype, ncells, mat,
+                             ncomp_datatype, ptr_datatype, vf_datatype,
+                             nmixcell, nmixcomp, ncomp, ptr, mixmat, vf  )
+
+   integer(kind=TIO_FILEK),        intent(in)            :: fileID
+   integer(kind=TIO_OBJK),         intent(in)            :: materialID
+   integer(kind=TIO_OBJK),         intent(in)            :: sectionID
+   integer(kind=TIO_IPK),          intent(in)            :: xfer
+   integer(kind=TIO_IPK),          intent(in)            :: datatype
+   integer(kind=TIO_SIZEK),        intent(out)           :: ncells
+   [INTEGER CHOICE], dimension(:), intent(out), optional :: mat
+   integer(kind=TIO_IPK),          intent(in),  optional :: ncomp_datatype
+   integer(kind=TIO_IPK),          intent(in),  optional :: ptr_datatype
+   integer(kind=TIO_IPK),          intent(in),  optional :: vf_datatype
+   integer(kind=TIO_SIZEK),        intent(out), optional :: nmixcell, nmixcomp
+   [INTEGER CHOICE], dimension(:), intent(out), optional :: ncomp, ptr, mixmat
+   [REAL CHOICE],    dimension(:), intent(out), optional :: vf
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID         </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> materialID     </code></td>
+  <td class="content"> TyphonIO material ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> sectionID      </code></td>
+  <td class="content"> TyphonIO section ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> xfer           </code></td>
+  <td class="content"> Data transfer method</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> datatype       </code></td>
+  <td class="content"> TyphonIO data type</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ncells         </code></td>
+  <td class="content"> Number of cells</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> mat            </code></td>
+  <td class="content"> Material data array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> ncomp_datatype </code></td>
+  <td class="content"> Datatype of num-component array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> ptr_datatype   </code></td>
+  <td class="content"> Datatype of mat-pointer array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> vf_datatype    </code></td>
+  <td class="content"> Datatype of volume-fraction array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nmixcell       </code></td>
+  <td class="content"> Number of mixed cells</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nmixcomp       </code></td>
+  <td class="content"> Number of mixed components</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ncomp          </code></td>
+  <td class="content"> The mixed material num-component array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ptr            </code></td>
+  <td class="content"> The mixed material mat-pointer array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> mixmat         </code></td>
+  <td class="content"> The mixed material mat-number array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> vf             </code></td>
+  <td class="content"> The mixed material volumn fraction array</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+  </td>
+</tr>
+
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Write_PointMaterial_Chunk">
+  <h2><br><code>TIO_Write_PointMaterial_Chunk</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Write a point mesh chunk's material data.</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Write_PointMaterial_Chunk( const TIO_File_t   fileID,
+                                      const TIO_Object_t materialID,
+                                      const TIO_Size_t   idx,
+                                      const TIO_Xfer_t   xfer,
+                                      const TIO_Data_t   datatype,
+                                      const void         *mat );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Write_PointMat_Chunk_f( fileID, materialID, idx, xfer,
+                                                             datatype, mat )
+
+   integer(kind=TIO_FILEK),        intent(in) :: fileID
+   integer(kind=TIO_OBJK),         intent(in) :: materialID
+   integer(kind=TIO_SIZEK),        intent(in) :: idx
+   integer(kind=TIO_IPK),          intent(in) :: xfer, datatype
+   [INTEGER CHOICE], dimension(:), intent(in) :: mat
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID     </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> materialID </code></td>
+  <td class="content"> TyphonIO material ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> idx        </code></td>
+  <td class="content"> Chunk index</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> xfer       </code></td>
+  <td class="content"> Data transfer method</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> datatype   </code></td>
+  <td class="content"> TyphonIO data type</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> mat        </code></td>
+  <td class="content"> Material data array</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Read_PointMaterial_Chunk">
+  <h2><br><code>TIO_Read_PointMaterial_Chunk</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Read a chunks material data for a point mesh.</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Read_PointMaterial_Chunk( const TIO_File_t   fileID,
+                                     const TIO_Object_t materialID,
+                                     const TIO_Size_t   idx,
+                                     const TIO_Xfer_t   xfer,
+                                     const TIO_Data_t   datatype,
+                                     const TIO_Size_t   nghosts,
+                                     TIO_Size_t         *nnodes,
+                                     void               *mat );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Read_PointMat_Chunk_f( fileID, materialID, idx, xfer,
+                                                            datatype, nghosts, nnodes, mat )
+
+   integer(kind=TIO_FILEK),        intent(in)            :: fileID
+   integer(kind=TIO_OBJK),         intent(in)            :: materialID
+   integer(kind=TIO_SIZEK),        intent(in)            :: idx
+   integer(kind=TIO_IPK),          intent(in)            :: xfer, datatype
+   integer(kind=TIO_SIZEK),        intent(in)            :: nghosts
+   integer(kind=TIO_SIZEK),        intent(out)           :: nnodes
+   [INTEGER CHOICE], dimension(:), intent(out), optional :: mat
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID     </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> materialID </code></td>
+  <td class="content"> TyphonIO material ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> idx        </code></td>
+  <td class="content"> Chunk index</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> xfer       </code></td>
+  <td class="content"> Data transfer method</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> datatype   </code></td>
+  <td class="content"> TyphonIO data type</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> nghosts    </code></td>
+  <td class="content"> Number of ghosts</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nnodes     </code></td>
+  <td class="content"> Number of nodes</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> mat        </code></td>
+  <td class="content"> Material data array</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Read_PointMaterial_All">
+  <h2><br><code>TIO_Read_PointMaterial_All</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Read all the material data for a point mesh.</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Read_PointMaterial_All( const TIO_File_t   fileID,
+                                   const TIO_Object_t materialID,
+                                   const TIO_Data_t   datatype,
+                                   TIO_Size_t         *nnodes,
+                                   void               *mat );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Read_PointMat_All_f( fileID, materialID, datatype,
+                                                          nnodes, mat )
+
+   integer(kind=TIO_FILEK),        intent(in)            :: fileID
+   integer(kind=TIO_OBJK),         intent(in)            :: materialID
+   integer(kind=TIO_IPK),          intent(in)            :: datatype
+   integer(kind=TIO_SIZEK),        intent(out)           :: nnodes
+   [INTEGER CHOICE], dimension(:), intent(out), optional :: mat
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID     </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> materialID </code></td>
+  <td class="content"> TyphonIO material ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> datatype   </code></td>
+  <td class="content"> TyphonIO data type</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nnodes     </code></td>
+  <td class="content"> Number of nodes</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> mat        </code></td>
+  <td class="content"> Material data array</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Read_PointMaterial_Section">
+  <h2><br><code>TIO_Read_PointMaterial_Section</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Read a point mesh material section.</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Read_PointMaterial_Section( const TIO_File_t   fileID,
+                                       const TIO_Object_t materialID,
+                                       const TIO_Object_t sectionID,
+                                       const TIO_Xfer_t   xfer,
+                                       const TIO_Data_t   datatype,
+                                       TIO_Size_t         *nnodes,
+                                       void               *mat );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Read_PointMat_Section_f( fileID, materialID, sectionID,
+                             xfer, datatype, nnodes, mat )
+
+   integer(kind=TIO_FILEK),        intent(in)            :: fileID
+   integer(kind=TIO_OBJK),         intent(in)            :: materialID
+   integer(kind=TIO_OBJK),         intent(in)            :: sectionID
+   integer(kind=TIO_IPK),          intent(in)            :: xfer
+   integer(kind=TIO_IPK),          intent(in)            :: datatype
+   integer(kind=TIO_SIZEK),        intent(out)           :: nnodes
+   [INTEGER CHOICE], dimension(:), intent(out), optional :: mat
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID     </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> materialID </code></td>
+  <td class="content"> TyphonIO material ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> sectionID  </code></td>
+  <td class="content"> TyphonIO section ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> xfer       </code></td>
+  <td class="content"> Data transfer method</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> datatype   </code></td>
+  <td class="content"> TyphonIO data type</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nnodes     </code></td>
+  <td class="content"> Number of nodes</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> mat        </code></td>
+  <td class="content"> Material data array</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+  </td>
+</tr>
+
+<tr valign="baseline">
+  <td colspan="5"><hr noshade size="1"></td>
+</tr>
+
+</table>
+
+</body>
+</html>

@@ -1,0 +1,143 @@
+#-*-Mode: F90;-*-  emacs mode specifier
+# vim: filetype=fortran
+
+# tunit: def TIO_CHECK( expr ): return "ierr = %s;\n    ASSERT(TIO_SUCCESS_F, ierr)" % expr
+# tunit: def TIO_CHECK_FALSE( expr ): return "ierr = %s;\n    ASSERT_NOT_EQUAL(TIO_SUCCESS_F, ierr)" % expr
+
+SUITE( 'VarGroup', 'typhonio' )
+
+#=======================================================================================================================
+
+TEST ( 'TIO_List_Vargroups_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_vargroup.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_SIZEK) :: nobj
+  character(len=TIO_STRLEN_F), dimension(3) :: names
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  
+  TIO_CHECK( TIO_List_Vargroups_f(file_id, state_id, nobj=nobj) )
+  
+  ASSERT( 3, nobj )
+  
+  TIO_CHECK( TIO_List_Vargroups_f(file_id, state_id, names=names) )
+  
+  ASSERT( (/ "VarGroup1", "VarGroup2", "VarGroup3" /), names )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Create_Vargroup_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "tio_create_vargroup.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: vargroup_id
+
+  TIO_CHECK( TIO_Create_f(file_name, file_id, TIO_ACC_REPLACE_F, "TestCode", "V0.0", "01-01-2000", "Test Title") )
+  TIO_CHECK( TIO_Create_State_f( file_id, "State1", state_id, 1, 0.0_TIO_TIMEK, "seconds" ) )
+
+  TIO_CHECK( TIO_Create_Vargroup_f(file_id, state_id, "VarGroup1", vargroup_id) )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Open_Vargroup_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_vargroup.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: vargroup_id
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  
+  TIO_CHECK( TIO_Open_Vargroup_f(file_id, state_id, "VarGroup1", vargroup_id) )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Open_Vargroup_idx_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_vargroup.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  character(len=TIO_STRLEN_F) :: vargroup_name
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: vargroup_id
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  
+  TIO_CHECK( TIO_Open_Vargroup_idx_f(file_id, state_id, 1, vargroup_name, vargroup_id) )
+  
+  ASSERT( "VarGroup1", vargroup_name )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Get_Vargroup_Info_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_vargroup.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  character(len=TIO_STRLEN_F) :: vargroup_name
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: vargroup_id
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  
+  TIO_CHECK( TIO_Open_Vargroup_f(file_id, state_id, "VarGroup1", vargroup_id) )
+  
+  TIO_CHECK( TIO_Get_Vargroup_Info_f(file_id, vargroup_id, vargroup_name) )
+  
+  ASSERT( "VarGroup1", vargroup_name )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Close_Vargroup_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_vargroup.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: vargroup_id
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  
+  TIO_CHECK( TIO_Open_Vargroup_f(file_id, state_id, "VarGroup1", vargroup_id) )
+  
+  TIO_CHECK( TIO_Close_Vargroup_f(file_id, vargroup_id) )
+)
+
+#=======================================================================================================================

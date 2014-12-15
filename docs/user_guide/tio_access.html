@@ -1,0 +1,872 @@
+<!--
+ Crown Copyright 2014 AWE.
+
+ This file is part of TyphonIO. 
+ Released under the BSD 3-clause license. 
+ For more details see license.txt
+-->
+
+<!-*-Mode: HTML;-*->
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+
+<html>
+
+<head>
+  <title>TyphonIO - Access routines</title>
+</head>
+
+<body>
+
+<h2>TyphonIO: Access Routines</h2>
+
+<p>The Access Routines provide the file creation, open, flush and close.  Additional routines are provided that allow the application to perform enquiries on the file, TyphonIO library and datatypes.</p>
+
+<table width="99%" border="0" cellspacing="0">
+<tr><td width="10%"></td><td><table><tr valign="top">
+  <td>
+      <a href="#TIO_Create">TIO_Create</a><br>
+      <a href="#TIO_Open">TIO_Open</a><br>
+      <a href="#TIO_Get_File_Info">TIO_Get_File_Info</a><br>
+      <a href="#TIO_Close">TIO_Close</a><br>
+      <a href="#TIO_Flush">TIO_Flush</a><br>
+  </td>
+  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+  <td>
+      <a href="#TIO_CheckFile">TIO_CheckFile</a><br>
+      <a href="#TIO_IsFileOpen">TIO_IsFileOpen</a><br>
+      <a href="#TIO_Get_LibVersion">TIO_Get_LibVersion</a><br>
+      <a href="#TIO_Get_FileVersion">TIO_Get_FileVersion</a><br>
+  </td>
+  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+  <td>
+      <a href="#TIO_SizeOf">TIO_SizeOf</a><br>
+      <a href="#TIO_Get_TypeClass">TIO_Get_TypeClass</a><br>
+  </td>
+</tr></table></td></tr>
+</table>
+
+<table width="99%" border="0" cellspacing="0">
+
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Create">
+  <h2><br><code>TIO_Create</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Creates a new TyphonIO file</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Create( const char         filename[],
+                   TIO_File_t         *fileID,
+                   const TIO_Access_t access,
+                   const char         codename[],
+                   const char         version[],
+                   const char         date[],
+                   const char         title[],
+                   const MPI_Comm     comm,
+                   const MPI_Info     info,
+                   const int          rank );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Create_f( filename, fileID, access,
+                                               codename, version, date, title,
+                                               comm, info, rank )
+  
+   character(len=*),        intent(in)           :: filename
+   integer(kind=TIO_FILEK), intent(out)          :: fileID
+   integer,                 intent(in)           :: access
+   character(len=*),        intent(in)           :: codename
+   character(len=*),        intent(in)           :: version
+   character(len=*),        intent(in)           :: date
+   character(len=*),        intent(in)           :: title
+   integer,                 intent(in), optional :: comm, info, rank
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> filename </code></td>
+  <td class="content"> Relative or absolute path of file</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> fileID   </code></td>
+  <td class="content"> TyphonIO fileID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> access   </code></td>
+  <td class="content"> Access mode parameter</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> codename </code></td>
+  <td class="content"> Name string of the application</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> version  </code></td>
+  <td class="content"> Version string of the application</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> date     </code></td>
+  <td class="content"> Date string</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> title    </code></td>
+  <td class="content"> Title for the dump in the file</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> comm     </code></td>
+  <td class="content"> MPI communicator handle</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> info     </code></td>
+  <td class="content"> MPI info handle</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> rank     </code></td>
+  <td class="content"> MPI rank of calling process within comm</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p>Creates a new TyphonIO file or replaces an existing one as specfied with the
+<code>access</code> parameter:
+<blockquote>
+<code>access = TIO_ACC_CREATE </code> - if a file already exists, create will fail<br>
+<code>access = TIO_ACC_REPLACE</code> - any existing file is truncated
+</blockquote>
+If not using parallel TyphonIO <code>comm</code>, <code>info</code> and <code>rank</code>
+can be given null values, with <code>TIO_NULL</code> or the MPI built-in null values
+<code>MPI_COMM_NULL</code>, <code>MPI_INFO_NULL</code> and <code>MPI_PROC_NULL</code>
+respectively.  These null values are provided by TyphonIO if MPI hasn't been included.
+
+<br><br>For parallel TyphonIO, the <code>comm</code>, <code>info</code> and <code>rank</code>
+must be valid MPI handles for the communicator, info object and process rank.  The
+communicator is not duplicated by TyphonIO, so the user may wish to do this before
+calling.  The <code>info</code> object can be <code>MPI_INFO_NULL</code>, but the user
+may wish to create an info object that contains MPI-IO hints to improve performance.
+The <code>rank</code> must be the value given by <code>MPI_Comm_rank</code>
+for the process within the given communicator.
+
+<br><br>Must be called collectively.</p>
+    <p><b>Fortran90 Notes:</b><br>When using the parallel TyphonIO library, <code>comm</code>, <code>info</code>
+and <code>rank</code> are not optional</p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Open">
+  <h2><br><code>TIO_Open</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Opens an existing TyphonIO file</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Open( const char         filename[],
+                 TIO_File_t         *fileID,
+                 const TIO_Access_t access,
+                 char               codename[],
+                 char               version[],
+                 char               date[],
+                 char               title[],
+                 const MPI_Comm     comm,
+                 const MPI_Info     info,
+                 const int          rank );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Open_f( filename, fileID, access,
+                                             codename, version, date, title,
+                                             comm, info, rank )
+  
+   character(len=*),        intent(in)           :: filename
+   integer(kind=TIO_FILEK), intent(out)          :: fileID
+   integer,                 intent(in)           :: access
+   character(len=*),        intent(inout)        :: codename
+   character(len=*),        intent(inout)        :: version
+   character(len=*),        intent(inout)        :: date
+   character(len=*),        intent(inout)        :: title
+   integer,                 intent(in), optional :: comm, info, rank
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN    </td>
+  <td class="content"><code> filename </code></td>
+  <td class="content"> Relative or absolute path of file</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT   </td>
+  <td class="content"><code> fileID   </code></td>
+  <td class="content"> TyphonIO fileID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN    </td>
+  <td class="content"><code> access   </code></td>
+  <td class="content"> Access mode parameter</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">INOUT </td>
+  <td class="content"><code> codename </code></td>
+  <td class="content"> Name string of the application</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">INOUT </td>
+  <td class="content"><code> version  </code></td>
+  <td class="content"> Version string of the application</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">INOUT </td>
+  <td class="content"><code> date     </code></td>
+  <td class="content"> Date string</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">INOUT </td>
+  <td class="content"><code> title    </code></td>
+  <td class="content"> Title for the dump in the file</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN    </td>
+  <td class="content"><code> comm     </code></td>
+  <td class="content"> MPI communicator handle</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN    </td>
+  <td class="content"><code> info     </code></td>
+  <td class="content"> MPI info handle</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN    </td>
+  <td class="content"><code> rank     </code></td>
+  <td class="content"> MPI rank of calling process within comm</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p>Opens an exisiting TyphonIO file for reading and/or appending.
+<blockquote>
+<code>access = TIO_ACC_READWRITE</code> - open for read and write access<br>
+<code>access = TIO_ACC_READONLY </code> - opens for read access only<br>
+<code>access = TIO_ACC_READWRITESTRICT </code> - opens for read and write without
+overwriting the initial info.
+</blockquote>
+The <code>codename</code>, <code>version</code>, <code>date</code> and <code>title</code>
+values are used to update the values in the file in <code>READWRITE</code> mode, but are
+just read in <code>READONLY</code>.
+
+<br><br>If not using parallel TyphonIO <code>comm</code>, <code>info</code> and <code>rank</code>
+can be given null values, with <code>TIO_NULL</code> or the MPI built-in null values
+<code>MPI_COMM_NULL</code>, <code>MPI_INFO_NULL</code> and <code>MPI_PROC_NULL</code>
+respectively.  These null values are provided by TyphonIO if MPI hasn't been included.
+
+<br><br>For parallel TyphonIO, the <code>comm</code>, <code>info</code> and <code>rank</code>
+must be valid MPI handles for the communicator, info object and process rank.  The
+communicator is not duplicated by TyphonIO, so the user may wish to do this before
+calling.  The <code>info</code> object can be <code>MPI_INFO_NULL</code>, but the user
+may wish to create an info object that contains MPI-IO hints to improve performance.
+The <code>rank</code> must be the value given by <code>MPI_Comm_rank</code>
+for the process within the given communicator.
+
+<br><br>Must be called collectively.</p>
+    <p><b>Fortran90 Notes:</b><br>When using the parallel TyphonIO library, <code>comm</code>, <code>info</code>
+and <code>rank</code> are not optional</p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Get_File_Info">
+  <h2><br><code>TIO_Get_File_Info</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Gets the info for an open file</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Get_File_Info( const TIO_File_t fileID,
+                          char             filename[],
+                          char             codename[],
+                          char             version[],
+                          char             date[],
+                          char             title[] );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Get_File_Info_f( fileID, filename,
+                                                      codename, version, date, title )
+
+   integer(kind=TIO_FILEK), intent(in)            :: fileID
+   character(len=*),        intent(out), optional :: filename
+   character(len=*),        intent(out), optional :: codename
+   character(len=*),        intent(out), optional :: version
+   character(len=*),        intent(out), optional :: date
+   character(len=*),        intent(out), optional :: title
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID   </code></td>
+  <td class="content"> TyphonIO fileID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> filename </code></td>
+  <td class="content"> Relative or absolute path of file</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> codename </code></td>
+  <td class="content"> Name string of the application</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> version  </code></td>
+  <td class="content"> Version string of the application</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> date     </code></td>
+  <td class="content"> Date string</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> title    </code></td>
+  <td class="content"> Title for the dump in the file</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p>Returns all the metadata attributes for a file as written at file creation / modification.
+
+<br><br>Does not have to be called collectively.</p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Close">
+  <h2><br><code>TIO_Close</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Closes an open TyphonIO file</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Close( const TIO_File_t fileID );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Close_f( fileID )
+
+   integer(kind=TIO_FILEK), intent(in) :: fileID
+
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> fileID </code></td>
+  <td class="content"> TyphonIO fileID</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p>Closes and finalizes an open file.  All child objects within the file should be closed
+before calling this routine.
+
+<br><br>Must be called collectively.</p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Flush">
+  <h2><br><code>TIO_Flush</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Flushes a TyphonIO file</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Flush( const TIO_File_t fileID );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Flush_f( fileID )
+
+   integer(kind=TIO_FILEK), intent(in) :: fileID
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> fileID   </code></td>
+  <td class="content"> TyphonIO fileID</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p>Flushes all data cached by TyphonIO.  This is effectively the same as closing the file
+but leaving the file and all open objects open.
+
+<br><br>It is advisable to flush a writeable file if it is being held open for any long length
+of time to prevent accidental data loss, say, if the application terminates unexpectedly.
+
+<br><br>Must be called collectively.</p>
+  </td>
+</tr>
+
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_CheckFile">
+  <h2><br><code>TIO_CheckFile</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Checks whether a file is a TyphonIO v1.x file</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_CheckFile( const char filename );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_CheckFile_f( filename )
+
+   character(len=*), intent(in) :: filename
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> filename </code></td>
+  <td class="content"> Relative or absolute path of file</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p>If the file is a TyphonIO v1.x file this function will return <code>TIO_SUCCESS</code>.<br>
+<code>TIO_ERR_VERSION_MISMATCH</code> is returned if the file is an earlier pre-v1.0
+TyphonIO file.  In all other cases the function will return failure.
+
+<br><br>Does not have to be called collectively.</p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Get_LibVersion">
+  <h2><br><code>TIO_Get_LibVersion</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Returns the version information of the TyphonIO library in use</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Get_LibVersion( int *maj, int *min, int *rel );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Get_LibVersion_f( maj, min, rel )
+
+   integer, intent(out) :: maj, min, rel
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> maj </code></td>
+  <td class="content"> Major version number</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> min </code></td>
+  <td class="content"> Minor version number</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> rel </code></td>
+  <td class="content"> Release version number</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p>TyphonIO version numbers have the <i>maj.min.rel</i> format.
+
+<br><br>Does not have to be called collectively.</p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Get_FileVersion">
+  <h2><br><code>TIO_Get_FileVersion</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Returns the version information of the TyphonIO library used to write a file</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Get_FileVersion( const char filename[], int *maj, int *min, int *rel );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Get_FileVersion_f( filename, maj, min, rel )
+
+   character(len=*), intent(in)  :: filename
+   integer,          intent(out) :: maj, min, rel
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> filename </code></td>
+  <td class="content"> Relative or absolute path of file</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> maj </code></td>
+  <td class="content"> Major version number</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> min </code></td>
+  <td class="content"> Minor version number</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> rel </code></td>
+  <td class="content"> Release version number</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p>TyphonIO version numbers have the <i>maj.min.rel</i> format.
+
+<br><br>Does not have to be called collectively.</p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_IsFileOpen">
+  <h2><br><code>TIO_IsFileOpen</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Returns whether a given file is already open</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_IsFileOpen( const char filename[] );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_IsFileOpen_f( filename )
+
+   character(len=*), intent(in) :: filename
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> filename </code></td>
+  <td class="content"> Relative or absolute path of file</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p>
+Returns <code>TIO_SUCCESS</code> if the file is already open and <code>TIO_FAIL</code>
+if it isn't.
+
+<br><br>Does not have to be called collectively.</p>
+  </td>
+</tr>
+
+<!--ITEM>TIO_SizeOf-->
+<!--ITEM>TIO_Get_TypeClass-->
+
+<tr valign="baseline">
+  <td colspan="5"><hr noshade size="1"></td>
+</tr>
+
+</table>
+
+</body>
+</html>

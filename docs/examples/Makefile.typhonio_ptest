@@ -1,0 +1,14 @@
+CMP	=	mpicc -g -DPARALLEL -DDEBUG -DMEMWATCH -DMEMWATCH_STDIO  
+MODINC	=	-I
+LNK	=	mpicc
+
+TIODIR		=	$(LOCAL)/typhonio/1.6
+
+TIOLIBS		=	-L$(TIODIR)/lib -ltyphonio
+HDF5DIRDBG  =    $(LOCAL)/hdf5/1.8.5
+
+ZDIR		=	/lib64
+
+HDF5LIBSDBG	=	-L$(HDF5DIRDBG)/lib -lhdf5 -L$(ZDIR)/lib -lz
+
+include Makefile

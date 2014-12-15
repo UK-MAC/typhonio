@@ -1,0 +1,230 @@
+<!--
+ Crown Copyright 2014 AWE.
+
+ This file is part of TyphonIO. 
+ Released under the BSD 3-clause license. 
+ For more details see license.txt
+-->
+
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+
+<html>
+
+<head>
+  <title>TyphonIO - Types and parameters</title>
+</head>
+
+<body>
+
+<br>
+<h1>Types and Parameters</h1>
+
+
+
+<h2>C/C++ Types and Parameters</h2>
+<blockquote>
+<p>Look in the header files!</p>
+</blockquote>
+
+<h2>Fortran90 Types and Parameters</h2>
+<blockquote>
+
+<table cellspacing="0" cellpadding="1" border="0">
+
+<tr valign="baseline"><td width="10%">&nbsp;</td><td colspan="5"></td></tr>
+
+<tr valign="baseline"><td colspan="6"><a name="types"><h4>Types:</h4><hr noshade size="1"></a></td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>integer(kind=TIO_FILEK)</code></td>        <td>&nbsp;</td>  <td>Holds file ID</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>integer(kind=TIO_OBJK)</code></td>         <td>&nbsp;</td>  <td>Holds object ID</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>integer(kind=TIO_ERRK)</code></td>         <td>&nbsp;</td>  <td>Holds return code - see below for values</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>integer(kind=TIO_SIZEK)</code></td>        <td>&nbsp;</td>  <td>Holds size values</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>integer(kind=TIO_STEPK)</code></td>        <td>&nbsp;</td>  <td>Holds State step number values</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>real(kind=TIO_TIMEK)</code></td>           <td>&nbsp;</td>  <td>Holds time values</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>integer(kind=TIO_SHAPEK)</code></td>       <td>&nbsp;</td>  <td>Holds unstructured shapes</td></tr>
+
+
+<tr valign="baseline"><td width="10%">&nbsp;</td><td colspan="5"></td></tr>
+
+
+<tr valign="baseline"><td colspan="6"><a name="limits"><h4>Limits:</h4><hr noshade size="1"></a></td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_STRLEN_F</code></td>                   <td>&nbsp;</td>  <td>Maximum length of name, unit, label and data strings</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_MAXDIMS_F</code></td>                  <td>&nbsp;</td>  <td>maximum number of dimensions allowed in a variable</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_NULL_F</code></td>                     <td>&nbsp;</td>  <td>General NULL value</td></tr>
+
+
+<tr valign="baseline"><td width="10%">&nbsp;</td><td colspan="5"></td></tr>
+
+
+<tr valign="baseline"><td colspan="6"><a name="error"><h4>Error return codes:</h4><hr noshade size="1"></a></td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_SUCCESS_F</code></td>                  <td>&nbsp;</td>  <td>0</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_FAIL_F</code></td>                     <td>&nbsp;</td>  <td>-1</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_INVALID_FILEID_F</code></td>       <td>&nbsp;</td>  <td>-2</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_INVALID_OBJECTID_F</code></td>     <td>&nbsp;</td>  <td>-3</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_INVALID_DATATYPE_F</code></td>     <td>&nbsp;</td>  <td>-4</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_INVALID_DIMS_F</code></td>         <td>&nbsp;</td>  <td>-5</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_INVALID_ARG_F</code></td>          <td>&nbsp;</td>  <td>-6</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_INVALID_RANGE_F</code></td>        <td>&nbsp;</td>  <td>-7</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_INVALID_INDEX_F</code></td>        <td>&nbsp;</td>  <td>-8</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_INVALID_NAME_F</code></td>         <td>&nbsp;</td>  <td>-9</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_INVALID_STRING_F</code></td>       <td>&nbsp;</td>  <td>-10</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_INVALID_OPERATION_F</code></td>    <td>&nbsp;</td>  <td>-11</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_INVALID_CONVERSION_F</code></td>   <td>&nbsp;</td>  <td>-12</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_INVALID_SECTIONID_F</code></td>    <td>&nbsp;</td>  <td>-13</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_FILE_CREATE_F</code></td>          <td>&nbsp;</td>  <td>-20</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_FILE_OPEN_F</code></td>            <td>&nbsp;</td>  <td>-21</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_FILE_CLOSE_F</code></td>           <td>&nbsp;</td>  <td>-22</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_FILE_FLUSH_F</code></td>           <td>&nbsp;</td>  <td>-23</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_FILE_NOT_EXIST_F</code></td>       <td>&nbsp;</td>  <td>-24</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_FILE_NOT_WRITEABLE_F</code></td>   <td>&nbsp;</td>  <td>-30</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_FILE_NOT_READABLE_F</code></td>    <td>&nbsp;</td>  <td>-31</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_FILE_NOT_CLOSEABLE_F</code></td>   <td>&nbsp;</td>  <td>-32</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_OBJECT_NOT_WRITEABLE_F</code></td> <td>&nbsp;</td>  <td>-33</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_OBJECT_NOT_READABLE_F</code></td>  <td>&nbsp;</td>  <td>-34</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_OBJECT_NOT_CLOSEABLE_F</code></td> <td>&nbsp;</td>  <td>-35</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_OBJECT_CREATE_F</code></td>        <td>&nbsp;</td>  <td>-40</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_OBJECT_OPEN_F</code></td>          <td>&nbsp;</td>  <td>-41</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_OBJECT_CLOSE_F</code></td>         <td>&nbsp;</td>  <td>-42</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_OBJECT_WRITE_F</code></td>         <td>&nbsp;</td>  <td>-43</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_OBJECT_READ_F</code></td>          <td>&nbsp;</td>  <td>-44</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_OBJECT_ALREADY_EXIST_F</code></td> <td>&nbsp;</td>  <td>-45</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_OBJECT_NOT_EXIST_F</code></td>     <td>&nbsp;</td>  <td>-46</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_VERSION_MISMATCH_F</code></td>     <td>&nbsp;</td>  <td>-80</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_LIBRARY_MISMATCH_F</code></td>     <td>&nbsp;</td>  <td>-81</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_UNSUPPORTED_FILETYPE_F</code></td> <td>&nbsp;</td>  <td>-82</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_F90_API_F</code></td>              <td>&nbsp;</td>  <td>-90</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ERR_INT_F</code></td>                  <td>&nbsp;</td>  <td>-999</td></tr>
+
+
+<tr valign="baseline"><td width="10%">&nbsp;</td><td colspan="5"></td></tr>
+
+
+<tr valign="baseline"><td colspan="6"><a name="datatypes"><h4>Datatypes:</h4><hr noshade size="1"></a></td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_DATATYPE_NULL_F</code></td>            <td>&nbsp;</td>  <td>Null value</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_REAL4_F</code></td>                    <td>&nbsp;</td>  <td>Datatype for 4-byte real, ie. <code>real(kind=4)</code></td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_REAL8_F</code></td>                    <td>&nbsp;</td>  <td>Datatype for 8-byte real, ie. <code>real(kind=8)</code> or <code>double precision</code></td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_INTEGER4_F</code></td>                 <td>&nbsp;</td>  <td>Datatype for 4-byte integer, ie. <code>integer(kind=4)</code></td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_INTEGER8_F</code></td>                 <td>&nbsp;</td>  <td>Datatype for 8-byte integer, ie. <code>integer(kind=8)</code></td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_LOGICAL_F</code></td>                  <td>&nbsp;</td>  <td>Datatype for 4-byte logical, ie. <code>logical</code></td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_CHAR_F</code></td>                     <td>&nbsp;</td>  <td>Datatype for character, ie. <code>character</code></td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_STRING_F</code></td>                   <td>&nbsp;</td>  <td>Datatype for character string, ie. <code>character(len=TIO_STRLEN_F)</code></td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_SIZE_F</code></td>                     <td>&nbsp;</td>  <td>Datatype for TyphonIO Sizes, ie. <code>integer(kind=TIO_SIZEK)</code></td></tr>
+
+
+<tr valign="baseline"><td width="10%">&nbsp;</td><td colspan="5"></td></tr>
+
+  
+<tr valign="baseline"><td colspan="6"><a name="typeclasses"><h4>Type classes:</h4><hr noshade size="1"></a></td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_TYPECLASS_NULL_F</code></td>           <td>&nbsp;</td>  <td>Null value</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_TYPECLASS_INTEGER_F</code></td>        <td>&nbsp;</td>  <td>TypeClass for integer datatypes</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_TYPECLASS_REAL_F</code></td>           <td>&nbsp;</td>  <td>TypeClass for real datatypes</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_TYPECLASS_STRING_F</code></td>         <td>&nbsp;</td>  <td>TypeClass for string datatypes</td></tr>
+
+
+<tr valign="baseline"><td width="10%">&nbsp;</td><td colspan="5"></td></tr>
+  
+
+<tr valign="baseline"><td colspan="6"><a name="dimensions"><h4>Dimensions:</h4><hr noshade size="1"></a></td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_0D_F</code></td>                       <td>&nbsp;</td>  <td>(=0)</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_1D_F</code></td>                       <td>&nbsp;</td>  <td>(=1)</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_2D_F</code></td>                       <td>&nbsp;</td>  <td>(=2)</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_3D_F</code></td>                       <td>&nbsp;</td>  <td>(=3)</td></tr>
+
+
+<tr valign="baseline"><td width="10%">&nbsp;</td><td colspan="5"></td></tr>
+
+  
+<tr valign="baseline"><td colspan="6"><a name="ghosts"><h4>Ghosts:</h4><hr noshade size="1"></a></td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_GHOSTS_NULL_F</code></td>              <td>&nbsp;</td>  <td>Null value</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_GHOSTS_NONE_F</code></td>              <td>&nbsp;</td>  <td>Signifies none of the mesh ghosts</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_GHOSTS_ALL_F</code></td>               <td>&nbsp;</td>  <td>Signifies all of the mesh ghosts</td></tr>
+  
+
+<tr valign="baseline"><td width="10%">&nbsp;</td><td colspan="5"></td></tr>
+
+  
+<tr valign="baseline"><td colspan="6"><a name="access"><h4>File Access parameters:</h4><hr noshade size="1"></a></td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ACC_NULL_F</code></td>                 <td>&nbsp;</td>  <td>Null value</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ACC_CREATE_F</code></td>               <td>&nbsp;</td>  <td>Create new file and fail if already exists</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ACC_REPLACE_F</code></td>              <td>&nbsp;</td>  <td>Create new file replacing any existing file</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ACC_READWRITE_F</code></td>            <td>&nbsp;</td>  <td>Open file for reading and modifying</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_ACC_READONLY_F</code></td>             <td>&nbsp;</td>  <td>Open file for reading only</td></tr>
+
+
+<tr valign="baseline"><td width="10%">&nbsp;</td><td colspan="5"></td></tr>
+
+  
+<tr valign="baseline"><td colspan="6"><a name="meshtype"><h4>Meshtype parameters:</h4><hr noshade size="1"></a></td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_MESH_NULL_F</code></td>                <td>&nbsp;</td>  <td>Null value</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_MESH_QUAD_F               = TIO_MESH_QUAD_COLINEAR_F</code></td>  <td>&nbsp;</td>  <td></td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_MESH_QUAD_COLINEAR_F</code></td>       <td>&nbsp;</td>  <td></td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_MESH_QUAD_NONCOLINEAR_F</code></td>    <td>&nbsp;</td>  <td></td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_MESH_UNSTRUCT_F</code></td>            <td>&nbsp;</td>  <td></td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_MESH_POINT_F</code></td>               <td>&nbsp;</td>  <td></td></tr>
+
+
+<tr valign="baseline"><td width="10%">&nbsp;</td><td colspan="5"></td></tr>
+
+  
+<tr valign="baseline"><td colspan="6"><a name="coordtype"><h4>Coordtype parameters:</h4><hr noshade size="1"></a></td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_COORD_NULL_F</code></td>               <td>&nbsp;</td>  <td>Null value</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_COORD_CARTESIAN_F</code></td>          <td>&nbsp;</td>  <td>Cartesian co-ordinates <i>{i,j,k}  = {x,y,z}</i></td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_COORD_SPHERICAL_F</code></td>          <td>&nbsp;</td>  <td>Spherical polar co-ordinates <i>{i,j,k} = {r,theta,phi}</i></td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_COORD_CYLINDRICAL_F</code></td>        <td>&nbsp;</td>  <td>Cylindrical polar co-ordinates <i>{i,j,k} = {r,phi,z}</i></td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_COORD_CYL_AXISYMMETRIC_F</code></td>   <td>&nbsp;</td>  <td>Cylinder axi-symmetric co-ordinates <i>{i,j} = {z,r}</i></td></tr>
+
+
+<tr valign="baseline"><td width="10%">&nbsp;</td><td colspan="5"></td></tr>
+
+  
+<tr valign="baseline"><td colspan="6"><a name="shapes"><h4>Shape parameters:</h4><hr noshade size="1"></a></td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_SHAPE_NULL_F</code></td>               <td>&nbsp;</td>  <td>Null value</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_SHAPE_POINT1_F</code></td>             <td>&nbsp;</td>  <td>0D Point shape with 1 node</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_SHAPE_BAR2_F</code></td>               <td>&nbsp;</td>  <td>1D Bar shape with 2 nodes</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_SHAPE_TRI3_F</code></td>               <td>&nbsp;</td>  <td>2D Triangle shape with 3 nodes &amp; 3 edges</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_SHAPE_QUAD4_F</code></td>              <td>&nbsp;</td>  <td>2D Quadrilateral shape with 4 nodes &amp; 4 edges</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_SHAPE_TET4_F</code></td>               <td>&nbsp;</td>  <td>3D Tetrahedral shape with 4 nodes &amp; 6 edges</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_SHAPE_PYR5_F</code></td>               <td>&nbsp;</td>  <td>3D Pyramid shape with 5 nodes &amp; 8 edges</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_SHAPE_WEDGE6_F</code></td>             <td>&nbsp;</td>  <td>3D Wedge shape with 6 nodes &amp; 9 edges</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_SHAPE_HEX8_F</code></td>               <td>&nbsp;</td>  <td>3D Hexahedral shape with 6 nodes &amp; 12 edges</td></tr>
+
+<!--  All the above parameters are &lt;0  - to specify a non-standard shape, give the number of nodes.-->
+
+
+<tr valign="baseline"><td width="10%">&nbsp;</td><td colspan="5"></td></tr>
+
+  
+<tr valign="baseline"><td colspan="6"><a name="centring"><h4>Centring parameters:</h4><hr noshade size="1"></a></td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_CENTRE_NULL_F</code></td>              <td>&nbsp;</td>  <td>Null value</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_CENTRE_CELL_F</code></td>              <td>&nbsp;</td>  <td>Cell-centred</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_CENTRE_NODE_F</code></td>              <td>&nbsp;</td>  <td>Node-centred</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_CENTRE_EDGE_I_F</code></td>            <td>&nbsp;</td>  <td>Edge-centred on <i>I</i>-axis</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_CENTRE_EDGE_J_F</code></td>            <td>&nbsp;</td>  <td>Edge-centred on <i>J</i>-axis</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_CENTRE_EDGE_K_F</code></td>            <td>&nbsp;</td>  <td>Edge-centred on <i>K</i>-axis</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_CENTRE_FACE_I_F</code></td>            <td>&nbsp;</td>  <td>Face-centred on <i>I</i>-axis</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_CENTRE_FACE_J_F</code></td>            <td>&nbsp;</td>  <td>Face-centred on <i>J</i>-axis</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_CENTRE_FACE_K_F</code></td>            <td>&nbsp;</td>  <td>Face-centred on <i>K</i>-axis</td></tr>
+
+
+<tr valign="baseline"><td width="10%">&nbsp;</td><td colspan="5"></td></tr>
+
+  
+<tr valign="baseline"><td colspan="6"><a name="transfer"><h4>Data transfer parameters:</h4><hr noshade size="1"></a></td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_XFER_NULL_F</code></td>                <td>&nbsp;</td>  <td>Null value</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_XFER_INDEPENDENT_F</code></td>         <td>&nbsp;</td>  <td>Independent data transfer</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_XFER_COLLECTIVE_F</code></td>          <td>&nbsp;</td>  <td>Collective data transfer - all processes must call simultaneously</td></tr>
+  
+
+<tr valign="baseline"><td width="10%">&nbsp;</td><td colspan="5"></td></tr>
+
+
+<tr valign="baseline"><td colspan="6"><a name="verbose"><h4>Verbose mode parameters:</h4><hr noshade size="1"></a></td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_VERBOSE_NULL_F</code></td>             <td>&nbsp;</td>  <td>Null value</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_VERBOSE_OFF_F</code></td>              <td>&nbsp;</td>  <td>Turn off all TyphonIO verbose output</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_VERBOSE_ALL_F</code></td>              <td>&nbsp;</td>  <td>Turn on verbose output from all processes</td></tr>
+<tr valign="baseline"><td>&nbsp;</td>  <td><code>TIO_VERBOSE_MASTER_F</code></td>           <td>&nbsp;</td>  <td>Turn on verbose output only on the Master process (with MPI rank == 0)</td></tr>
+
+</table>
+</blockquote>
+
+</body>
+</html>

@@ -1,0 +1,267 @@
+#-*-Mode: F90;-*-  emacs mode specifier
+# vim: filetype=fortran
+
+# tunit: def TIO_CHECK( expr ): return "ierr = %s;\n    ASSERT(TIO_SUCCESS_F, ierr)" % expr
+# tunit: def TIO_CHECK_FALSE( expr ): return "ierr = %s;\n    ASSERT_NOT_EQUAL(TIO_SUCCESS_F, ierr)" % expr
+
+SUITE( 'Chunk', 'typhonio' )
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Get_nchunks_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_chunk.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_SIZEK) :: nchunks
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "Mesh", mesh_id) )
+  
+  TIO_CHECK( TIO_Get_nchunks_f(file_id, mesh_id, nchunks) )
+  
+  ASSERT(4, nchunks)
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Set_Quad_Chunk_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "tio_set_quad_chunk.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+
+  TIO_CHECK( TIO_Create_f(file_name, file_id, TIO_ACC_REPLACE_F, "TestCode", "V0.0", "01-01-2000", "Test Title") )
+  TIO_CHECK( TIO_Create_State_f( file_id, "State1", state_id, 1, 0.0_TIO_TIMEK, "seconds" ) )
+       
+  TIO_CHECK( TIO_Create_Mesh_f( file_id, state_id, "QuadMesh", mesh_id,                              &
+       &                        TIO_MESH_QUAD_COLINEAR_F, TIO_COORD_CARTESIAN_F, .false., "Group2", 1, &
+       &                        TIO_INTEGER4_F, TIO_REAL8_F, TIO_3D_F, 100, 100, 100, 0, 1,               &
+       &                        "mm", "mm", "mm", "x", "y", "z" ) )
+  
+  TIO_CHECK( TIO_Set_Quad_Chunk_f(file_id, mesh_id, 1, TIO_3D_F, 1, 10, 1, 10, 1, 10, 5, 0) )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Get_Quad_Chunk_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_chunk.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_IPK) :: ndims
+  integer(kind=TIO_SIZEK) :: il, ih, jl, jh, kl, kh
+  integer(kind=TIO_SIZEK) :: nmixcell, nmixcomp
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "QuadMesh", mesh_id) )
+  
+  TIO_CHECK( TIO_Get_Quad_Chunk_f(file_id, mesh_id, 1, ndims, il, ih, jl, jh, kl, kh, nmixcell, nmixcomp) )
+  
+  ASSERT( TIO_3D_F, ndims )
+  ASSERT( -10, il )
+  ASSERT(  10, ih )
+  ASSERT( -20, jl )
+  ASSERT(  20, jh )
+  ASSERT( -30, kl )
+  ASSERT(  30, kh )
+  ASSERT( 5, nmixcell )
+  ASSERT( 0, nmixcomp )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Set_Quad_Section_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "tio_set_quad_section.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: section_id
+
+  TIO_CHECK( TIO_Create_f(file_name, file_id, TIO_ACC_REPLACE_F, "TestCode", "V0.0", "01-01-2000", "Test Title") )
+  TIO_CHECK( TIO_Create_State_f( file_id, "State1", state_id, 1, 0.0_TIO_TIMEK, "seconds" ) )
+       
+  TIO_CHECK( TIO_Create_Mesh_f( file_id, state_id, "QuadMesh", mesh_id,                              &
+       &                        TIO_MESH_QUAD_COLINEAR_F, TIO_COORD_CARTESIAN_F, .false., "Group2", 1, &
+       &                        TIO_INTEGER4_F, TIO_REAL8_F, TIO_3D_F, 100, 100, 100, 0, 1,               &
+       &                        "mm", "mm", "mm", "x", "y", "z" ) )
+  
+  TIO_CHECK( TIO_Set_Quad_Section_f(file_id, mesh_id, section_id, TIO_3D_F, 1, 10, 10, 20, 20, 30) )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Set_Unstr_Chunk_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "tio_set_unstr_chunk.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+
+  TIO_CHECK( TIO_Create_f(file_name, file_id, TIO_ACC_REPLACE_F, "TestCode", "V0.0", "01-01-2000", "Test Title") )
+  TIO_CHECK( TIO_Create_State_f( file_id, "State1", state_id, 1, 0.0_TIO_TIMEK, "seconds" ) )
+       
+  TIO_CHECK( TIO_Create_Mesh_f( file_id, state_id, "UnstrMesh", mesh_id,                        &
+       &                        TIO_MESH_UNSTRUCT_F, TIO_COORD_CARTESIAN_F, .false., "Group4", 1,  &
+       &                        TIO_INTEGER4_F, TIO_REAL8_F, TIO_3D_F, 1331, 1000, 1, 8000, 1,     &
+       &                        "mm", "mm", "mm", "x", "y", "z" ) )
+  
+  TIO_CHECK( TIO_Set_Unstr_Chunk_f(file_id, mesh_id, 1, TIO_3D_F, 36, 25, 1, 4, 1, 1, 1, 4, 2, 0) )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Get_Unstr_Chunk_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_chunk.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_IPK) :: ndims
+  integer(kind=TIO_SIZEK) :: nnodes, ncells, nshapes, nconnectivity
+  integer(kind=TIO_SIZEK) :: nghost_nodes,  nghost_cells
+  integer(kind=TIO_SIZEK) :: nghost_shapes, nghost_connectivity
+  integer(kind=TIO_SIZEK) :: nmixcell, nmixcomp
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "UnstrMesh", mesh_id) )
+  
+  TIO_CHECK( TIO_Get_Unstr_Chunk_f( file_id, mesh_id, 1, ndims,              &
+       &                            nnodes, ncells, nshapes, nconnectivity,  &
+       &                            nghost_nodes,  nghost_cells,             &
+       &                            nghost_shapes, nghost_connectivity,      &
+       &                            nmixcell, nmixcomp ) )
+  
+  ASSERT( TIO_3D_F, ndims )
+  ASSERT( 36, nnodes )
+  ASSERT( 25, ncells )
+  ASSERT( 1, nshapes )
+  ASSERT( 4, nconnectivity )
+  ASSERT( 1, nghost_nodes )
+  ASSERT( 1, nghost_cells )
+  ASSERT( 1, nghost_shapes )
+  ASSERT( 4, nghost_connectivity )
+  ASSERT( 2, nmixcell )
+  ASSERT( 0, nmixcomp )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Set_Unstr_Section_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "tio_set_unstr_section.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: section_id
+
+  TIO_CHECK( TIO_Create_f(file_name, file_id, TIO_ACC_REPLACE_F, "TestCode", "V0.0", "01-01-2000", "Test Title") )
+  TIO_CHECK( TIO_Create_State_f( file_id, "State1", state_id, 1, 0.0_TIO_TIMEK, "seconds" ) )
+       
+  TIO_CHECK( TIO_Create_Mesh_f( file_id, state_id, "UnstrMesh", mesh_id,                        &
+       &                        TIO_MESH_UNSTRUCT_F, TIO_COORD_CARTESIAN_F, .false., "Group4", 1,  &
+       &                        TIO_INTEGER4_F, TIO_REAL8_F, TIO_3D_F, 1331, 1000, 1, 8000, 1,     &
+       &                        "mm", "mm", "mm", "x", "y", "z" ) )
+  
+  TIO_CHECK( TIO_Set_Unstr_Section_f(file_id, mesh_id, section_id, TIO_CENTRE_CELL_F, 3, (/ 1, 2, 3 /)) )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Set_Point_Chunk_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "tio_set_point_chunk.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+
+  TIO_CHECK( TIO_Create_f(file_name, file_id, TIO_ACC_REPLACE_F, "TestCode", "V0.0", "01-01-2000", "Test Title") )
+  TIO_CHECK( TIO_Create_State_f( file_id, "State1", state_id, 1, 0.0_TIO_TIMEK, "seconds" ) )
+       
+  TIO_CHECK( TIO_Create_Mesh_f( file_id, state_id, "PointMesh", mesh_id,                        &
+       &                        TIO_MESH_POINT_F, TIO_COORD_CARTESIAN_F, .false., "Group4", 1,  &
+       &                        TIO_INTEGER4_F, TIO_REAL8_F, TIO_3D_F, 1000, 0, 0, 0, 1,     &
+       &                        "mm", "mm", "mm", "x", "y", "z" ) )
+  
+  TIO_CHECK( TIO_Set_Point_Chunk_f(file_id, mesh_id, 1, TIO_3D_F, 0, 10, 2) )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Get_Point_Chunk_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_chunk.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_IPK) :: ndims
+  integer(kind=TIO_SIZEK) :: nl, nh
+  integer(kind=TIO_SIZEK) :: nghost_nodes
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "PointMesh", mesh_id) )
+  
+  TIO_CHECK( TIO_Get_Point_Chunk_f(file_id, mesh_id, 1, ndims, nl, nh, nghost_nodes) )
+  
+  ASSERT( TIO_3D_F, ndims )
+  ASSERT( 0, nl )
+  ASSERT( 10, nh )
+  ASSERT( 2, nghost_nodes )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Set_Point_Section_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "tio_set_point_section.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: section_id
+
+  TIO_CHECK( TIO_Create_f(file_name, file_id, TIO_ACC_REPLACE_F, "TestCode", "V0.0", "01-01-2000", "Test Title") )
+  TIO_CHECK( TIO_Create_State_f( file_id, "State1", state_id, 1, 0.0_TIO_TIMEK, "seconds" ) )
+       
+  TIO_CHECK( TIO_Create_Mesh_f( file_id, state_id, "PointMesh", mesh_id,                        &
+       &                        TIO_MESH_POINT_F, TIO_COORD_CARTESIAN_F, .false., "Group4", 1,  &
+       &                        TIO_INTEGER4_F, TIO_REAL8_F, TIO_3D_F, 1000, 0, 0, 0, 1,     &
+       &                        "mm", "mm", "mm", "x", "y", "z" ) )
+  
+  TIO_CHECK( TIO_Set_Point_Section_f(file_id, mesh_id, section_id, 3, (/ 1, 2, 3 /)) )
+)
+
+#=======================================================================================================================

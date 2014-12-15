@@ -1,0 +1,1041 @@
+<!--
+ Crown Copyright 2014 AWE.
+
+ This file is part of TyphonIO. 
+ Released under the BSD 3-clause license. 
+ For more details see license.txt
+-->
+
+
+<!-*-Mode: HTML;-*->
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+
+<html>
+
+<head>
+  <title>TyphonIO - Variable routines</title>
+</head>
+
+<body>
+
+<h2>TyphonIO: Variable Routines</h2>
+
+<p>TyphonIO Variables are objects that can hold any data that does not fall into the remit of other TyphonIO objects.  They can be scalars or arrays of any datatype and can be created in any of the following objects: File, Vargroup, State, Mesh, Material, Quant, Nodeset or Surface.  The value of an existing variable can be updated by re-opening and re-writing it - it is not possible to change the datatype or dimensions of it though.</p>
+
+<table width="99%" border="0" cellspacing="0">
+<tr><td width="10%"></td><td><table><tr valign="top">
+  <td>
+      <a href="#TIO_List_Variables">TIO_List_Variables</a><br>
+      <a href="#TIO_Create_Variable">TIO_Create_Variable</a><br>
+      <a href="#TIO_Open_Variable">TIO_Open_Variable</a><br>
+      <a href="#TIO_Open_Variable_idx">TIO_Open_Variable_idx</a><br>
+      <a href="#TIO_Get_Variable_Info">TIO_Get_Variable_Info</a><br>
+      <a href="#TIO_Close_Variable">TIO_Close_Variable</a><br>
+  </td>
+  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+  <td>
+      <a href="#TIO_Write_Variable">TIO_Write_Variable</a><br>
+      <a href="#TIO_Read_Variable">TIO_Read_Variable</a><br>
+      <a href="#TIO_Read_Variable_Section">TIO_Read_Variable_Section</a><br>
+  </td>
+</tr></table></td></tr>
+</table>
+
+<table width="99%" border="0" cellspacing="0">
+
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_List_Variables">
+  <h2><br><code>TIO_List_Variables</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Returns the number of Variables within a TyphonIO file or object and their names</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_List_Variables( const TIO_File_t   fileID,
+                           const TIO_Object_t objectID,
+                           TIO_Size_t         *nobj,
+                           char               names[][TIO_STRLEN] );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_List_Variables_f( fileID, objectID, nobj, names )
+   
+   integer(kind=TIO_FILEK),        intent(in)            :: fileID
+   integer(kind=TIO_OBJK),         intent(in)            :: objectID
+   integer(kind=TIO_SIZEK),        intent(out), optional :: nobj
+   character(len=*), dimension(:), intent(out), optional :: names
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID   </code></td>
+  <td class="content"> TyphonIO File ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> objectID </code></td>
+  <td class="content"> TyphonIO object ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nobj     </code></td>
+  <td class="content"> Number of Variables</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> names    </code></td>
+  <td class="content"> Array of names</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p>If the <code>objectID</code> is given as <code>TIO_NULL</code>, the Variables
+in the top file level are listed, otherwise it is the those in the given object.
+
+<br><br>Does not have to be called collectively.</p>
+    <p><b>C/C++ Notes:</b><br><code>names</code> can be <code>NULL</code></p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Create_Variable">
+  <h2><br><code>TIO_Create_Variable</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Creates a new Variable within a TyphonIO file or object</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Create_Variable( const TIO_File_t   fileID,
+                            const TIO_Object_t objectID,
+                            const char         name[],
+                            TIO_Object_t       *varID,
+                            const TIO_Data_t   datatype,
+                            const TIO_Dims_t   ndims,
+                            const TIO_Size_t   dims[],
+                            const char         units[] );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Create_Variable_f( fileID, objectID, name, varID,
+                                                        datatype, ndims, dims, units )
+   
+   integer(kind=TIO_FILEK),               intent(in)  :: fileID
+   integer(kind=TIO_OBJK),                intent(in)  :: objectID
+   character(len=*),                      intent(in)  :: name
+   integer(kind=TIO_OBJK),                intent(out) :: varID
+   integer(kind=TIO_IPK),                 intent(in)  :: datatype, ndims
+   integer(kind=TIO_SIZEK), dimension(:), intent(in)  :: dims
+   character(len=*),                      intent(in)  :: units
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID   </code></td>
+  <td class="content"> TyphonIO File ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> objectID </code></td>
+  <td class="content"> TyphonIO object ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> name     </code></td>
+  <td class="content"> Name for Variable</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> varID    </code></td>
+  <td class="content"> ID of new Variable</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> datatype </code></td>
+  <td class="content"> TyphonIO datatype of Variable</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> ndims    </code></td>
+  <td class="content"> Number of dimensions of Variable</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> dims     </code></td>
+  <td class="content"> Array containing dimensions of Variable</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> units    </code></td>
+  <td class="content"> String containing units of Variable</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p>Creates a new variable within the given TyphonIO object, or if <code>objectID</code> is
+set to <code>TIO_NULL</code>, the Variable is created in the top file level.
+
+<br><br>To create a scalar variable, <code>ndims</code> should be set to <code>TIO_0D</code>
+and the <code>dims</code> argument is then ignored.  For non-scalar variables, any
+number of dimensions can be specified up to the <code>TIO_MAXDIMS</code> limit.
+
+<br><br>The <code>dims</code> array argument must contains at least <code>ndims</code> elements
+and the first <code>ndims</code> elements contain the size of each dimension in the
+order
+
+<br><br>
+Must be called collectively.</p>
+    <p><b>C/C++ Notes:</b><br>For example, to create a Variable for an array declared as:
+<blockquote><code>int myarray[5][3]</code></blockquote>
+<code>ndims = TIO_2D</code> and <code>dims[2] = { 3, 5 }</code></p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Open_Variable">
+  <h2><br><code>TIO_Open_Variable</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Opens a Variable from within a TyphonIO file or object by name</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Open_Variable( const TIO_File_t   fileID,
+                          const TIO_Object_t objectID,
+                          const char         name[],
+                          TIO_Object_t       *varID,
+                          TIO_Data_t         *datatype,
+                          TIO_Dims_t         *ndims,
+                          TIO_Size_t         dims[],
+                          char               units[] );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Open_Variable_f( fileID, objectID, name, varID,
+                                                      datatype, ndims, dims, units )
+
+   integer(kind=TIO_FILEK),               intent(in)            :: fileID
+   integer(kind=TIO_OBJK),                intent(in)            :: objectID
+   character(len=*),                      intent(in)            :: name
+   integer(kind=TIO_OBJK),                intent(out)           :: varID
+   integer(kind=TIO_IPK),                 intent(out), optional :: datatype, ndims
+   integer(kind=TIO_SIZEK), dimension(:), intent(out), optional :: dims
+   character(len=*),                      intent(out), optional :: units
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID   </code></td>
+  <td class="content"> TyphonIO File ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> objectID </code></td>
+  <td class="content"> TyphonIO object ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> name     </code></td>
+  <td class="content"> Name of Variable</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> varID    </code></td>
+  <td class="content"> ID of opened Variable</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> datatype </code></td>
+  <td class="content"> TyphonIO datatype of Variable</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ndims    </code></td>
+  <td class="content"> Number of dimension of Variable</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> dims     </code></td>
+  <td class="content"> Array containing dimensions of Variable</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> units    </code></td>
+  <td class="content"> String containing units of Variable</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p>If the <code>objectID</code> is given as <code>TIO_NULL</code>, the Variable is
+opened from the top file level, otherwise it is opened from the specified object.
+
+<br><br>The <code>dims</code> and <code>units</code> arguments should be allocated large enough
+to hold the returned values for the variable.  If unknown, the maximum possible sizes
+can be used for allocation, which are <code>TIO_MAXDIMS</code> and <code>TIO_STRLEN</code>
+respectively.
+
+<br><br>Must be called collectively.</p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Open_Variable_idx">
+  <h2><br><code>TIO_Open_Variable_idx</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Opens a Variable from within a TyphonIO file or object by index</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Open_Variable_idx( const TIO_File_t   fileID,
+                              const TIO_Object_t objectID,
+                              const TIO_Size_t   idx,
+                              char               name,
+                              TIO_Object_t       *varID,
+                              TIO_Data_t         *datatype,
+                              TIO_Dims_t         *ndims,
+                              TIO_Size_t         dims[],
+                              char               units[] );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Open_Variable_idx_f( fileID, objectID, idx, name, varID,
+                                                          datatype, ndims, dims, units )
+   
+   integer(kind=TIO_FILEK),               intent(in)            :: fileID
+   integer(kind=TIO_OBJK),                intent(in)            :: objectID
+   integer(kind=TIO_SIZEK),               intent(in)            :: idx
+   character(len=*),                      intent(out)           :: name
+   integer(kind=TIO_OBJK),                intent(out)           :: varID
+   integer(kind=TIO_IPK),                 intent(out), optional :: datatype, ndims
+   integer(kind=TIO_SIZEK), dimension(:), intent(out), optional :: dims
+   character(len=*),                      intent(out), optional :: units
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID   </code></td>
+  <td class="content"> TyphonIO File ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> objectID </code></td>
+  <td class="content"> TyphonIO object ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> idx      </code></td>
+  <td class="content"> Index of Variable</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> name     </code></td>
+  <td class="content"> Name of Variable</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> varID    </code></td>
+  <td class="content"> ID of opened Variable</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> datatype </code></td>
+  <td class="content"> TyphonIO datatype of Variable</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ndims    </code></td>
+  <td class="content"> Number of dimension of Variable</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> dims     </code></td>
+  <td class="content"> Array containing dimensions of Variable</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> units    </code></td>
+  <td class="content"> String containing units of Variable</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p>If the <code>objectID</code> is given as <code>TIO_NULL</code>, the Variable is
+opened from the top file level, otherwise it is opened from the specified object.
+
+<br><br>The <code>dims</code> and <code>units</code> arguments should be allocated large enough
+to hold the returned values for the variable.  If unknown, the maximum possible sizes
+can be used for allocation, which are <code>TIO_MAXDIMS</code> and <code>TIO_STRLEN</code>
+respectively.
+
+<br><br>Must be called collectively.</p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Get_Variable_Info">
+  <h2><br><code>TIO_Get_Variable_Info</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Gets the info of an open Variable</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Get_Variable_Info( const TIO_File_t   fileID,
+                              const TIO_Object_t varID,
+                              char               name[],
+                              TIO_Data_t         *datatype,
+                              TIO_Dims_t         *ndims,
+                              TIO_Size_t         dims[],
+                              char               units[] );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Get_Variable_Info_f( fileID, varID, name,
+                                                          datatype, ndims, dims, units )
+  
+   integer(kind=TIO_FILEK),                intent(in)            :: fileID
+   integer(kind=TIO_OBJK),                 intent(in)            :: varID
+   character(len=*),                       intent(out), optional :: name
+   integer(kind=TIO_IPK),                  intent(out), optional :: datatype, ndims
+   integer(kind=TIO_SIZEK), dimension(1:), intent(out), optional :: dims
+   character(len=*),                       intent(out), optional :: units
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID   </code></td>
+  <td class="content"> TyphonIO File ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> objectID </code></td>
+  <td class="content"> TyphonIO Variable ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> name     </code></td>
+  <td class="content"> Name of Variable</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> datatype </code></td>
+  <td class="content"> TyphonIO datatype of Variable</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ndims    </code></td>
+  <td class="content"> Number of dimension of Variable</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> dims     </code></td>
+  <td class="content"> Array containing dimensions of Variable</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> units    </code></td>
+  <td class="content"> String containing units of Variable</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p>Returns all the metadata associated with an open Variable.
+
+<br><br>The <code>dims</code> and <code>units</code> arguments should be allocated large enough
+to hold the returned values for the variable.  If unknown, the maximum possible sizes
+can be used for allocation, which are <code>TIO_MAXDIMS</code> and <code>TIO_STRLEN</code>
+respectively.
+
+<br><br>Does not have to be called collectively.</p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Close_Variable">
+  <h2><br><code>TIO_Close_Variable</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Closes an open Variable</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Close_Variable( const TIO_File_t   fileID,
+                           const TIO_Object_t varID );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Close_Variable_f( fileID, varID )
+  
+   integer(kind=TIO_FILEK), intent(in) :: fileID
+   integer(kind=TIO_OBJK),  intent(in) :: varID
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> fileID </code></td>
+  <td class="content"> TyphonIO File ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> varID  </code></td>
+  <td class="content"> TyphonIO Variable ID</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p>Closes an open Variable.
+
+<br><br>Must be called collectively.</p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Write_Variable">
+  <h2><br><code>TIO_Write_Variable</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Write data to an open Variable</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Write_Variable( const TIO_File_t   fileID,
+                           const TIO_Object_t varID,
+                           const TIO_Data_t   datatype,
+                           const void         *vdata );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Write_Variable_f( fileID, varID, datatype, vdata )
+
+   integer(kind=TIO_FILEK), intent(in) :: fileID
+   integer(kind=TIO_OBJK),  intent(in) :: varID
+   integer(kind=TIO_IPK),   intent(in) :: datatype
+   [CHOICE], [DIMENSION,]   intent(in) :: vdata
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> fileID   </code></td>
+  <td class="content"> TyphonIO File ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> varID    </code></td>
+  <td class="content"> TyphonIO Variable ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> datatype </code></td>
+  <td class="content"> TyphonIO datatype of data in memory</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> vdata    </code></td>
+  <td class="content"> Buffer containing Variable data</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p>Writes data from memory into a created / open Variable.
+
+<br><br>If <code>datatype</code> is different to that given at Variable creation, TyphonIO
+will convert the given <code>vdata</code> to the original datatype whilst writing it
+to the file.
+
+<br><br>Does not have to be called collectively.<br>
+In parallel, a race condition may occur if all processes write to a Variable, so
+it is advised that only a single process performs the write.</p>
+    <p><b>Fortran90 Notes:</b><br><code>[CHOICE]</code> can be <code>real(kind=4)</code>, <code>real(kind=8)</code>,
+<code>integer(kind=4)</code>, <code>integer(kind=8)</code>, <code>logical(kind=4)</code>
+or <code>character(len=*)</code>
+<code>[DIMENSION]</code> is optional so can be scalar (0D), 1D <code>(:)</code>,
+2D <code>(:,:)</code> or 3D <code>(:,:,:)</code> as appropriate.</p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Read_Variable">
+  <h2><br><code>TIO_Read_Variable</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Read data from an open Variable</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Read_Variable( const TIO_File_t   fileID,
+                          const TIO_Object_t varID,
+                          const TIO_Data_t   datatype,
+                          void               *vdata );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Read_Variable_f( fileID, varID, datatype, vdata )
+
+   integer(kind=TIO_FILEK), intent(in)  :: fileID
+   integer(kind=TIO_OBJK),  intent(in)  :: varID
+   integer(kind=TIO_IPK),   intent(in)  :: datatype
+   [CHOICE], [DIMENSION,]   intent(out) :: vdata  
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID   </code></td>
+  <td class="content"> TyphonIO File ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> varID    </code></td>
+  <td class="content"> TyphonIO Variable ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> datatype </code></td>
+  <td class="content"> TyphonIO datatype of data in memory</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> vdata    </code></td>
+  <td class="content"> Buffer containing Variable data</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p>Reads all the data from an open Variable into memory.
+
+<br><br>If <code>datatype</code> is different to the one that the Variable is stored as in the
+file, TyphonIO will convert it to the one given during reading.
+
+<br><br><code>vdata</code> must be allocated large enough to hold the read data.
+
+<br><br>Does not have to be called collectively.<br>
+In parallel, the data is read by all processes that perform the read.</p>
+    <p><b>Fortran90 Notes:</b><br><code>[CHOICE]</code> can be <code>real(kind=4)</code>, <code>real(kind=8)</code>,
+<code>integer(kind=4)</code>, <code>integer(kind=8)</code>, <code>logical(kind=4)</code>
+or <code>character(len=*)</code>
+<code>[DIMENSION]</code> is optional so can be scalar (0D), 1D <code>(:)</code>,
+2D <code>(:,:)</code> or 3D <code>(:,:,:)</code> as appropriate.</p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Read_Variable_Section">
+  <h2><br><code>TIO_Read_Variable_Section</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Read a section of data from an open Variable</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Read_Variable_Section( const TIO_File_t   fileID,
+                                  const TIO_Object_t varID,
+                                  const TIO_Data_t   datatype,
+                                  const TIO_Dims_t   ndims,
+                                  const TIO_Size_t   lolimit[],
+                                  const TIO_Size_t   hilimit[],
+                                  void               *vdata );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Read_Variable_Section_f( fileID, varID, datatype,
+                                                              ndims, lolimit, hilimit,
+                                                              vdata )
+
+   integer(kind=TIO_FILEK),               intent(in)  :: fileID
+   integer(kind=TIO_OBJK),                intent(in)  :: varID
+   integer(kind=TIO_IPK),                 intent(in)  :: datatype
+   integer(kind=TIO_IPK),                 intent(in)  :: ndims
+   integer(kind=TIO_SIZEK), dimension(:), intent(in)  :: lolimit, hilimit
+   [CHOICE], [DIMENSION],                 intent(out) :: vdata
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID   </code></td>
+  <td class="content"> TyphonIO File ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> varID    </code></td>
+  <td class="content"> TyphonIO Variable ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> datatype </code></td>
+  <td class="content"> TyphonIO datatype of data in memory</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> ndims    </code></td>
+  <td class="content"> Number of dimensions in section arrays</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> lolimit  </code></td>
+  <td class="content"> Array containing lower extents of the section</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> hilimit  </code></td>
+  <td class="content"> Array containing upper extents of the section</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> vdata    </code></td>
+  <td class="content"> Buffer containing Variable data</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p>Reads a section of data from an open array (ie. not a scalar) Variable into memory.
+
+<br><br><code>ndims</code> must match the dimension of the open Variable and the
+<code>lolimit</code> and <code>hilimit</code> arrays should be at least this size.
+
+<br><br>The <code>lolimit</code> and <code>hlimit</code> arrays define a hyperslab of the
+Variable data that is to be read.
+
+<br><br>
+If <code>datatype</code> is different to the one that the Variable is stored as in the
+file, TyphonIO will convert it to the one given during reading.
+
+<br><br><code>vdata</code> must be allocated large enough to hold the read data.
+
+<br><br>Does not have to be called collectively.<br>
+In parallel, the data is read by all processes that perform the read.</p>
+    <p><b>C/C++ Notes:</b><br>For example, to read elements <code><i>M</i></code> to <code><i>N</i></code> for a 1D
+Variable, <code>lolimit = { M }</code> and <code>hilimit = { N }</code>.  Elements are
+indexed from 0-origin.</p>
+    <p><b>Fortran90 Notes:</b><br><code>[CHOICE]</code> can be <code>real(kind=4)</code>, <code>real(kind=8)</code>,
+<code>integer(kind=4)</code>, <code>integer(kind=8)</code>, <code>logical(kind=4)</code>
+or <code>character(len=*)</code>
+<code>[DIMENSION]</code> is optional so can be scalar (0D), 1D <code>(:)</code>,
+2D <code>(:,:)</code> or 3D <code>(:,:,:)</code> as appropriate.
+
+<br><br>Note - string datatypes are not supported for reading by section at present.</p>
+  </td>
+</tr>
+
+<tr valign="baseline">
+  <td colspan="5"><hr noshade size="1"></td>
+</tr>
+
+</table>
+
+</body>
+</html>

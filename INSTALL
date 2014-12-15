@@ -1,0 +1,47 @@
+TyphonIO 1.6 installation 
+====================================
+
+1) Preliminary 
+==============
+Building TyphonIO requires a working versions of:
+
+*  Hierarchical Data Format (HDF5) 1.8.X 
+More information can be found at http://www.hdfgroup.org
+
+*  Standard GNU Make
+
+*  C99 compliant C compiler (Fortran compiler optional)
+
+*  For parallel typhonIO, an implementation of the MPI message-passing library (with matching HDF5 package!)
+
+
+2) Configuration
+================
+
+Modify src/Makefile.inc for specific compiler options/flags, currently supported compilers includes
+
+*  GNU Compiler
+*  Intel Compiler
+*  Portland Group PGI compiler
+*  IBM XL
+
+Set the build environment to recognise specific compilers by using HPC_COMPILER
+e.g. 
+export HPC_COMPILER=gcc
+
+Edit the src/Makefile to specify the HDF5 library path HDF5_DIR, 
+and PROD_DIR environment variables to set the path of build directory
+
+
+3) Compilation
+==============
+
+Compile typhonIO distribution by typing "make" in src, which should show usage options
+Its good practice to check the current typhonIO configuration using "make config" before build with "make install"
+
+Note that install also build Fortran API library, to exclude F90 library, use NOF90=1.
+
+4) Documentation 
+================
+
+The user's manual are available in the doc/ directory, as well as the sample programs of the distribution.

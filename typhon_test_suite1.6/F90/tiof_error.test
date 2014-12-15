@@ -1,0 +1,52 @@
+#-*-Mode: F90;-*-  emacs mode specifier
+# vim: filetype=fortran
+
+# tunit: def TIO_CHECK( expr ): return "ierr = %s;\n    ASSERT(TIO_SUCCESS_F, ierr)" % expr
+# tunit: def TIO_CHECK_FALSE( expr ): return "ierr = %s;\n    ASSERT_NOT_EQUAL(TIO_SUCCESS_F, ierr)" % expr
+
+SUITE( 'Error', 'typhonio' )
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Get_Error_f' )
+(
+  integer :: ierr
+  character(len=TIO_STRLEN_F) :: str
+  
+  TIO_CHECK( TIO_Get_Error_f(TIO_ERR_INVALID_ARG_F, str) )
+  
+  ASSERT( "Invalid argument given", trim(str) )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Set_Verbose_f' )
+(
+  integer :: ierr
+  
+  TIO_CHECK( TIO_Set_Verbose_f(TIO_VERBOSE_OFF_F) )
+  TIO_CHECK( TIO_Set_Verbose_f(TIO_VERBOSE_ALL_F) )
+  TIO_CHECK( TIO_Set_Verbose_f(TIO_VERBOSE_MASTER_F) )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Get_Verbose_f' )
+(
+  integer :: ierr
+  integer :: mode
+  
+  TIO_CHECK( TIO_Get_Verbose_f(mode) )
+  
+  TIO_CHECK( TIO_Set_Verbose_f(TIO_VERBOSE_OFF_F) )
+  TIO_CHECK( TIO_Get_Verbose_f(mode) )
+  
+  ASSERT( TIO_VERBOSE_OFF_F, mode )
+  
+  TIO_CHECK( TIO_Set_Verbose_f(TIO_VERBOSE_MASTER_F) )
+  TIO_CHECK( TIO_Get_Verbose_f(mode) )
+  
+  ASSERT( TIO_VERBOSE_MASTER_F, mode )
+)
+
+#=======================================================================================================================

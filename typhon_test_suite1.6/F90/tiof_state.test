@@ -1,0 +1,145 @@
+#-*-Mode: F90;-*-  emacs mode specifier
+# vim: filetype=fortran
+
+# tunit: def TIO_CHECK( expr ): return "ierr = %s;\n    ASSERT(TIO_SUCCESS_F, ierr)" % expr
+# tunit: def TIO_CHECK_FALSE( expr ): return "ierr = %s;\n    ASSERT_NOT_EQUAL(TIO_SUCCESS_F, ierr)" % expr
+
+SUITE( 'State', 'typhonio' )
+
+#=======================================================================================================================
+
+TEST ( 'TIO_List_States_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_state.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_SIZEK) :: nobj
+  character(len=TIO_STRLEN_F), dimension(3) :: names
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  
+  TIO_CHECK( TIO_List_States_f(file_id, nobj=nobj) )
+  
+  ASSERT( 3, nobj )
+  
+  TIO_CHECK( TIO_List_States_f(file_id, names=names) )
+  
+  ASSERT( (/ "State1", "State2", "State3" /), names )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Create_State_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "tio_create_state.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+
+  TIO_CHECK( TIO_Create_f(file_name, file_id, TIO_ACC_REPLACE_F, "TestCode", "V0.0", "01-01-2000", "Test Title") )
+  TIO_CHECK( TIO_Create_State_f( file_id, "State1", state_id, 1, 0.0_TIO_TIMEK, "seconds" ) )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Open_State_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_state.h5"
+  integer(kind=TIO_FILEK)     :: file_id
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_OBJK)      :: state_id
+  integer(kind=TIO_STEPK)     :: step
+  real(kind=TIO_TIMEK)        :: time
+  character(len=TIO_STRLEN_F) :: units
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  
+  TIO_CHECK( TIO_Open_State_f( file_id, "State1", state_id, step, time, units ) )
+  
+  ASSERT( 1, step )
+  ASSERT( 0.0_TIO_TIMEK, time )
+  ASSERT( "ms", units )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Open_State_idx_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_state.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_OBJK)      :: state_id
+  character(len=TIO_STRLEN_F) :: state_name
+  integer(kind=TIO_STEPK)     :: step
+  real(kind=TIO_TIMEK)        :: time
+  character(len=TIO_STRLEN_F) :: units
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  
+  TIO_CHECK( TIO_Open_State_idx_f(file_id, 1, state_name, state_id, step, time, units) )
+  
+  ASSERT( "State1", state_name )
+  ASSERT( 1, step )
+  ASSERT( 0.0_TIO_TIMEK, time )
+  ASSERT( "ms", units )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Get_State_Info_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_state.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_OBJK)      :: state_id
+  character(len=TIO_STRLEN_F) :: state_name
+  integer(kind=TIO_STEPK)     :: step
+  real(kind=TIO_TIMEK)        :: time
+  character(len=TIO_STRLEN_F) :: units
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  
+  TIO_CHECK( TIO_Open_State_f( file_id, "State1", state_id, step, time, units ) )
+  
+  TIO_CHECK( TIO_Get_State_Info_f(file_id, state_id, state_name, step, time, units) )
+  
+  ASSERT( "State1", state_name )
+  ASSERT( 1, step )
+  ASSERT( 0.0_TIO_TIMEK, time )
+  ASSERT( "ms", units )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Close_State_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "tio_close_state.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+
+  TIO_CHECK( TIO_Create_f(file_name, file_id, TIO_ACC_REPLACE_F, "TestCode", "V0.0", "01-01-2000", "Test Title") )
+  TIO_CHECK( TIO_Create_State_f( file_id, "State1", state_id, 1, 0.0_TIO_TIMEK, "seconds" ) )
+  
+  TIO_CHECK( TIO_Close_State_f( file_id, state_id ) )
+)
+
+#=======================================================================================================================

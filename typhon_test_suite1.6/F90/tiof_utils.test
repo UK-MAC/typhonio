@@ -1,0 +1,104 @@
+#-*-Mode: F90;-*-  emacs mode specifier
+# vim: filetype=fortran
+
+# tunit: def TIO_CHECK( expr ): return "ierr = %s;\n    ASSERT(TIO_SUCCESS_F, ierr)" % expr
+# tunit: def TIO_CHECK_FAIL( expr ): return "ierr = %s;\n    ASSERT_NOT_EQUAL(TIO_SUCCESS_F, ierr)" % expr
+
+SUITE( 'Utils', 'typhonio', 'TIO_Utils_mod' )
+
+#=======================================================================================================================
+
+TEST ( 'setlen' )
+(
+  integer :: ierr
+  integer :: i
+  integer :: strlen
+  character(len=(TIO_STRLEN_F*2)) :: invalid
+  
+  strlen = -1
+  TIO_CHECK( setlen('', '', '12345', strlen) )
+  ASSERT( 5, strlen )
+  
+  strlen = -1
+  TIO_CHECK( setlen('', '', '12345  ', strlen) )
+  ASSERT( 5, strlen )
+  
+  invalid = repeat('a', len(invalid))
+  TIO_CHECK_FAIL( setlen('', '', invalid, strlen) )
+)
+
+#=======================================================================================================================
+
+TEST ( 'setstr' )
+(
+  integer :: ierr
+  integer :: i
+  character(len=TIO_STRLEN_F) :: strout
+  character(len=(TIO_STRLEN_F*2)) :: invalid
+  
+  strout = repeat(' ', len(strout))
+  TIO_CHECK( setstr('', '', '12345', strout) )
+  ASSERT( '12345', strout )
+  
+  strout = repeat(' ', len(strout))
+  TIO_CHECK( setstr('', '', '12345  ', strout) )
+  ASSERT( '12345', strout )
+  
+  invalid = repeat('a', len(invalid))
+  TIO_CHECK_FAIL( setstr('', '', invalid, strout) )
+)
+
+#=======================================================================================================================
+
+TEST ( 'listnames' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_utils.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: material_id
+  integer(kind=TIO_SIZEK) :: nobj
+  character(len=TIO_STRLEN_F), dimension(3) :: names
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  
+  nobj = 3
+  
+  TIO_CHECK( listnames('', LISTCLASS_STATE, file_id, TIO_NULL_F, nobj, names) )
+  ASSERT( 3, nobj )
+  ASSERT( (/ "State1", "State2", "State3" /), names )
+  
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  
+  TIO_CHECK( listnames('', LISTCLASS_VGROUP, file_id, state_id, nobj, names) )
+  ASSERT( 3, nobj )
+  ASSERT( (/ "VarGroup1", "VarGroup2", "VarGroup3" /), names )
+  
+  TIO_CHECK( listnames('', LISTCLASS_VARIABLE, file_id, state_id, nobj, names) )
+  ASSERT( 3, nobj )
+  ASSERT( (/ "Variable1", "Variable2", "Variable3" /), names )
+
+  TIO_CHECK( listnames('', LISTCLASS_MESH, file_id, state_id, nobj, names) )
+  ASSERT( 3, nobj )
+  ASSERT( (/ "Mesh1", "Mesh2", "Mesh3" /), names )
+  
+  TIO_CHECK( TIO_Open_Mesh_f(file_id, state_id, "Mesh1", mesh_id) )
+  TIO_CHECK( TIO_Open_Mat_f(file_id, mesh_id, "Material1", material_id) )
+  
+  TIO_CHECK( listnames('', LISTCLASS_MAT, file_id, material_id, nobj, names) )
+  ASSERT( 3, nobj )
+  ASSERT( (/ "Mat1", "Mat2", "Mat3" /), names )
+  
+  TIO_CHECK( listnames('', LISTCLASS_QUANT, file_id, mesh_id, nobj, names) )
+  ASSERT( 3, nobj )
+  ASSERT( (/ "Quant1", "Quant2", "Quant3" /), names )
+  
+
+)
+
+#=======================================================================================================================

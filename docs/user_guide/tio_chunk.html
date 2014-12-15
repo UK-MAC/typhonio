@@ -1,0 +1,1323 @@
+<!--
+ Crown Copyright 2014 AWE.
+
+ This file is part of TyphonIO. 
+ Released under the BSD 3-clause license. 
+ For more details see license.txt
+-->
+
+<!-*-Mode: HTML;-*->
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+
+<html>
+
+<head>
+  <title>TyphonIO - Access routines</title>
+</head>
+
+<body>
+
+<h2>TyphonIO: Chunk and Section Routines</h2>
+
+<p></p>
+
+<table width="99%" border="0" cellspacing="0">
+<tr><td width="10%"></td><td><table><tr valign="top">
+  <td>
+      <a href="#TIO_Get_nchunks">TIO_Get_nchunks</a><br>
+  </td>
+  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+  <td>
+      <a href="#TIO_Set_Quad_Chunk">TIO_Set_Quad_Chunk</a><br>
+      <a href="#TIO_Get_Quad_Chunk">TIO_Get_Quad_Chunk</a><br>
+      <a href="#TIO_Set_Quad_Section">TIO_Set_Quad_Section</a><br>
+  </td>
+  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+  <td>
+      <a href="#TIO_Set_Unstr_Chunk">TIO_Set_Unstr_Chunk</a><br>
+      <a href="#TIO_Get_Unstr_Chunk">TIO_Get_Unstr_Chunk</a><br>
+      <a href="#TIO_Set_Unstr_Section">TIO_Set_Unstr_Section</a><br>
+  </td>
+  <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+  <td>
+      <a href="#TIO_Set_Point_Chunk">TIO_Set_Point_Chunk</a><br>
+      <a href="#TIO_Get_Point_Chunk">TIO_Get_Point_Chunk</a><br>
+      <a href="#TIO_Set_Point_Section">TIO_Set_Point_Section</a><br>
+  </td>
+</tr></table></td></tr>
+</table>
+
+<table width="99%" border="0" cellspacing="0">
+
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Get_nchunks">
+  <h2><br><code>TIO_Get_nchunks</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Returns the number of chunks for a TyphonIO object</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Get_nchunks( const TIO_File_t   fileID,
+                        const TIO_Object_t objectID,
+                        TIO_Size_t         *nchunks );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Get_nchunks_f( fileID, objectID, nchunks )
+   
+   integer(kind=TIO_FILEK), intent(in)  :: fileID
+   integer(kind=TIO_OBJK),  intent(in)  :: objectID
+   integer(kind=TIO_SIZEK), intent(out) :: nchunks
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID   </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> objectID </code></td>
+  <td class="content"> TyphonIO object ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nchunks  </code></td>
+  <td class="content"> Number of chunks</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+  </td>
+</tr>
+
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Set_Quad_Chunk">
+  <h2><br><code>TIO_Set_Quad_Chunk</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Sets the chunk properties for a structured mesh</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Set_Quad_Chunk( const TIO_File_t   fileID,
+                           const TIO_Object_t meshID,
+                           const TIO_Size_t   idx,
+                           const TIO_Dims_t   ndims,
+                           const TIO_Size_t   il,
+                           const TIO_Size_t   ih,
+                           const TIO_Size_t   jl,
+                           const TIO_Size_t   jh,
+                           const TIO_Size_t   kl,
+                           const TIO_Size_t   kh,
+                           const TIO_Size_t   nmixcell,
+                           const TIO_Size_t   nmixcomp );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Set_Quad_Chunk_f( fileID, meshID, idx, ndims,
+                                                       il, ih, jl, jh, kl, kh,
+                                                       nmixcell, nmixcomp )
+
+   integer(kind=TIO_FILEK), intent(in) :: fileID
+   integer(kind=TIO_OBJK),  intent(in) :: meshID
+   integer(kind=TIO_SIZEK), intent(in) :: idx
+   integer(kind=TIO_IPK),   intent(in) :: ndims
+   integer(kind=TIO_SIZEK), intent(in) :: il, ih, jl, jh, kl, kh
+   integer(kind=TIO_SIZEK), intent(in) :: nmixcell, nmixcomp
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> fileID   </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> meshID   </code></td>
+  <td class="content"> TyphonIO Mesh ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> idx      </code></td>
+  <td class="content"> Chunk index</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> ndims    </code></td>
+  <td class="content"> Number of dimensions (1, 2 or 3)</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> il       </code></td>
+  <td class="content"> Lower bound in the 1st dimension</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> ih       </code></td>
+  <td class="content"> Upper bound in the 1st dimension</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> jl       </code></td>
+  <td class="content"> Lower bound in the 2nd dimension (ignored if ndims < 2)</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> jh       </code></td>
+  <td class="content"> Upper bound in the 2nd dimension (ignored if ndims < 2)</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> kl       </code></td>
+  <td class="content"> Lower bound in the 3rd dimension (ignored if ndims < 3)</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> kh       </code></td>
+  <td class="content"> Upper bound in the 3rd dimension (ignored if ndims < 3)</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> nmixcell </code></td>
+  <td class="content"> Number of mixed cells</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> nmixcomp </code></td>
+  <td class="content"> Number of mixed components</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Get_Quad_Chunk">
+  <h2><br><code>TIO_Get_Quad_Chunk</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Returns the properties of a chunk on a structured mesh</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Get_Quad_Chunk( const TIO_File_t   fileID,
+                           const TIO_Object_t objectID,
+                           const TIO_Size_t   idx,
+                           TIO_Dims_t         *ndims,
+                           TIO_Size_t         *il,
+                           TIO_Size_t         *ih,
+                           TIO_Size_t         *jl,
+                           TIO_Size_t         *jh,
+                           TIO_Size_t         *kl,
+                           TIO_Size_t         *kh,
+                           TIO_Size_t         *nmixcell,
+                           TIO_Size_t         *nmixcomp );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Get_Quad_Chunk_f( fileID, objectID, idx, ndims,
+                                                       il, ih, jl, jh, kl, kh,
+                                                       nmixcell, nmixcomp )
+
+   integer(kind=TIO_FILEK), intent(in)            :: fileID
+   integer(kind=TIO_OBJK),  intent(in)            :: objectID
+   integer(kind=TIO_SIZEK), intent(in)            :: idx
+   integer(kind=TIO_IPK),   intent(out)           :: ndims
+   integer(kind=TIO_SIZEK), intent(out)           :: il, ih, jl, jh, kl, kh
+   integer(kind=TIO_SIZEK), intent(out), optional :: nmixcell, nmixcomp
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID   </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> meshID   </code></td>
+  <td class="content"> TyphonIO Mesh ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> idx      </code></td>
+  <td class="content"> Chunk index</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ndims    </code></td>
+  <td class="content"> Number of dimensions</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> il       </code></td>
+  <td class="content"> Lower bound in the 1st dimension</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ih       </code></td>
+  <td class="content"> Upper bound in the 1st dimension</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> jl       </code></td>
+  <td class="content"> Lower bound in the 2nd dimension (ignored if ndims < 2)</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> jh       </code></td>
+  <td class="content"> Upper bound in the 2nd dimension (ignored if ndims < 2)</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> kl       </code></td>
+  <td class="content"> Lower bound in the 3rd dimension (ignored if ndims < 3)</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> kh       </code></td>
+  <td class="content"> Upper bound in the 3rd dimension (ignored if ndims < 3)</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nmixcell </code></td>
+  <td class="content"> Number of mixed cells</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nmixcomp </code></td>
+  <td class="content"> Number of mixed components</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Set_Quad_Section">
+  <h2><br><code>TIO_Set_Quad_Section</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Sets the section properties for a structured mesh and returns the relevant section ID.</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Set_Quad_Section( const TIO_File_t   fileID,
+                             const TIO_Object_t meshID,
+                             TIO_Object_t       *sectionID,
+                             const TIO_Dims_t   ndims,
+                             const TIO_Size_t   il,
+                             const TIO_Size_t   ih,
+                             const TIO_Size_t   jl,
+                             const TIO_Size_t   jh,
+                             const TIO_Size_t   kl,
+                             const TIO_Size_t   kh );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Set_Quad_Section_f( fileID, meshID, sectionID, ndims,
+                                                         il, ih, jl, jh, kl, kh )
+
+   integer(kind=TIO_FILEK), intent(in)  :: fileID
+   integer(kind=TIO_OBJK),  intent(in)  :: meshID
+   integer(kind=TIO_OBJK),  intent(out) :: sectionID
+   integer(kind=TIO_IPK),   intent(in)  :: ndims
+   integer(kind=TIO_SIZEK), intent(in)  :: il, ih, jl, jh, kl, kh
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID    </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> meshID    </code></td>
+  <td class="content"> TyphonIO Mesh ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> sectionID </code></td>
+  <td class="content"> TyphonIO section ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> ndims     </code></td>
+  <td class="content"> Number of dimensions (up to 3)</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> il        </code></td>
+  <td class="content"> Lower bound in the 1st dimension</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> ih        </code></td>
+  <td class="content"> Upper bound in the 1st dimension</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> jl        </code></td>
+  <td class="content"> Lower bound in the 2nd dimension (ignored if ndims < 2)</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> jh        </code></td>
+  <td class="content"> Upper bound in the 2nd dimension (ignored if ndims < 2)</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> kl        </code></td>
+  <td class="content"> Lower bound in the 3rd dimension (ignored if ndims < 3)</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> kh        </code></td>
+  <td class="content"> Upper bound in the 3rd dimension (ignored if ndims < 3)</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+  </td>
+</tr>
+
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Set_Unstr_Chunk">
+  <h2><br><code>TIO_Set_Unstr_Chunk</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Sets an unstructured mesh chunk.</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Set_Unstr_Chunk( const TIO_File_t   fileID,
+                            const TIO_Object_t meshID,
+                            const TIO_Size_t   idx,
+                            const TIO_Dims_t   ndims,
+                            const TIO_Size_t   nnodes,
+                            const TIO_Size_t   ncells,
+                            const TIO_Size_t   nshapes,
+                            const TIO_Size_t   nconnectivity,
+                            const TIO_Size_t   nghost_nodes,
+                            const TIO_Size_t   nghost_cells,
+                            const TIO_Size_t   nghost_shapes,
+                            const TIO_Size_t   nghost_connectivity,
+                            const TIO_Size_t   nmixcell,
+                            const TIO_Size_t   nmixcomp );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Set_Unstr_Chunk_f( fileID, meshID, idx, ndims,
+                                                        nnodes, ncells, 
+                                                        nshapes, nconnectivity,
+                                                        nghost_nodes,  nghost_cells,
+                                                        nghost_shapes, nghost_connectivity,
+                                                        nmixcell, nmixcomp )
+
+   integer(kind=TIO_FILEK), intent(in)  :: fileID
+   integer(kind=TIO_OBJK),  intent(in)  :: meshID
+   integer(kind=TIO_SIZEK), intent(in)  :: idx
+   integer(kind=TIO_IPK),   intent(in)  :: ndims
+   integer(kind=TIO_SIZEK), intent(in)  :: nnodes, ncells, nshapes, nconnectivity
+   integer(kind=TIO_SIZEK), intent(in)  :: nghost_nodes,  nghost_cells
+   integer(kind=TIO_SIZEK), intent(in)  :: nghost_shapes, nghost_connectivity
+   integer(kind=TIO_SIZEK), intent(in)  :: nmixcell, nmixcomp
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> fileID              </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> meshID              </code></td>
+  <td class="content"> TyphonIO Mesh ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> idx                 </code></td>
+  <td class="content"> Chunk index</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> ndims               </code></td>
+  <td class="content"> Number of dimensions</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> nnodes              </code></td>
+  <td class="content"> Number of nodes</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> ncells              </code></td>
+  <td class="content"> Number of cells</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> nshapes             </code></td>
+  <td class="content"> Number of different cell shapes</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> nconnectivity       </code></td>
+  <td class="content"> Size of connectivity array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> nghost_nodes        </code></td>
+  <td class="content"> Number of ghost nodes</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> nghost_cells        </code></td>
+  <td class="content"> Number of ghost cells</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> nghost_shapes       </code></td>
+  <td class="content"> Number of different ghost cell shapes</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> nghost_connectivity </code></td>
+  <td class="content"> Size of ghost node connectivity array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> nmixcell            </code></td>
+  <td class="content"> Number of mixed cells</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> nmixcomp            </code></td>
+  <td class="content"> Number of mixed components</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Get_Unstr_Chunk">
+  <h2><br><code>TIO_Get_Unstr_Chunk</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Returns the section for an unstructured mesh</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Get_Unstr_Chunk( const TIO_File_t   fileID,
+                            const TIO_Object_t objectID,
+                            const TIO_Size_t   idx,
+                            TIO_Dims_t         *ndims,
+                            TIO_Size_t         *nnodes,
+                            TIO_Size_t         *ncells,
+                            TIO_Size_t         *nshapes,
+                            TIO_Size_t         *nconnectivity,
+                            TIO_Size_t         *nghost_nodes,
+                            TIO_Size_t         *nghost_cells,
+                            TIO_Size_t         *nghost_shapes,
+                            TIO_Size_t         *nghost_connectivity,
+                            TIO_Size_t         *nmixcell,
+                            TIO_Size_t         *nmixcomp );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Get_Unstr_Chunk_f( fileID, objectID, idx, ndims,
+                                                        nnodes, ncells, 
+                                                        nshapes, nconnectivity,
+                                                        nghost_nodes,  nghost_cells,
+                                                        nghost_shapes, nghost_connectivity,
+                                                        nmixcell, nmixcomp )
+
+   integer(kind=TIO_FILEK), intent(in)            :: fileID
+   integer(kind=TIO_OBJK),  intent(in)            :: objectID
+   integer(kind=TIO_SIZEK), intent(in)            :: idx
+   integer(kind=TIO_IPK),   intent(out)           :: ndims
+   integer(kind=TIO_SIZEK), intent(out)           :: nnodes, ncells, nshapes, nconnectivity
+   integer(kind=TIO_SIZEK), intent(out), optional :: nghost_nodes,  nghost_cells
+   integer(kind=TIO_SIZEK), intent(out), optional :: nghost_shapes, nghost_connectivity
+   integer(kind=TIO_SIZEK), intent(out), optional :: nmixcell, nmixcomp
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID              </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> meshID              </code></td>
+  <td class="content"> TyphonIO Mesh ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> idx                 </code></td>
+  <td class="content"> Chunk index</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ndims               </code></td>
+  <td class="content"> Number of dimensions</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nnodes              </code></td>
+  <td class="content"> Number of nodes</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ncells              </code></td>
+  <td class="content"> Number of cells</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nshapes             </code></td>
+  <td class="content"> Number of different cell shapes</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nconnectivity       </code></td>
+  <td class="content"> Size of connectivity array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nghost_nodes        </code></td>
+  <td class="content"> Number of ghost nodes</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nghost_cells        </code></td>
+  <td class="content"> Number of ghost cells</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nghost_shapes       </code></td>
+  <td class="content"> Number of different ghost cell shapes</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nghost_connectivity </code></td>
+  <td class="content"> Size of ghost node connectivity array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nmixcell            </code></td>
+  <td class="content"> Number of mixed cells</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nmixcomp            </code></td>
+  <td class="content"> Number of mixed components</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Set_Unstr_Section">
+  <h2><br><code>TIO_Set_Unstr_Section</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Sets the section for an unstructured mesh</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Set_Unstr_Section( const TIO_File_t   fileID,
+                              const TIO_Object_t meshID,
+                              TIO_Object_t       *sectionID,
+                              const TIO_Centre_t centring,
+                              const TIO_Size_t   nIDs,
+                              const TIO_Size_t   IDs[] );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Set_Unstr_Section_f( fileID, meshID, sectionID, 
+                                                          centring, nIDs, IDs )
+
+   integer(kind=TIO_FILEK),               intent(in)  :: fileID
+   integer(kind=TIO_OBJK),                intent(in)  :: meshID
+   integer(kind=TIO_OBJK),                intent(out) :: sectionID
+   integer(kind=TIO_IPK),                 intent(in)  :: centring
+   integer(kind=TIO_SIZEK),               intent(in)  :: nIDs
+   integer(kind=TIO_SIZEK), dimension(:), intent(in)  :: IDs
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID    </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> meshID    </code></td>
+  <td class="content"> TyphonIO Mesh ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> sectionID </code></td>
+  <td class="content"> TyphonIO section ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> centring  </code></td>
+  <td class="content"> Data centring for section</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> nIDs      </code></td>
+  <td class="content"> Number of cells in the sections</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> IDs       </code></td>
+  <td class="content"> The indexes of the cells in the section</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+    <p><b>Fortran90 Notes:</b><br>Different sections must be made for nodal and cell centred objects.</p>
+  </td>
+</tr>
+
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Set_Point_Chunk">
+  <h2><br><code>TIO_Set_Point_Chunk</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Set the point mesh chunk</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Set_Point_Chunk( const TIO_File_t   fileID,
+                            const TIO_Object_t meshID,
+                            const TIO_Size_t   idx,
+                            const TIO_Dims_t   ndims,
+                            const TIO_Size_t   nl,
+                            const TIO_Size_t   nh,
+                            const TIO_Size_t   nghost_nodes );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Set_Point_Chunk_f( fileID, meshID, idx, ndims,
+                                                        nl, nh, nghost_nodes )
+
+   integer(kind=TIO_FILEK), intent(in) :: fileID
+   integer(kind=TIO_OBJK),  intent(in) :: meshID
+   integer(kind=TIO_SIZEK), intent(in) :: idx
+   integer(kind=TIO_IPK),   intent(in) :: ndims
+   integer(kind=TIO_SIZEK), intent(in) :: nl, nh, nghost_nodes
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID       </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> meshID       </code></td>
+  <td class="content"> TyphonIO Mesh ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> idx          </code></td>
+  <td class="content"> Chunk index</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> ndims        </code></td>
+  <td class="content"> Number of dimensions</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> nl           </code></td>
+  <td class="content"> Lower index of the point array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> nh           </code></td>
+  <td class="content"> Upper index of the point array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> nghost_nodes </code></td>
+  <td class="content"> Number of ghost nodes</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Get_Point_Chunk">
+  <h2><br><code>TIO_Get_Point_Chunk</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Returns the point mesh chunk with the given index</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Get_Point_Chunk( const TIO_File_t   fileID,
+                            const TIO_Object_t objectID,
+                            const TIO_Size_t   idx,
+                            TIO_Dims_t         *ndims,
+                            TIO_Size_t         *nl,
+                            TIO_Size_t         *nh,
+                            TIO_Size_t         *nghost_nodes );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Get_Point_Chunk_f( fileID, objectID, idx, ndims,
+                                                        nl, nh, nghost_nodes )
+
+   integer(kind=TIO_FILEK), intent(in)            :: fileID
+   integer(kind=TIO_OBJK),  intent(in)            :: objectID
+   integer(kind=TIO_SIZEK), intent(in)            :: idx
+   integer(kind=TIO_IPK),   intent(out)           :: ndims
+   integer(kind=TIO_SIZEK), intent(out)           :: nl, nh
+   integer(kind=TIO_SIZEK), intent(out), optional :: nghost_nodes
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID       </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> meshID       </code></td>
+  <td class="content"> TyphonIO Mesh ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> idx          </code></td>
+  <td class="content"> Chunk index</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> ndims        </code></td>
+  <td class="content"> Number of dimensions</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nl           </code></td>
+  <td class="content"> Lower index of the point array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nh           </code></td>
+  <td class="content"> Upper index of the point array</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> nghost_nodes </code></td>
+  <td class="content"> Number of ghost nodes</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Set_Point_Section">
+  <h2><br><code>TIO_Set_Point_Section</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Sets the section for a point mesh</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Set_Point_Section( const TIO_File_t   fileID,
+                              const TIO_Object_t meshID,
+                              TIO_Object_t       *sectionID,
+                              const TIO_Size_t   nIDs,
+                              const TIO_Size_t   IDs[] );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Set_Point_Section_f( fileID, meshID, sectionID, 
+                                                          nIDs, IDs )
+
+   integer(kind=TIO_FILEK),               intent(in)  :: fileID
+   integer(kind=TIO_OBJK),                intent(in)  :: meshID
+   integer(kind=TIO_OBJK),                intent(out) :: sectionID
+   integer(kind=TIO_SIZEK),               intent(in)  :: nIDs
+   integer(kind=TIO_SIZEK), dimension(:), intent(in)  :: IDs
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> fileID    </code></td>
+  <td class="content"> TyphonIO file ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> meshID    </code></td>
+  <td class="content"> TyphonIO Mesh ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> sectionID </code></td>
+  <td class="content"> TyphonIO section ID</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> nIDs      </code></td>
+  <td class="content"> Number of points in the sections</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> IDs       </code></td>
+  <td class="content"> The indexes of the points in the section</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p></p>
+  </td>
+</tr>
+
+
+
+<tr valign="baseline">
+  <td colspan="5"><hr noshade size="1"></td>
+</tr>
+
+</table>
+
+</body>
+</html>

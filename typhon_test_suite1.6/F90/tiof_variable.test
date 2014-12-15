@@ -1,0 +1,247 @@
+#-*-Mode: F90;-*-  emacs mode specifier
+# vim: filetype=fortran
+
+# tunit: def TIO_CHECK( expr ): return "ierr = %s;\n    ASSERT(TIO_SUCCESS_F, ierr)" % expr
+# tunit: def TIO_CHECK_FALSE( expr ): return "ierr = %s;\n    ASSERT_NOT_EQUAL(TIO_SUCCESS_F, ierr)" % expr
+
+SUITE( 'Variable', 'typhonio' )
+
+#=======================================================================================================================
+
+TEST ( 'TIO_List_Variables_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_variable.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_SIZEK) :: nobj
+  character(len=TIO_STRLEN_F), dimension(3) :: names
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  
+  TIO_CHECK( TIO_List_Variables_f(file_id, state_id, nobj=nobj) )
+  
+  ASSERT( 3, nobj )
+  
+  TIO_CHECK( TIO_List_Variables_f(file_id, state_id, names=names) )
+  
+  ASSERT( (/ "Variable1", "Variable2", "Variable3" /), names )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Create_Variable_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "tio_create_variable.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: var_id
+
+  TIO_CHECK( TIO_Create_f(file_name, file_id, TIO_ACC_REPLACE_F, "TestCode", "V0.0", "01-01-2000", "Test Title") )
+  TIO_CHECK( TIO_Create_State_f( file_id, "State1", state_id, 1, 0.0_TIO_TIMEK, "seconds" ) )
+  
+  TIO_CHECK( TIO_Create_Variable_f(file_id, state_id, "Variable1", var_id, TIO_REAL8_F, TIO_3D_F, (/ 2, 2, 2 /), "units") )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Open_Variable_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_variable.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: var_id
+  integer(kind=TIO_IPK) :: datatype, ndims
+  integer(kind=TIO_SIZEK), dimension(3) :: dims
+  character(len=TIO_STRLEN_F) :: units
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  
+  TIO_CHECK( TIO_Open_Variable_f(file_id, state_id, "Variable1", var_id, datatype, ndims, dims, units) )
+  
+  ASSERT( TIO_REAL8_F, datatype )
+  ASSERT( 3, ndims )
+  ASSERT( (/ 10, 10, 10 /), dims )
+  ASSERT( "units", units )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Open_Variable_idx_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_variable.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: var_id
+  character(len=TIO_STRLEN_F) :: var_name
+  integer(kind=TIO_IPK) :: datatype, ndims
+  integer(kind=TIO_SIZEK), dimension(3) :: dims
+  character(len=TIO_STRLEN_F) :: units
+
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  
+  TIO_CHECK( TIO_Open_Variable_idx_f(file_id, state_id, 1, var_name, var_id, datatype, ndims, dims, units) )
+  
+  ASSERT( "Variable1", var_name )
+  ASSERT( TIO_REAL8_F, datatype )
+  ASSERT( 3, ndims )
+  ASSERT( (/ 10, 10, 10 /), dims )
+  ASSERT( "units", units )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Close_Variable_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "tio_close_variable.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: var_id
+
+  TIO_CHECK( TIO_Create_f(file_name, file_id, TIO_ACC_REPLACE_F, "TestCode", "V0.0", "01-01-2000", "Test Title") )
+  TIO_CHECK( TIO_Create_State_f( file_id, "State1", state_id, 1, 0.0_TIO_TIMEK, "seconds" ) )
+  
+  TIO_CHECK( TIO_Create_Variable_f(file_id, state_id, "Variable1", var_id, TIO_REAL8_F, TIO_3D_F, (/ 2, 2, 2 /), "units") )
+  
+  TIO_CHECK( TIO_Close_Variable_f(file_id, var_id) )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Get_Variable_Info_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_variable.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: var_id
+  character(len=TIO_STRLEN_F) :: var_name
+  integer(kind=TIO_IPK) :: datatype, ndims
+  integer(kind=TIO_SIZEK), dimension(3) :: dims
+  character(len=TIO_STRLEN_F) :: units
+  
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  
+  TIO_CHECK( TIO_Open_Variable_f(file_id, state_id, "Variable1", var_id) )
+  
+  TIO_CHECK( TIO_Get_Variable_Info_f(file_id, var_id, var_name, datatype, ndims, dims, units) )
+  
+  ASSERT( "Variable1", var_name )
+  ASSERT( TIO_REAL8_F, datatype )
+  ASSERT( 3, ndims )
+  ASSERT( (/ 10, 10, 10 /), dims )
+  ASSERT( "units", units )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Write_Variable_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "tio_write_variable.h5"
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: mesh_id
+  integer(kind=TIO_OBJK) :: var_id
+  real(kind=8), dimension(10,10,10) :: vdata
+  integer :: i
+
+  TIO_CHECK( TIO_Create_f(file_name, file_id, TIO_ACC_REPLACE_F, "TestCode", "V0.0", "01-01-2000", "Test Title") )
+  TIO_CHECK( TIO_Create_State_f( file_id, "State1", state_id, 1, 0.0_TIO_TIMEK, "seconds" ) )
+  
+  TIO_CHECK( TIO_Create_Variable_f(file_id, state_id, "Variable1", var_id, TIO_REAL8_F, &
+       &                           TIO_3D_F, (/ 10, 10, 10 /), "units") )
+  
+  vdata = reshape( (/ (i,i=1,1000) /), (/ 10, 10, 10 /) )
+  
+  TIO_CHECK( TIO_Write_Variable_f(file_id, var_id, TIO_REAL8_F, vdata) )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Read_Variable_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_variable.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: var_id
+  real(kind=8), dimension(10,10,10) :: vdata
+  real(kind=8), dimension(1000) :: exp_vdata
+  integer :: i
+  
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  
+  TIO_CHECK( TIO_Open_Variable_f(file_id, state_id, "Variable1", var_id) )
+  
+  TIO_CHECK( TIO_Read_Variable_f(file_id, var_id, TIO_REAL8_F, vdata) )
+  
+  exp_vdata = (/ (i,i=1,1000) /)
+  
+  ASSERT( exp_vdata, reshape( vdata, (/ 1000 /) ) )
+)
+
+#=======================================================================================================================
+
+TEST ( 'TIO_Read_Variable_Section_f' )
+(
+  integer :: ierr
+  character(len=*), parameter :: file_name = "./tio_files/tio_variable.h5"
+  character(len=TIO_STRLEN_F) :: code_name
+  character(len=TIO_STRLEN_F) :: version
+  character(len=TIO_STRLEN_F) :: date
+  character(len=TIO_STRLEN_F) :: title
+  integer(kind=TIO_FILEK) :: file_id
+  integer(kind=TIO_OBJK) :: state_id
+  integer(kind=TIO_OBJK) :: var_id
+  real(kind=8), dimension(10,10,10) :: vdata
+  real(kind=8), dimension(2,2,2) :: vdata2
+  real(kind=8), dimension(8) :: exp_vdata
+  integer :: i
+  
+  TIO_CHECK( TIO_Open_f(file_name, file_id, TIO_ACC_READONLY_F, code_name, version, date, title) )
+  TIO_CHECK( TIO_Open_State_f(file_id, "State1", state_id) )
+  
+  TIO_CHECK( TIO_Open_Variable_f(file_id, state_id, "Variable1", var_id) )
+  
+#  ASSERT(1, 0)
+  
+  TIO_CHECK( TIO_Read_Variable_Section_f(file_id, var_id, TIO_REAL8_F, TIO_3D_F, (/ 1, 1, 1 /), (/ 2, 2, 2 /), vdata2) )
+  
+  exp_vdata = (/ 1, 2, 11, 12, 101, 102, 111, 112 /)
+ 
+  ASSERT( exp_vdata, reshape( vdata2, (/ 8 /) ) )
+)
+
+#=======================================================================================================================

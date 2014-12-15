@@ -1,0 +1,242 @@
+<!--
+ Crown Copyright 2014 AWE.
+
+ This file is part of TyphonIO. 
+ Released under the BSD 3-clause license. 
+ For more details see license.txt
+-->
+
+<!-*-Mode: HTML;-*->
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+
+<html>
+
+<head>
+  <title>TyphonIO - Error and Verbose routines</title>
+</head>
+
+<body>
+
+<h2>TyphonIO: Error and Verbose Routines</h2>
+
+<p>All TyphonIO routines return an error status.  The values of these are given in the C and Fortran90 parameter listings.  It is possible to retrieve an explanation string for any error codes and, in addition, use a verbose mode that can be used to output extra run-time information.</p>
+
+<table width="99%" border="0" cellspacing="0">
+<tr><td width="10%"></td><td><table><tr valign="top">
+  <td>
+      <a href="#TIO_Get_Error">TIO_Get_Error</a><br>
+      <a href="#TIO_Set_Verbose">TIO_Set_Verbose</a><br>
+      <a href="#TIO_Get_Verbose">TIO_Get_Verbose</a><br>
+  </td>
+</tr></table></td></tr>
+</table>  
+
+<table width="99%" border="0" cellspacing="0">
+
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Get_Error">
+  <h2><br><code>TIO_Get_Error</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Gives a description of a TyphonIO return code</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Get_Error( const TIO_t err,
+                      char        str[STRLEN] );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Get_Error_f( err, str )
+  
+   integer(kind=TIO_ERRK), intent(in)  :: err
+   character(len=*),       intent(out) :: str
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN  </td>
+  <td class="content"><code> err </code></td>
+  <td class="content"> TyphonIO error code</td>
+</tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> str </code></td>
+  <td class="content"> String containing error description</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p>A brief description of the error signified by <code>err</code> is returned in
+<code>str</code>.
+
+<br><br>If verbose mode is enabled a stack-trace of any error is also output to
+<code>stderr</code>.
+
+<br><br>Does not have to be called collectively.</p>
+    <p><b>Fortran90 Notes:</b><br>The returned error string will be truncated, if necessary, to the length of
+<code>str</code>.</p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Set_Verbose">
+  <h2><br><code>TIO_Set_Verbose</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Sets the verbose mode</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Set_Verbose( const TIO_Verbose_t mode );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Set_Verbose_f( mode )
+  
+   integer, intent(in) :: mode
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">IN </td>
+  <td class="content"><code> mode </code></td>
+  <td class="content"> TyphonIO verbose mode</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p>Verbose output is not yet fully implemented.
+
+<br><br>Currently, all verbose mode will do is add stack-trace output to
+<code>TIO_Get_Error()</code>.
+By default, verbose mode is off.
+
+<br><br><blockquote>
+<code>TIO_VERBOSE_OFF   </code> - No verbose output<br>
+<code>TIO_VERBOSE_ALL   </code> - Verbose output from all processes<br>
+<code>TIO_VERBOSE_MASTER</code> - Verbose output from only the master process
+</blockquote>
+The master process is the one that gave <code>rank = 0</code> in
+<code>TIO_Create</code> or <code>TIO_Open</code>.
+
+<br><br>Must be called collectively.</p>
+  </td>
+</tr>
+<!-*-Mode: HTML;-*->
+
+<tr valign="baseline">
+  <td colspan="4"><hr noshade size="1"><a name="TIO_Get_Verbose">
+  <h2><br><code>TIO_Get_Verbose</code></h2></a></td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PURPOSE</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">Gets the current verbose mode setting</td>
+</tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">SYNOPSIS</td></tr>
+<tr valign="baseline"><td colspan="4" class="language">C/C++:</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ TIO_t TIO_Get_Verbose( TIO_Verbose_t mode );
+</pre></td></tr>
+<tr valign="baseline"><td colspan="4" class="language">Fortran90</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><pre>
+ integer(kind=TIO_ERRK) function TIO_Get_Verbose_f( mode )
+   
+   integer, intent(out) :: mode
+</pre></td></tr>
+
+<tr valign="baseline"><td colspan="4" class="attribute">PARAMETERS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td class="content">OUT </td>
+  <td class="content"><code> mode </code></td>
+  <td class="content"> TyphonIO verbose mode</td>
+</tr>
+
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">RETURNS</td></tr>
+
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content"><!-- a href="params.html#error" -->TyphonIO return code<!-- /a --></td>
+</tr>
+
+
+<tr valign="baseline"><td colspan="4" class="attribute">DESCRIPTION</td></tr>
+<tr valign="baseline">
+  <td width="10%"></td>
+  <td colspan="3" class="content">
+    <p>The value of the current verbose setting is returned.
+
+<br><br>Does not have to be called collectively.</p>
+  </td>
+</tr>
+
+<tr valign="baseline">
+  <td colspan="5"><hr noshade size="1"></td>
+</tr>
+
+</table>
+
+</body>
+</html>

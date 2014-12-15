@@ -1,0 +1,151 @@
+<!--
+ Crown Copyright 2014 AWE.
+
+ This file is part of TyphonIO. 
+ Released under the BSD 3-clause license. 
+ For more details see license.txt
+-->
+
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+
+<html>
+
+<head>
+  <title>TyphonIO - Introduction</title>
+</head>
+
+<body>
+
+<br>
+<h2>Mesh types</h2>
+
+
+
+<h2>Mesh</h2>
+<p>A Mesh .  Multiple meshes can be created within a single State.  Data within the mesh and it's Material and Quant objects are centred - cell-centred, nodal-centred, edge (2/3D) or face (3D).
+<table>
+<tr>
+  <td><b>Colinear Mesh</b><p>Rectangular and assumed connectivity.  Just has axis co-ords.</p></td>
+  <td><img src="gfx/colinear.png" border="0" height="120" width="120"></td>
+</tr>
+<tr>
+  <td><b>Non-Colinear Mesh</b><p>Logical rectangular, but each node has i,j,k co-ord.  Still assumed connectivity.</td>
+  <td><img src="gfx/noncolinear.png" border="0" height="120" width="120"></td>
+</tr>
+<tr>
+  <td><b>Unstructured Mesh</b><p>Explicit connectivity and shapes defined.</p></td>
+  <td><img src="gfx/unstructured.png" border="0" height="120" width="120"><br><img src="gfx/connect.png" border="0" height="200" width="250"></td>
+</tr>
+<tr>
+  <td><b>Point Mesh</b><p>No connectivity graph.</p></td>
+  <td><img src="gfx/point.png" border="0" height="120" width="120"></td>
+</tr>
+</table>
+</p>
+<p>Co-ordinate systems can be Cartesian, Spherical polar, cylindrical polar or axisymmetric (2D)</p>
+
+<h4>Material</h4>
+<p>This holds the mesh-wide Material values.  Also acts as an index to mixed data for all quantities.</p>
+<p><b>Mixed materials</b><img src="gfx/material.png" border="0" height="208" width="434"></p>
+
+<h4>Quant</h4>
+<p>And mesh-wide data that isn't the material can be stored as a Quant.</p>
+
+
+<h4>Variable</h4>
+<p>Variables are for holding any additional data that doesn't come under the remit of other objects or their metadata.  They can be created within any other TyphonIO object, but Variables cannot be within other Variables.</p>
+
+<h4>Vargroup</h4>
+<p>Vargroups (variable groups) are simple container objects that hold any number of Variables, or further Vargroup objects.  Variables do not necessarily have to be contained within Vargroups, but Vargroups are provided so the user can organise larger collections of Variables.  Vargroups can be can be created in any of the following objects: File, Vargroup, State, Mesh, Material, Quant, Nodeset or Surface.</p>
+
+<h4>Using Chunks and Sections</h4>
+Chunks are indexed 0 to nchunks-1 for C and 1 to nchunks for Fortran90.
+<p></p>
+
+</blockquote>
+
+
+<br>
+
+
+<h3>Using TyphonIO</h3>
+<hr noshade size="1">
+<blockquote>
+</blockquote>
+
+<h4>TyphonIO API</h4>
+<blockquote>
+<p><pre>
+  #include "typhonIO.h"</p>
+</pre></p>
+<p><pre>
+  use typhonIO
+</pre></p>
+<p>Fortan and C/C++ APIs are kept as identical as possible.  Addition of "_f" to F90 API is the difference</p>
+<p>C indices start at 0, F90 at 1</p>
+</blockquote>
+
+<h4>TyphonIO Datatypes and parameters</h4>
+<p></p>
+
+<h4>TyphonIO semantics</h4>
+<p></p>
+<table>
+<tr>
+  <td>Collective routines</td><td>independent routines</td>
+</tr>
+<tr><td colspan="2"><hr noshade size="1"></td></tr>
+
+<tr valign="top">
+  <td><code>
+TIO_Create*<br>
+TIO_Open*<br>
+TIO_Close*<br>
+TIO_Set_*_Chunk<br>
+TIO_Set_*_Range<br>
+TIO_Flush<br>
+  </code></td>
+
+  <td></td>
+
+  <td><code>
+TIO_CheckFile<br>
+TIO_IsFileOpen<br>
+TIO_Get_LibVersion<br>
+TIO_Get_FileVersion<br>
+TIO_SizeOf<br>
+TIO_Get_TypeClass<br>
+TIO_Get_*_Info<br>
+TIO_List_*<br>
+TIO_Get_*_Range<br>
+TIO_Get_nchunks<br>
+TIO_Get_*_Chunk<br>
+TIO_Set_Section<br>
+  </code></td>
+</tr>
+</table>
+
+
+
+<h4>Compiling and Linking</h4>
+<blockquote>
+<p>Simply include the path of the TyphonIO include directory for compiling.  For linking need to link to TyphonIO library = typhonio for C and typhonio_f and typhonio for F90.  Also need to link to HDF5 library and any other that may require (<code>-lz -lgpfs -lm</code>)</p>
+
+<p><pre>
+  TIODIR = /prod/codes/typhon/typhonIO/parallel
+  H5DIR  = /global/hdf5/parallel
+  
+  ftn -I$(TIODIR)/include myprog.f90 -c -o myprog.o
+  ftn myprog.o -L$(TIODIR)/lib -Ltyphonio_f typhonio -L$(H5DIR)/lib -lhdf5 -o myprog.x
+</pre>
+</p>
+</blockquote>
+
+
+<hr noshade size="1">
+
+
+</body>
+</html>
+
+
