@@ -36,8 +36,8 @@ and PROD_DIR environment variables to set the path of build directory
 3) Compilation
 ==============
 
-Compile typhonIO distribution by typing "make" in src, which should show usage options
-Its good practice to check the current typhonIO configuration using "make config" before build with "make install"
+Instruction for building typhonIO distribution by typing "make" in src, which should show compile options
+It's good practice to check the current typhonIO configuration using "make config" before build with "make install"
 
 Note that install also build Fortran API library, to exclude F90 library, use NOF90=1.
 

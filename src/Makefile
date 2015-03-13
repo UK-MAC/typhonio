@@ -230,7 +230,7 @@ envcheck	:
 			@ if [ ! $$HPC_MPI ]; then				\
 				${SMAKE} ERROR="HPC_MPI unset";			\
 			fi
-			@ if [ $(VALID_COMPILER) == 0 ]; then			\
+			@ if [ $(VALID_COMPILER) = 0 ]; then			\
 				${SMAKE} ERROR="HPC_COMPILER not known";	\
 			fi
 
@@ -244,13 +244,13 @@ prebuild	:	makedirs copysrc
 
 makedirs	:
 			@- mkdir -p $(SPEC_BUILD_DIR)/include $(SPEC_BUILD_DIR)/lib $(SPEC_BUILD_DIR)/src
-			@- if [ ${NOF90} == 0 ]; then 							\
+			@- if [ ${NOF90} = 0 ]; then 							\
 				mkdir -p $(SPEC_BUILD_DIR)/src/F90;					\
 			   fi
 copysrc		:
 			@- cp -p $(SRC_DIR)/*.c $(SRC_DIR)/*.h $(SPEC_BUILD_DIR)/src/
 			@- cp -p Makefile* $(SPEC_BUILD_DIR)/src/
-			@- if [ ${NOF90} == 0 ]; then 							\
+			@- if [ ${NOF90} = 0 ]; then 							\
 			 	cp -p	$(SRC_DIR)/F90/*.c	$(SRC_DIR)/F90/*.h 			\
 					$(SRC_DIR)/F90/*.F90	$(SRC_DIR)/F90/*.tpp			\
 					$(SRC_DIR)/F90/*.fpp 	$(SRC_DIR)/F90/*.sh			\
@@ -259,19 +259,19 @@ copysrc		:
 			   fi
 
 makelibs	:
-			@ if [ ${NOSTATIC} == 0 ]; then 						\
+			@ if [ ${NOSTATIC} = 0 ]; then 						\
 				cd $(SPEC_BUILD_DIR)/src;						\
 				${MAKE} INCLUDEC=1 SPEC_BUILD_DIR=$(SPEC_BUILD_DIR) lib includefiles;	\
 			else										\
 				echo "  ---  No C library";						\
 			fi
-			 if [ ${NOF90} == 0 ]; then 							\
+			 if [ ${NOF90} = 0 ]; then 							\
 				cd $(SPEC_BUILD_DIR)/src/F90;						\
 				${MAKE} INCLUDEF90=1 SPEC_BUILD_DIR=$(SPEC_BUILD_DIR) lib includefiles;	\
 			else										\
 				echo "  ---  No F90 library";						\
 			fi
-			@ if [ ${NOSHARED} == 0 ]; then 						\
+			@ if [ ${NOSHARED} = 0 ]; then 						\
 				cd $(SPEC_BUILD_DIR)/src;						\
 				${MAKE} INCLUDEC=1 SPEC_BUILD_DIR=$(SPEC_BUILD_DIR) LIBNAME=lib$(NAME).so sharedlib includefiles;	\
 			else										\
