@@ -22,7 +22,7 @@ MAKE			?=	gmake -s
 SMAKE			?=	$(MAKE) -s
 
 
-BUILD			=	${HPC_COMPILER},${HPC_MPI}${EXTENSION}
+BUILD			=	${HPC_COMPILER}${EXTENSION}
 
 
 # Version in Major, Minor, Revision format (M.N.R)
@@ -44,7 +44,7 @@ SRC_DIR			=	$(realpath ${PWD})
 BUILD_DIR		?=	$(realpath ${PWD}/..)/build
 SPEC_BUILD_DIR		?=	$(BUILD_DIR)/$(BUILD)
 
-PROD_DIR		?=	/prod/${HPC_COMPILER}/${HPC_MPI}
+PROD_DIR		?=	/prod/${HPC_COMPILER}
 
 
 
@@ -57,24 +57,6 @@ HDF5_VERSION		?=	1.8.5
 HDF5_DIR		?=	${PROD_DIR}/external/hdf5/${HDF5_VERSION}
 
 
-##############################################################
-#
-# VisIt-specific - always uses gcc
-#
-
-
-VISIT_DIR		?=	/pathtovisit/visit
-VISIT_HDF5_VERSION	?=	1.8
-VISIT_HDF5_DIR		=	$(VISIT_DIR)/hdf5/$(VISIT_HDF5_VERSION)/$(VISIT_SUBDIR)
-VISIT_SUBDIR		=	${VISIT_ARCH}_${GCC_COMPILER}-${GCC_VERSION}
-
-OSTYPE			?=	linux
-VISIT_ARCH		=	${OSTYPE}-`uname -m`
-GCC_COMPILER		=	gcc
-GCC_VERSION		=	`gcc -v 2>&1 | grep "gcc version" | cut -d' ' -f3 | cut -d'.' -f1-2`
-#GCC_VERSION		=	`gcc -v 2>&1 | grep "gcc version" | cut -d' ' -f3`
-
-VISIT_EXPORT_DIR	=	$(VISIT_DIR)/typhonio/$(VERSION_MNR)-$(VISIT_HDF5_VERSION)/$(VISIT_SUBDIR)
 
 
 ##############################################################
@@ -123,7 +105,6 @@ usage	:
 		@ echo "Environment variables:"
 		@ echo ""
 		@ echo "   HPC_COMPILER"
-		@ echo "   HPC_MPI"
 		@ echo ""
 		@ echo "   VERSION                            - TyphonIO version"
 		@ echo "   BUILD_DIR                          - path of build directory"
@@ -134,6 +115,7 @@ usage	:
 		@ echo "   FPREPRO_EXTRA                      - extra settings for Fortran preprocessor"
 		@ echo ""
 		@ echo "   NOF90=1                            - switches off build of F90 library"
+		@ echo "   USEMPI=1                           - switches on build with MPI library"
 		@ echo ""
 
 help	:	usage
@@ -159,17 +141,19 @@ else
 OPT_OR_DBG	?=	OPT
 endif
 
-ifeq (${HPC_MPI}, serial)
-SER_OR_PAR	?=	SER
-else
-SER_OR_PAR	?=	PAR
-endif
 
-
+USEMPI          ?=      0
 NOEXPORT	?=	0
 NOF90		?=	0
 NOSTATIC	?= 	0
 NOSHARED	?=	1
+
+ifeq (${USEMPI}, 1)
+SER_OR_PAR	?=	PAR
+else
+SER_OR_PAR	?=	SER
+endif
+
 
 
 %_debug	:
@@ -181,17 +165,6 @@ debug	:
 		@ ${MAKE} install_debug
 
 
-VISIT_STUFF	=	SPEC_BUILD_DIR=$(SPEC_BUILD_DIR)-visit		\
-			  CPREPRO_EXTRA=-D_TYPHIO_NOH5CLOSE		\
-			  HDF5_DIR=$(VISIT_HDF5_DIR) 			\
-			  HDF5_VERSION=$(VISIT_HDF5_VERSION) 		\
-			  NOSTATIC=1 NOF90=1 NOSHARED=0			\
-			  HPC_COMPILER=gcc HPC_MPI=serial
-
-%_visit	:
-		@ ${MAKE} $(VISIT_STUFF) $(subst _visit,,$@)
-
-visit	:	install_visit
 
 
 ##############################################################
@@ -226,9 +199,6 @@ endif
 envcheck	:
 			@ if [ ! $$HPC_COMPILER ]; then				\
 				${SMAKE} ERROR="HPC_COMPILER unset";		\
-			fi
-			@ if [ ! $$HPC_MPI ]; then				\
-				${SMAKE} ERROR="HPC_MPI unset";			\
 			fi
 			@ if [ $(VALID_COMPILER) = 0 ]; then			\
 				${SMAKE} ERROR="HPC_COMPILER not known";	\
@@ -354,11 +324,6 @@ echosys		:
 				echo "HPC_COMPILER    = " ${HPC_COMPILER};	\
 			  else							\
 				echo "HPC_COMPILER    =  unset";		\
-			  fi
-			@ if [ ${HPC_MPI} ]; then				\
-				echo "HPC_MPI         = " ${HPC_MPI};		\
-			  else							\
-				echo "HPC_MPI         =  unset";		\
 			  fi
 
 
