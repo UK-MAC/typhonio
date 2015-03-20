@@ -44,7 +44,7 @@ SRC_DIR			=	$(realpath ${PWD})
 BUILD_DIR		?=	$(realpath ${PWD}/..)/build
 SPEC_BUILD_DIR		?=	$(BUILD_DIR)/$(BUILD)
 
-PROD_DIR		?=	/prod/${HPC_COMPILER}
+PROD_DIR		?=	$(realpath ${PWD}/..)/install/${HPC_COMPILER}
 
 
 
