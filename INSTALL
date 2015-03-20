@@ -18,30 +18,53 @@ More information can be found at http://www.hdfgroup.org
 2) Configuration
 ================
 
-Modify src/Makefile.inc for specific compiler options/flags, currently supported compilers includes
+Modify src/Makefile.inc for your specific compiler options/flags; currently supported compilers include:
 
-*  GNU Compiler
-*  Intel Compiler
-*  Portland Group PGI compiler
-*  IBM XL
+Set the build environment to recognise your specific compiler by using the environment
+variable HPC_COMPILER. Currently supported compilers, with the options to use, include:
 
-Set the build environment to recognise specific compilers by using HPC_COMPILER
-e.g. 
-export HPC_COMPILER=gcc
+*  gcc   - GNU Compiler
+*  intel - Intel Compiler
+*  pgi   - Portland Group PGI compiler
+*  xl    - IBM XL
 
-Edit the src/Makefile to specify the HDF5 library path HDF5_DIR, 
-and PROD_DIR environment variables to set the path of build directory
+   e.g.
+     export HPC_COMPILER=gcc
+
+   alternatively this can be set as part of the make command (see section 3) using:
+     make HPC_COMPILER=gcc
+
+Edit src/Makefile to specify the HDF5 library path, HDF5_DIR,
+and the PROD_DIR environment variables to set the path of build directory
+
+   e.g.
+     PROD_DIR=/local/usr/lammps/lib/hdf5/typhonio/build
+     HDF5_DIR=/usr/local/hdf5
+
+   alternatively pass these into make as above for the compiler.
 
 
 3) Compilation
 ==============
 
-Instruction for building typhonIO distribution by typing "make" in src, which should show compile options
-It's good practice to check the current typhonIO configuration using "make config" before build with "make install"
+Full options for building TyphonIO can be displayed by typing "make" in the src directory.
+This will give a list of compile options. It is good practice to check the current typhonIO
+configuration using "make config" before building.
 
-Note that install also build Fortran API library, to exclude F90 library, use NOF90=1.
+To build the serial version:
+
+  $ cd src
+  $ make install HPC_COMPILER=<[gcc/intel/pgi/xl]> HDF5_DIR=<path/to/hdf5> PROD_DIR=<path/to/install>
+
+To build the parallel version:
+
+  $ cd src
+  $ make install USEMPI=1 HPC_COMPILER=<compiler option> HDF5_DIR=<path/to/hdf5> PROD_DIR=<path/to/install>
+
+Note that the installation also builds the Fortran API library by deafult. 
+To exclude the F90 library, use NOF90=1.
 
 4) Documentation 
 ================
 
-The user's manual are available in the doc/ directory, as well as the sample programs of the distribution.
+The user's manual are available in the docs/ directory, as well as the sample programs of the distribution.
