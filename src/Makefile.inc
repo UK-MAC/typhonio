@@ -34,7 +34,7 @@ CC_SER		=	icc -fpic
 CC_PAR		=	mpicc -fpic
 CC_VERSION	=	icc -V 2>&1
 
-CFLAGS_OPT	=	-O2
+CFLAGS_OPT	=	-g -O2
 CFLAGS_DBG	=	-g -C -traceback
 
 CINC		=	-I
@@ -46,7 +46,7 @@ CPP_FLAGS	=
 FC_SER		=	ifort -free -heap-arrays 64 -fpic
 FC_PAR		=	mpif90 -free -heap-arrays 64 -fpic
 FC_VERSION	=	ifort -V  2>&1
-FFLAGS_OPT	=	-O2
+FFLAGS_OPT	=	-g -O2
 FFLAGS_DBG	=	-g -C -traceback
 
 FINC		=	-I
@@ -79,7 +79,7 @@ CC_SER		=	pgcc -tp px-64 -c89 -fpic
 CC_PAR		=	mpicc -tp px-64 -c89 -fpic
 CC_VERSION	=	pgcc -V 2>&1
 
-CFLAGS_OPT	=	-O2
+CFLAGS_OPT	=	-g -O2
 CFLAGS_DBG	=	-g -C -Minform=warn
 
 CINC		=	-I
@@ -91,7 +91,7 @@ CPP_FLAGS	=
 FC_SER		=	pgf90 -tp px-64 -Mfree -fpic
 FC_PAR		=	mpif90  -tp px-64 -Mfree -fpic
 FC_VERSION	=	pgf90 -V  2>&1
-FFLAGS_OPT	=	-O2
+FFLAGS_OPT	=	-g -O2
 FFLAGS_DBG	=	-g -C
 
 FINC		=	-I
@@ -124,7 +124,7 @@ CC_SER		=	xlc -qlanglvl=stdc99
 CC_PAR		=	mpcc -qlanglvl=stdc99
 CC_VERSION	=	xlc -qversion
 
-CFLAGS_OPT	=	-O2
+CFLAGS_OPT	=	-g -O2
 CFLAGS_DBG	=	-g -C -qfullpath
 
 CINC		=	-I
@@ -136,7 +136,7 @@ CPP_FLAGS	=
 FC_SER		=	xlf90 -qfree=F90
 FC_PAR		=	mpxlf90 -WF-qfpp -qfree=F90
 FC_VERSION	=	xlf90 -qversion
-FFLAGS_OPT	=	-O2
+FFLAGS_OPT	=	-g -O2
 FFLAGS_DBG	=	-g -C -qfullpath
 
 FINC		=	-I
@@ -169,7 +169,7 @@ CC_SER		=	suncc -xtarget=generic -Kpic
 CC_PAR		=	mpicc -xtarget=generic -Kpic
 CC_VERSION	=	suncc -V 2>&1
 
-CFLAGS_OPT	=	-O2
+CFLAGS_OPT	=	-g -O2
 CFLAGS_DBG	=	-g -xcheck
 
 CINC		=	-I
@@ -181,7 +181,7 @@ CPP_FLAGS	=
 FC_SER		=	sunf90 -xtarget=generic -free -Kpic
 FC_PAR		=	mpif90 -xtarget=generic -free -Kpic
 FC_VERSION	=	sunf90 -V  2>&1
-FFLAGS_OPT	=	-O2
+FFLAGS_OPT	=	-g -O2
 FFLAGS_DBG	=	-g -xcheck=all
 
 FINC		=	-I
@@ -214,7 +214,7 @@ CC_SER		=	gcc -fpic -ansi
 CC_PAR		= 	mpicc -fpic -ansi
 CC_VERSION	=	mpicc --version 2>&1
 
-CFLAGS_OPT	=	-O2
+CFLAGS_OPT	=	-g -O2
 CFLAGS_DBG	=	-g -ansi -pedantic -Wall -Wextra -Wno-long-long -Wno-unused-parameter
 
 CINC		=	-I
@@ -227,7 +227,7 @@ FC_SER		=	gfortran -fpic
 FC_PAR		= 	mpif90 -fpic 
 FC_VERSION	=	mpif90 --version 2>&1
 
-FFLAGS_OPT	=   -O2
+FFLAGS_OPT	=  -g  -O2
 FFLAGS_DBG	=  -g  -pedantic -Wall -Wextra -Wno-long-long -Wno-unused-parameter
 
 FINC		= -I

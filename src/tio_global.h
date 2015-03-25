@@ -23,6 +23,7 @@ extern "C" {
 #define TIO_VERSION_MIN  6
 #define TIO_VERSION_REL  0
 
+#define TIO_VERSION_AWE  0
 
 #ifdef _TYPHIO_PARALLEL
 
