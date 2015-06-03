@@ -47,6 +47,8 @@ static int xH5_CalcChunkedSpace( struct xH5object_t  *hobject,
                                  const TIO_Size_t    nchunks,
                                  const union iInfo_t *chunkinfo,
                                  const TIO_Size_t    idx,
+                                 const int           reading,
+                                 const int           nodata,
                                  TIO_Size_t          *space_size,
                                  hid_t               *memsp_id,
                                  hid_t               *filsp_id );
@@ -1748,7 +1750,7 @@ xH5_ReadQuadAll( struct xH5object_t  *hobject,
 
       /* Get chunk filespace (without ghosts) */
       irc = xH5_GetChunkedSpace(hobject, SPACE_FILE, class, TIO_MESH_QUAD_NONCOLINEAR, datapos,
-                                ndset, ndims, 0, nchunks, chunkinfo,  FALSE, ichunk,
+                                ndset, ndims, 0, nchunks, chunkinfo,  TRUE, FALSE, ichunk,
                                 &mbksize[0], &filsp_id);
       TIOassert(irc < 0, ERR_INT, "Failed to get file dataspace for chunk", -3);
 
@@ -1807,6 +1809,8 @@ xH5_ReadQuadAll( struct xH5object_t  *hobject,
       if (hrc < 0)
         TIOreturn(ERR_HDF5, "Failed to read chunk hyperslab", -6);
 
+      hrc = H5Sclose(filsp_id);
+      TIOassert(hrc < 0, ERR_HDF5, "Failed to close file dataspace", -7);
 
       /* Juggle any mixed material data */
 
@@ -1835,7 +1839,7 @@ xH5_ReadQuadAll( struct xH5object_t  *hobject,
     }
 
     hrc = H5Sclose(memsp_id);
-    TIOassert(hrc < 0, ERR_HDF5, "Failed to close memory dataspace", -7);
+    TIOassert(hrc < 0, ERR_HDF5, "Failed to close memory dataspace", -8);
 
   }
 
@@ -1956,7 +1960,7 @@ xH5_ReadUnstrAll(  struct xH5object_t  *hobject,
       /* Get space of chunk (without ghosts) within the file */
       irc = xH5_GetChunkedSpace(hobject, SPACE_FILE, class, TIO_MESH_UNSTRUCT,
                                 datapos, ndset, TIO_1D, TIO_GHOSTS_NONE,
-                                nchunks, chunkinfo,  FALSE,
+                                nchunks, chunkinfo, TRUE, FALSE,
                                 ichunk, &bksize[0], &filsp_id);
       TIOassert(irc < 0, ERR_INT, "Failed to get chunked file dataspace", -2);
 
@@ -2034,7 +2038,7 @@ xH5_ReadUnstrAll(  struct xH5object_t  *hobject,
 
       irc = xH5_GetChunkedSpace( hobject, SPACE_FILE, class, TIO_MESH_UNSTRUCT, DATAPOS_NODE,
                                  UNSTR_NODEIDS, TIO_1D, TIO_GHOSTS_NONE,
-                                 nchunks, chunkinfo,  FALSE, ichunk,
+                                 nchunks, chunkinfo, TRUE, FALSE, ichunk,
                                  &bksize[0], &filsp_id );
       TIOassert(irc < 0, ERR_INT, "Failed to get chunked file dataspace", -11);
 
@@ -2124,7 +2128,7 @@ xH5_ReadUnstrAll(  struct xH5object_t  *hobject,
 
       irc = xH5_GetChunkedSpace( hobject, SPACE_FILE, class, TIO_MESH_UNSTRUCT, DATAPOS_NODE,
                                  UNSTR_NODEIDS, TIO_1D, TIO_GHOSTS_NONE,
-                                 nchunks, chunkinfo,  FALSE, ichunk,
+                                 nchunks, chunkinfo, FALSE, FALSE, ichunk,
                                  &bksize[0], &filsp_id);
       TIOassert(irc < 0, ERR_INT, "Failed to get chunked file dataspace", -26);
 
@@ -2152,7 +2156,7 @@ xH5_ReadUnstrAll(  struct xH5object_t  *hobject,
 
       irc = xH5_GetChunkedSpace( hobject, SPACE_FILE, class, TIO_MESH_UNSTRUCT, DATAPOS_CONNECT,
                                  UNSTR_CONNECT, TIO_1D, TIO_GHOSTS_NONE,
-                                 nchunks, chunkinfo,  FALSE, ichunk,
+                                 nchunks, chunkinfo, FALSE,  FALSE, ichunk,
                                  &bksize[0], &filsp_id);
       TIOassert(irc < 0, ERR_INT, "Failed to get chunked file dataspace", -31);
 
@@ -2301,7 +2305,7 @@ xH5_ReadPointAll( struct xH5object_t  *hobject,
 
       irc = xH5_GetChunkedSpace( hobject, SPACE_FILE, class, TIO_MESH_POINT, DATAPOS_NODE,
                                  ndset, TIO_1D, TIO_GHOSTS_NONE,
-                                 nchunks, chunkinfo,  FALSE, ichunk,
+                                 nchunks, chunkinfo, TRUE, FALSE, ichunk,
                                  &bksize[0], &filsp_id );
       TIOassert(irc < 0, ERR_INT, "Failed to get chunked file dataspace", -3);
 
@@ -2747,7 +2751,7 @@ xH5_GetSection( struct xH5file_t          *hfile,
 
           irc = xH5_GetChunkedSpace( hmesh, SPACE_FILE, CLASS_MESH, TIO_MESH_UNSTRUCT, idx_datapos,
                                      idx_ndset, TIO_1D, TIO_GHOSTS_NONE,
-                                     nchunks, chunkinfo,  FALSE,
+                                     nchunks, chunkinfo, TRUE, FALSE,
                                      ichunk, cksize, &idx_filsp_id);
           TIOassert(irc < 0, ERR_INT, "Failed to get chunked file dataspace", -105);
 
@@ -3549,7 +3553,8 @@ xH5_GetChunkedSpace( struct xH5object_t    *hobject,
                      const TIO_Size_t      nghosts,
                      const TIO_Size_t      nchunks,
                      const union iInfo_t   *chunkinfo,
-                     const int             nodata,   /* enables zero-sized dataspace if data null */
+                     const int             reading,
+		     const int             nodata,   /* enables zero-sized dataspace if data null */
                      const TIO_Size_t      idx,
                      TIO_Size_t            *space_size,
                      hid_t                 *space_id )
@@ -3566,7 +3571,9 @@ xH5_GetChunkedSpace( struct xH5object_t    *hobject,
   hsize_t offset[1];
   hsize_t nblock[1];
   herr_t  hrc;
-
+  herr_t  trc;
+  hid_t lfsp_id, lmsp_id;
+  
   TIO_Size_t ng, ng2;
 
   int fullspace, iquadmesh, imixed;
@@ -3658,8 +3665,6 @@ xH5_GetChunkedSpace( struct xH5object_t    *hobject,
 
     /* Carry on for all other meshes/objects */
 
-    hid_t lfsp_id, lmsp_id;
-
     /* For mixed data, always return full amount stored in file, regardless of nghosts */
 
     switch (datapos) {
@@ -3684,7 +3689,7 @@ xH5_GetChunkedSpace( struct xH5object_t    *hobject,
     /* Space needs to be calculated  */
 
     irc = xH5_CalcChunkedSpace(hobject, class, meshtype, datapos, ndset, ndims,
-                               ng, nchunks, chunkinfo,  idx,
+                               ng, nchunks, chunkinfo,  idx,  reading, nodata,
                                &lsp_size, &lmsp_id, &lfsp_id);
     zerosized = (irc > 0);
     TIOassert(irc < 0, ERR_INT, "Failed to calc space", -1);
@@ -3768,6 +3773,19 @@ xH5_GetChunkedSpace( struct xH5object_t    *hobject,
       /* Create a copy of the stored dataspace */
 
       *space_id = H5Scopy(lsp_id);
+      /* TODO: extra H5Scopy of xH5_CalcChunkedSpace memory and space needs to be closed */ 
+      if (reading) {
+        hrc = H5Sclose(lsp_id);
+        TIOassert(hrc < 0, ERR_HDF5, "Failed to close lsp_id", -8);
+        /* lsp_id close both lmsp_id and lfsp_id, but double check anyway */ 
+        if ((lmsp_id>0) && (lsp_id !=lmsp_id)) {
+           trc = H5Sclose(lmsp_id);
+        }
+        if ((lfsp_id>0) && (lsp_id !=lfsp_id))  {
+           trc = H5Sclose(lfsp_id);
+        }       
+      } 
+      
       TIOassert(*space_id < 0, ERR_HDF5, "Failed to copy lsp_id to space_id", -7);
 
     }
@@ -3797,6 +3815,8 @@ xH5_CalcChunkedSpace( struct xH5object_t  *hobject,
                       const TIO_Size_t    nchunks,
                       const union iInfo_t *chunkinfo,
                       const TIO_Size_t    idx,
+                      const int           reading,
+                      const int           nodata,
                       TIO_Size_t          *space_size,
                       hid_t               *memsp_id,
                       hid_t               *filsp_id )
@@ -3846,7 +3866,7 @@ xH5_CalcChunkedSpace( struct xH5object_t  *hobject,
     lmsp_id = -1;
 
   }
-  else {                  /* This is for the individual chunk within the datset */
+  else if (!nodata) {     /* This is for the individual chunk within the datset */
 
     hid_t fullspace_id;
 
@@ -3856,7 +3876,7 @@ xH5_CalcChunkedSpace( struct xH5object_t  *hobject,
     fnghosts = hobject->nghosts;
 
     irc = xH5_GetChunkedSpace(hobject, SPACE_FILE, class, meshtype, datapos, ndset, ndims, fnghosts,
-                              nchunks, chunkinfo, FALSE, nchunks, NULL, &fullspace_id);
+                              nchunks, chunkinfo, reading, FALSE, nchunks, NULL, &fullspace_id);
     TIOassert(irc < 0, ERR_INT, "Failed to get chunked fullspace_id", -3);
 
     lfsp_id = H5Scopy(fullspace_id);

@@ -2419,7 +2419,7 @@ iH5_CreateChunkedDataset( const TIO_File_t      fileID,
   }
 
   irc = xH5_GetChunkedSpace( hobject, SPACE_FILE, class, meshtype, datapos, ndset, ndims, nghosts,
-                             nchunks, chunkinfo,  FALSE, nchunks, NULL, &space_id );
+                             nchunks, chunkinfo,  FALSE, FALSE, nchunks, NULL, &space_id );
   TIOassert(irc < 0, ERR_INT, "Failed to get chunked file dataspace", -1);
 
   /* Possible that the size of the dataset is zero (eg - a material created as mixed, but just
@@ -2542,7 +2542,7 @@ iH5_OpenChunkedDataset( const TIO_File_t      fileID,
 
   /* idx == nchunks -> Calculates full space of dataset in the file for later use */
   irc = xH5_GetChunkedSpace(hobject, SPACE_FILE, class, meshtype, datapos, ndset, ndims, nghosts,
-                            nchunks, chunkinfo,  FALSE, nchunks, NULL, NULL);
+                            nchunks, chunkinfo,  FALSE, FALSE, nchunks, NULL, NULL);
   TIOassert(irc < 0, ERR_INT, "Failed to get chunked file dataspace", -1);
 
   /* No dataset was written if it would've had zero size */
@@ -2740,12 +2740,12 @@ iH5_WriteChunkedDataset( const TIO_File_t      fileID,
 
         /* Get space for chunk within dataset in file */
         irc = xH5_GetChunkedSpace(hobject, SPACE_FILE, class, meshtype, datapos, ndset, ndims, nghosts,
-                                  nchunks, chunkinfo,  pnodata, pchunkidx, NULL, &filsp_id);
+                                  nchunks, chunkinfo,  FALSE, pnodata, pchunkidx, NULL, &filsp_id);
         TIOassert(irc < 0, ERR_INT, "Failed to get chunked file dataspace", -1);
 
         /* Get space for this chunk within memory */
         irc = xH5_GetChunkedSpace(hobject, SPACE_MEMORY, class, meshtype, datapos, ndset, ndims, nghosts,
-                                  nchunks, chunkinfo,  pnodata, pchunkidx, NULL, &memsp_id);
+                                  nchunks, chunkinfo,  FALSE, pnodata, pchunkidx, NULL, &memsp_id);
         TIOassert(irc < 0, ERR_INT, "Failed to get chunked memory dataspace", -2);
 
         if (pnodata) {
@@ -2802,12 +2802,12 @@ iH5_WriteChunkedDataset( const TIO_File_t      fileID,
 
     /* Get space for chunk within dataset in file */
     irc = xH5_GetChunkedSpace(hobject, SPACE_FILE, class, meshtype, datapos, ndset, ndims, nghosts,
-                              nchunks, chunkinfo, nodata, chunkidx, NULL, &filsp_id);
+                              nchunks, chunkinfo, FALSE, nodata, chunkidx, NULL, &filsp_id);
     TIOassert(irc < 0, ERR_INT, "Failed to get chunked file dataspace", -1);
 
     /* Get space for this chunk within memory */
     irc = xH5_GetChunkedSpace(hobject, SPACE_MEMORY, class, meshtype, datapos, ndset, ndims, nghosts,
-                              nchunks, chunkinfo, nodata, chunkidx, NULL, &memsp_id);
+                              nchunks, chunkinfo, FALSE, nodata, chunkidx, NULL, &memsp_id);
     TIOassert(irc < 0, ERR_INT, "Failed to get chunked memory dataspace", -2);
 
 
@@ -2859,7 +2859,8 @@ iH5_ReadChunkedDataset( const TIO_File_t      fileID,
 
   hid_t   dset_id, filsp_id, memsp_id, dtype_id, xfer_plist;
   herr_t  hrc;
-
+  herr_t  trc;
+ 
   int irc;
   int nodata;
 
@@ -3009,20 +3010,22 @@ iH5_ReadChunkedDataset( const TIO_File_t      fileID,
 
   /* Get space for chunk within dataset in file */
   irc = xH5_GetChunkedSpace(hobject, SPACE_FILE, class, meshtype, datapos, ndset, ndims, nghosts,
-                            nchunks, chunkinfo,  nodata, chunkidx, NULL, &filsp_id);
+                            nchunks, chunkinfo,  TRUE, nodata, chunkidx, NULL, &filsp_id);
   TIOassert(irc < 0, ERR_INT, "Failed to get chunked file dataspace", -10);
 
   /* Get space for this chunk in memory */
   irc = xH5_GetChunkedSpace(hobject, SPACE_MEMORY, class, meshtype, datapos, ndset, ndims, nghosts,
-                            nchunks, chunkinfo,  nodata, chunkidx, datasize, &memsp_id);
+                            nchunks, chunkinfo,  TRUE,  nodata, chunkidx, datasize, &memsp_id);
   TIOassert(irc < 0, ERR_INT, "Failed to get chunked memory dataspace", -11);
 
 
   /* dataspaces will have been set to perform zero-length read if no data */
-
-  hrc = H5Dread(dset_id, dtype_id, memsp_id, filsp_id, xfer_plist, dataptr);
-  TIOassert(hrc < 0, ERR_HDF5, "Failed to read dataset", -ITIO_ERR_READ);
-
+  trc = H5Dread(dset_id, dtype_id, memsp_id, filsp_id, xfer_plist, dataptr);
+  if (nodata) {
+    hrc = H5Tclose(dtype_id);
+    TIOassert(hrc < 0, ERR_HDF5, "Failed to close dummy dataspace", -14);
+  }
+  TIOassert(trc < 0, ERR_HDF5, "Failed to read dataset", -ITIO_ERR_READ);
 
   hrc = H5Sclose(memsp_id);
   TIOassert(hrc < 0, ERR_HDF5, "Failed to close memory dataspace", -12);
@@ -3242,7 +3245,7 @@ iH5_ReadChunkedDatasetSection( const TIO_File_t       fileID,
 
           irc = xH5_GetChunkedSpace(hobject, SPACE_FILE, class, meshtype, datapos, ndset, ndims,
                                     TIO_GHOSTS_NONE, nchunks, chunkinfo, 
-                                    nodata, ichunk, cksize, &filsp_id);
+                                    TRUE, nodata, ichunk, cksize, &filsp_id);
 
           /* routine above will return empty filsp_id if nodata */
 
@@ -3319,7 +3322,7 @@ iH5_ReadChunkedDatasetSection( const TIO_File_t       fileID,
 
         irc = xH5_GetChunkedSpace(hobject, SPACE_FILE, class, meshtype, datapos, ndset, ndims,
                                   TIO_GHOSTS_NONE, nchunks, chunkinfo, 
-                                  nodata, ichunk, cksize, &filsp_id);
+                                  TRUE, nodata, ichunk, cksize, &filsp_id);
         TIOassert(irc < 0, ERR_INT, "Failed to get chunked file dataspace", -11);
 
         if (irc > 0) continue; /* Chunk is part of section, but has no mix to contribute */
@@ -3425,13 +3428,13 @@ iH5_ReadChunkedDatasetSection( const TIO_File_t       fileID,
 
           /* Get space for chunk within dataset in file  - will be empty if nodata */
           irc = xH5_GetChunkedSpace(hobject, SPACE_FILE, class, meshtype, datapos, ndset, ndims,
-                                    fnghosts, nchunks, chunkinfo,  nodata, ichunk,
+                                    fnghosts, nchunks, chunkinfo, TRUE,  nodata, ichunk,
                                     NULL, &filsp_id);
           TIOassert(irc < 0, ERR_INT, "Failed to get chunked file dataspace", -20);
 
           /* Get space for this chunk in memory   - will be empty if nodata */
           irc = xH5_GetChunkedSpace(hobject, SPACE_MEMORY, class, meshtype, datapos, ndset, ndims,
-                                    fnghosts, nchunks, chunkinfo,  nodata, ichunk,
+                                    fnghosts, nchunks, chunkinfo, TRUE, nodata, ichunk,
                                     memsize, &memsp_id);
           TIOassert(irc < 0, ERR_INT, "Failed to get chunked memory dataspace", -21);
 
@@ -3500,13 +3503,13 @@ iH5_ReadChunkedDatasetSection( const TIO_File_t       fileID,
 
         /* Get space for chunk within dataset in file */
         irc = xH5_GetChunkedSpace(hobject, SPACE_FILE, class, meshtype, datapos, ndset, ndims,
-                                  fnghosts, nchunks, chunkinfo,  nodata, ichunk,
+                                  fnghosts, nchunks, chunkinfo, TRUE, nodata, ichunk,
                                   NULL, &filsp_id);
         TIOassert(irc < 0, ERR_INT, "Failed to get chunked file dataspace", -30);
 
         /* Get space for this chunk in memory */
         irc = xH5_GetChunkedSpace(hobject, SPACE_MEMORY, class, meshtype, datapos, ndset, ndims,
-                                  fnghosts, nchunks, chunkinfo,  nodata, ichunk,
+                                  fnghosts, nchunks, chunkinfo, TRUE, nodata, ichunk,
                                   memsize, &memsp_id);
         TIOassert(irc < 0, ERR_INT, "Failed to get chunked memory dataspace", -31);
 

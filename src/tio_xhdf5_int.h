@@ -334,6 +334,7 @@ extern int xH5_GetChunkedSpace( struct xH5object_t    *hobject,
                                 const TIO_Size_t      nghosts,
                                 const TIO_Size_t      nchunks,
                                 const union iInfo_t   *chunkinfo,
+                                const int             reading,    
                                 const int             nodata,     /* enables zero-sized dataspace if data null */
                                 const TIO_Size_t      idx,
                                 TIO_Size_t            *space_size,
