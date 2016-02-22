@@ -45,6 +45,12 @@ typedef int MPI_Info;
 
 
 #define TIO_NULL          (-1)
+#ifndef PATH_MAX
+#ifdef _WIN32
+#include <Windows.h>
+#define PATH_MAX MAX_PATH
+#endif
+#endif
 #define TIO_FILENAME_LEN  (PATH_MAX)    /* UNIX maximum (from limits.h)           */
 #define TIO_STRLEN        (64)          /* Nothing too big                        */
 #define TIO_MAXDIMS       (7)           /* Max no. dimensions for variables, etc. */

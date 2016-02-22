@@ -18,7 +18,9 @@
 #include "tio_vargroup.h"
 #include "tio_variable.h"
 
+#ifndef _WIN32
 #include <unistd.h>
+#endif
 
 #ifdef _TYPHIO_HDF5
 #include "tio_hdf5_int.h"
@@ -144,6 +146,9 @@ TIO_CheckFile( const char filename[] )
 
   TIObegin(subname,1);
 
+#ifndef F_OK
+#define F_OK 0
+#endif
   irc = access(filename, F_OK);
   if (irc < 0) {
     (void) iTIO_Verbose(subname, -1, "file: %s is not accessable (may not exist)", filename);

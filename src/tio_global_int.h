@@ -13,7 +13,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#ifndef _WIN32
 #include <sys/param.h>
+#endif
 
 
 /* -- Need tio_error.h and tio_global.h included to get enum and TIO_t definitions */
