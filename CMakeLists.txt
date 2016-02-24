@@ -1,7 +1,7 @@
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8.0)
 
-PROJECT(typhonio_project C CXX)
+PROJECT(TyphonIO C)
 
 # HDF5
 
@@ -62,3 +62,21 @@ TARGET_LINK_LIBRARIES(typhonio
 )
 
 ADD_DEFINITIONS(-D_TYPHIO_HDF5)
+
+INSTALL(TARGETS typhonio DESTINATION lib)
+
+INSTALL(FILES
+	"${CMAKE_CURRENT_SOURCE_DIR}/src/tio_access.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/src/tio_chunk.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/src/tio_error.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/src/tio_global.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/src/tio_material.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/src/tio_mesh.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/src/tio_quant.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/src/tio_state.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/src/tio_vargroup.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/src/tio_variable.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/src/typhonio.h"
+	"${CMAKE_CURRENT_SOURCE_DIR}/src/typhonio_viz.h"
+	DESTINATION include
+)
