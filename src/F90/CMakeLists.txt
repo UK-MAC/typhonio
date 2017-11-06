@@ -39,12 +39,32 @@ SET(TIO_F_HEADERS
 	${CMAKE_SOURCE_DIR}/src/F90/tiof_errornumapi.inc
 )
 
-# INSTALL(FILES ${TIO_HEADERS} DESTINATION include)
+SET(TIO_F_MODULES
+	tio_access_mod.mod
+	tio_chunk_mod.mod
+	tio_error_mod.mod
+	tio_global_mod.mod
+	tio_material_mod.mod
+	tio_mesh_mod.mod
+	tio_quant_mod.mod
+	tio_state_mod.mod
+	tio_utils_mod.mod
+	tio_vargroup_mod.mod
+	tio_variable_mod.mod
+	typhonio.mod
+)
+
+# INSTALL(FILES ${TIO_F_MODULES} DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
 
 ADD_DEFINITIONS(-D_TYPHIO_F2003_STDERR)
 ADD_DEFINITIONS(-DF2C_UNDERSCORE)
 ADD_DEFINITIONS(-D_TYPHIO_PARALLEL)
 
 ADD_LIBRARY(typhonio_f STATIC ${TIO_F_SOURCES})
-SET_TARGET_PROPERTIES(typhonio_f PROPERTIES OUTPUT_NAME typhonio_f CLEAN_DIRECT_OUTPUT 1 LINKER_LANGUAGE Fortran)
+SET_TARGET_PROPERTIES(typhonio_f PROPERTIES OUTPUT_NAME typhonio_f CLEAN_DIRECT_OUTPUT 1 
+		LINKER_LANGUAGE Fortran)
+SET(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/src/F90/lib)
+INSTALL(DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
 INSTALL(TARGETS typhonio_f DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+
+MESSAGE("${CMAKE_BINARY_DIR}")
