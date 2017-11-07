@@ -41,6 +41,6 @@ The build configuration can be changed by passing certain flags to cmake, these 
 
 ## Using TyphonIO
 
-To use TyphonIO, the library must be linked using ``-ltyphonio`` (and ``-ltyphonio\_f`` for Fortran)
+To use TyphonIO, the library must be linked using ``-ltyphonio`` (and ``-ltyphonio_f`` for Fortran)
 
 
