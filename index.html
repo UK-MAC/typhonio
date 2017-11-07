@@ -28,11 +28,29 @@
       <h1>TyphonIO</h1><hr />
       <h1>Introduction</h1>
       <p>
-      
+      TyphonIO is a library of routines that perform input/output (I/O) of scientific data within application codes. 
+      The library is available on HPC platforms and provides C/C++ and Fortran90 APIs to write and read TyphonIO-format files. 
+      The TyphonIO files can be dumps for restart or visualization purposes and are completely portable across HPC platforms, that is, a file written on one platform can be read on any other.
+
+      TyphonIO is based upon HDF5, a free open-source library from The HDF Group, which provides the portable data infrastructure. 
+      The way TyphonIO has been designed means that it would be possible to replace the underlying HDF5 with a successor or alternative, if the need arises, with minimal or no effect on application codes that use it.
       </p>
 
+      <h1>Implementation</h1>
+      <h2>
+        <a href="https://github.com/UK-MAC/typhonio">TyphonIO (GNU Make Build)</a>
+      </h2>
+     
+      <p>This version uses the original GNU make build system</p>
 
-<hr/>
+      <hr/>
+        
+      <h2>
+        <a href="https://github.com/UK-MAC/typhonio/tree/cmake_build">TyphonIO (Updated CMake Build)</a>
+      </h2>
+     
+      <p>This version replaces the original build system with an update CMake version to simplify the installation process</p>
+      <hr/>
 
       </section>
       <footer>
