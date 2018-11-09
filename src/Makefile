@@ -53,7 +53,7 @@ PROD_DIR		?=	$(realpath ${PWD}/..)/install/${HPC_COMPILER}
 # HDF5
 #
 
-HDF5_VERSION		?=	1.8.5
+HDF5_VERSION		?=	1.8.20
 HDF5_DIR		?=	${PROD_DIR}/external/hdf5/${HDF5_VERSION}
 
 
